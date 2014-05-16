@@ -17,6 +17,10 @@
     <string name="event_configWhen">When?</string>
     <string name="event_configWhere">Where?</string>
     <string name="event_configAddPeople">Add People</string>
+    <string name="addPeopleTitle">Add people or groups</string>
+    <string name="groups">Groups</string>
+    <string name="people">People</string>
+
     <string-array name="gender">
         <item/>
         <item>Male</item>

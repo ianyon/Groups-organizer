@@ -26,7 +26,7 @@ public class Register extends Activity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        //create the link whit registe.xml
+        //create the link with register.xml
         setContentView(R.layout.register);
 
         mUserName = (EditText) findViewById(R.id.registerName);

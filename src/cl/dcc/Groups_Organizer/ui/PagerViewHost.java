@@ -1,6 +1,7 @@
 package cl.dcc.Groups_Organizer.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -28,8 +29,8 @@ public class PagerViewHost extends CustomFragmentActivity implements
     ImageView botonRefresh;
     ImageView botonFecha;
     TextView mTextUserName;
-    Button mButtonGroups;
-    Button mButtonProfile;
+    ImageButton mButtonGroups;
+    ImageButton mButtonProfile;
     Date dateInicio, dateFin;
     // Sección fechas
     private View mCreateEvent;
@@ -55,8 +56,8 @@ public class PagerViewHost extends CustomFragmentActivity implements
 
         mTextUserName = (TextView) findViewById(R.id.pagerViewTextName);
         mCreateEvent = findViewById(R.id.pagerViewButtonCreateEvent);
-        mButtonGroups = (Button) mCreateEvent.findViewById(R.id.pagerViewButtonGroups);
-        mButtonProfile = (Button) mCreateEvent.findViewById(R.id.pagerViewButtonProfile);
+        mButtonGroups = (ImageButton) mCreateEvent.findViewById(R.id.pagerViewButtonGroups);
+        mButtonProfile = (ImageButton) mCreateEvent.findViewById(R.id.pagerViewButtonProfile);
 
 
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
@@ -239,6 +240,18 @@ public class PagerViewHost extends CustomFragmentActivity implements
             mTextUserName.setText("");
         }
     }*/
+
+    public void onRegisterClick(View v){
+        startActivity(new Intent(this, Register.class));
+    }
+
+    public void onAddPeopleClick(View v){
+        startActivity(new Intent(this, AddPeople.class));
+    }
+
+    public void onAddEventClick(View v){
+        startActivity(new Intent(this, EventConfig.class));
+    }
 
     /**
      * This is a helper class that implements the management of tabs and all
