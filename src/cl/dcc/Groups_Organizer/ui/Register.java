@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
 
 /**
  * Created by Roberto
  */
-public class Register extends Activity {
+public class Register extends Activity implements AdapterView.OnItemSelectedListener {
 
     EditText mUserName,
             mUserAge,
@@ -20,6 +18,9 @@ public class Register extends Activity {
             mUserConfMail,
             mUserPass,
             mUserConfPass;
+    Spinner mGenderSpiner;
+    String mGender = "";
+
     Button mOkButton;
 
     @Override
@@ -36,6 +37,9 @@ public class Register extends Activity {
         mUserPass = (EditText) findViewById(R.id.registerPass);
         mUserConfPass = (EditText) findViewById(R.id.registerConfirmPass);
 
+        mGenderSpiner = (Spinner) findViewById(R.id.registergender);
+        mGenderSpiner.setOnItemSelectedListener(this);
+
         mOkButton = (Button) findViewById(R.id.registerButton);
     }
 
@@ -50,8 +54,17 @@ public class Register extends Activity {
         boolean equalPass = mUserConfPass.equals(mUserPass);
         boolean notEmptyName = mUserName.length() > 0;
         boolean notEmptyAge = mUserAge.length() > 0;
+        boolean notEmptyMail = mUserMail.length() > 0;
+        boolean notEmptyPass = mUserPass.length() > 5;
+        boolean hasSelectGender = !mGender.equals("");
 
-        if (equalMail && equalPass && notEmptyName && notEmptyAge)
+        if (equalMail &&
+                equalPass &&
+                notEmptyName &&
+                notEmptyAge &&
+                notEmptyMail &&
+                notEmptyPass &&
+                hasSelectGender)
             showRegisterWarning("Register OK");
         else {
             if (!equalMail)
@@ -62,8 +75,13 @@ public class Register extends Activity {
                 showRegisterWarning("Please enter a name.");
             if (!notEmptyAge)
                 showRegisterWarning("Please enter age.");
+            if(!notEmptyPass)
+                showRegisterWarning("Please enter a password.");
+            if(!notEmptyMail)
+                showRegisterWarning("Please enter a valid mail.");
+            if(!hasSelectGender)
+                showRegisterWarning("Please select a gender");
         }
-
     }
 
     private void showRegisterWarning(CharSequence text){
@@ -76,4 +94,13 @@ public class Register extends Activity {
         toast.show();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String gender = (String)parent.getItemAtPosition(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

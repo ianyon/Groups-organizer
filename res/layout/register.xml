@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-        tools:context=".ui.Register">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
@@ -54,12 +52,23 @@
                         android:id="@+id/registerAge"/>
             </TableRow>
         </TableLayout>
-        <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/registergender" android:layout_gravity="center_horizontal" android:clickable="true"
-                android:gravity="center" android:spinnerMode="dialog"
-                android:entries="@array/gender"/>
+        <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Gender"
+                    android:id="@+id/textView9"/>
+            <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/registergender" android:layout_gravity="center_horizontal" android:clickable="true"
+                    android:gravity="center" android:spinnerMode="dialog"
+                    android:entries="@array/gender"
+                    android:="onClickGetGender"/>
+        </TableLayout>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
