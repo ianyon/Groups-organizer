@@ -1,15 +1,24 @@
 package cl.dcc.Groups_Organizer.data;
 
+import org.parceler.Parcel;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Ian on 14-04-2014.
  */
-public class Event {
-    public String name, description, location;
+@Parcel
+public class Event{
+    public String name;
+    public String description;
+    public String location;
     public Date datetime;
-    public ArrayList<Person> confirmed, guestList;
+    public List<Person> confirmed;
+    public List<Person> guestList;
+
+    public Event(){}
 
     public Event(String name, String description, String location, Date datetime) {
         this.name = name;
@@ -36,5 +45,37 @@ public class Event {
         this.datetime = datetime;
         this.confirmed = confirmed;
         this.guestList = guestList;
+    }
+
+    public int getGuestCount() {
+        return this.guestList.size();
+    }
+
+    public int getConfirmedCount() {
+        return this.confirmed.size();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Date getDatetime() {
+        return datetime;
+    }
+
+    public List<Person> getConfirmed() {
+        return confirmed;
+    }
+
+    public List<Person> getGuestList() {
+        return guestList;
     }
 }

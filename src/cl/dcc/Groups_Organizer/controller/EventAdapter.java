@@ -50,8 +50,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         holder.name.setText(event.name);
         holder.location.setText(event.location);
-        holder.confirmed.setText(event.confirmed);
-        holder.invited.setText(event.invited);
+        holder.confirmed.setText(""+event.getConfirmedCount());
+        holder.invited.setText(""+event.getGuestCount());
 
         return row;
     }

@@ -1,18 +1,24 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Base64;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.controller.EventAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferencias;
 import cl.dcc.Groups_Organizer.data.Event;
-import cl.dcc.Groups_Organizer.R;
+import org.parceler.Parcels;
+
+import java.util.Date;
 
 /**
  * Created by Ian on 13-04-2014.
@@ -29,10 +35,18 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
         Event[] data = new Event[3];
         //TODO: Fake data: delete
         for (int i = 0; i < 3; i++)
-            data[i] = new Event("Evento " + i, "Santa Rosa", "30", "5");
+            data[i] = new Event("Evento " + i,"Un evento entretenido",  "Santa Rosa 950",new Date());
 
         EventAdapter adapter = new EventAdapter(getActivity(), R.layout.event_row, data);
         setListAdapter(adapter);
+    }
+
+    public void onListItemClick (ListView l, View v, int position, long id){
+    Intent i = new Intent(this.getActivity(), EventConfig_.class);
+        Bundle extras = new Bundle();
+        extras.putParcelable("Event", Parcels.wrap((Event)l.getItemAtPosition(position)));
+        i.putExtras(extras);
+        startActivity(i);
     }
 
     /**

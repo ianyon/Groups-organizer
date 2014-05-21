@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="appTheme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
+<!--
+        <item name="android:textAppearanceMedium">@style/textStyle</item>
+        -->
+    </style>
+
+    <!--<style name="textStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>-->
+</resources>
