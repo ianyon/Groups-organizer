@@ -31,7 +31,7 @@ public class Login extends CustomFragmentActivity {
             doLoginVerified();
         else {
             if (tvUser.getText().length() == 0 || tvPassword.getText().length() == 0) {
-                Toast.makeText(this, "Usuario y/o contraseña no válidos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -47,9 +47,13 @@ public class Login extends CustomFragmentActivity {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseBody) {
-                    if (statusCode == 200 && responseBody.trim().equals("LOGIN_SUCCESSFUL")) {
-                        doLoginVerified();
+                    if (statusCode != 200 || !responseBody.trim().equals("LOGIN_SUCCESSFUL")) {
+                        Toast.makeText(Login.this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    Toast.makeText(Login.this, getString(R.string.loginSuccessfull), Toast.LENGTH_SHORT).show();
+
+                    doLoginVerified();
                 }
             });
         }
@@ -57,5 +61,10 @@ public class Login extends CustomFragmentActivity {
 
     private void doLoginVerified() {
         startActivity(new Intent(this, PagerViewHost.class));
+    }
+
+    private String getNameFromResponse(String body){
+        // TODO: Implement body parsing
+        return "";
     }
 }
