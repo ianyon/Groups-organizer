@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:label="@string/app_name"
@@ -27,8 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="cl.dcc.Groups_Organizer.ui.PagerViewHost"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.Register_"/>
+        <activity android:name=".ui.PagerViewHost_"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.AddPeople"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.EventConfig_"/>
     </application>

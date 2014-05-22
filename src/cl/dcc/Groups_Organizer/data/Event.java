@@ -17,6 +17,8 @@ public class Event{
     public Date datetime;
     public List<Person> confirmed;
     public List<Person> guestList;
+    private int confirmedCount;
+    private int guestListCount;
 
     public Event(){}
 
@@ -48,11 +50,11 @@ public class Event{
     }
 
     public int getGuestCount() {
-        return this.guestList.size();
+        return guestListCount;
     }
 
     public int getConfirmedCount() {
-        return this.confirmed.size();
+        return confirmedCount;
     }
 
     public String getName() {
@@ -77,5 +79,10 @@ public class Event{
 
     public List<Person> getGuestList() {
         return guestList;
+    }
+
+    public void setGuests(int confirmed, int guestList) {
+        this.confirmedCount = confirmed;
+        this.guestListCount = guestList;
     }
 }
