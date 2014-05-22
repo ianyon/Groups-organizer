@@ -1,14 +1,18 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.LoginConn;
+import cl.dcc.Groups_Organizer.data.Event;
+import cl.dcc.Groups_Organizer.data.Person;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
+import org.parceler.Parcels;
 
 public class Login extends CustomFragmentActivity {
     private TextView tvUser, tvPassword;
@@ -26,7 +30,7 @@ public class Login extends CustomFragmentActivity {
     public void onLoginClick(View v) {
         if (true) {
             // TODO: Borrar, Fake autentication
-            doLoginVerified("Juan Valdes");
+            doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
             return;
         }
         if (tvUser.getText().length() == 0 || tvPassword.getText().length() == 0) {
@@ -39,15 +43,17 @@ public class Login extends CustomFragmentActivity {
         loginConn.go(reqParams, httpHandler);
     }
 
-    private void doLoginVerified(String s) {
-        PagerViewHost_.intent(this).mName(s).start();
+    private void doLoginVerified(Person user) {
+        Intent intent = PagerViewHost_.intent(this).get();
+        Bundle extras = new Bundle();
+        extras.putParcelable("User", Parcels.wrap(user));
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
     // Object for Handling the http response
     private TextHttpResponseHandler httpHandler = new TextHttpResponseHandler() {
-        private String message
-                ,
-                name;
+        private String message, name;
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
@@ -60,7 +66,14 @@ public class Login extends CustomFragmentActivity {
             // TODO: hacer mas verboso el control de errores
             if (statusCode == 200 && parseResponse(responseBody) && message.equals("OK")) {
                 Toast.makeText(Login.this, getString(R.string.loginSuccessfull), Toast.LENGTH_SHORT).show();
-                doLoginVerified(name);
+
+                Person user = new Person(name, "" + tvUser.getText());
+
+                // Clear the textviews
+                tvUser.setText("");
+                tvPassword.setText("");
+
+                doLoginVerified(user);
             }else{
                 Toast.makeText(Login.this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
             }

@@ -12,7 +12,15 @@ public class Person {
     public String email;
     public int age;
 
-    public Person(){}
+    public Person() {
+    }
+
+    public Person(String name, String email) {
+        this.name = name;
+        this.gender = "unknown";
+        this.email = email;
+        this.age = -1;
+    }
 
     public Person(String name, String gender, String email, int age) {
         this.name = name;
@@ -35,5 +43,9 @@ public class Person {
 
     public int getAge() {
         return age;
+    }
+
+    public String toPreferences() {
+        return name + ";" + email;
     }
 }

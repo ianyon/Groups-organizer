@@ -6,7 +6,7 @@ import android.os.Parcelable.Creator;
 import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-21T17:12-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-22T15:44-0500")
 public class Person$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Person>
 {

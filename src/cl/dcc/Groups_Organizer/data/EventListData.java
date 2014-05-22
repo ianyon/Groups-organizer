@@ -1,6 +1,7 @@
 package cl.dcc.Groups_Organizer.data;
 
 import android.util.Pair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +14,7 @@ import java.util.Map.Entry;
 public class EventListData {
     private static final String CODIGO_ESTADO = "CodEstado", DESCRIPCION_ESTADO = "DescEstado",
             DATOS = "Data";
+    private List<Event> eventList;
 
     Map<String, Object> mDatos;
     int mCodEstado;
@@ -29,7 +31,26 @@ public class EventListData {
     }
 
     public EventListData(String serialized) throws JSONException {
-        this(new JSONObject(serialized));
+        JSONArray array = new JSONArray(serialized);
+        // Initialize event eventList
+        eventList = new ArrayList<Event>(array.length());
+
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject jsonEvent = (JSONObject) array.get(i);
+            String name = jsonEvent.getString("name");
+            String description = jsonEvent.getString("description");
+            String location = jsonEvent.getString("location");
+            Date datetime = new Date(jsonEvent.getLong("datetime") * 1000);
+            int confirmed = jsonEvent.getInt("confirmed");
+            int guestList = jsonEvent.getInt("guestList");
+            Event event = new Event(name, description, location, datetime);
+            event.setGuests(confirmed, guestList);
+            eventList.add(event);
+        }
+
+        // Old code
+//        this(new JSONObject(serialized));
+
     }
 
     public EventListData(JSONObject json) {
@@ -116,7 +137,7 @@ public class EventListData {
         LinkedList<Entry<String, Object>> list = new LinkedList<Entry<String, Object>>(
                 unsortMap.entrySet());
 
-        // sort list based on comparator
+        // sort eventList based on comparator
         Collections.sort(list, new Comparator<Object>() {
             @SuppressWarnings("unchecked")
             public int compare(Object o1, Object o2) {
@@ -129,7 +150,7 @@ public class EventListData {
             Collections.reverse(list);
         }
 
-        // put sorted list into map again
+        // put sorted eventList into map again
         // LinkedHashMap make sure order in which keys were inserted
         LinkedHashMap<String, Object> sortedMap = new LinkedHashMap<String, Object>();
         for (Iterator<Entry<String, Object>> it = list.iterator(); it.hasNext(); ) {
@@ -137,6 +158,10 @@ public class EventListData {
             sortedMap.put((String) entry.getKey(), entry.getValue());
         }
         return sortedMap;
+    }
+
+    public List<Event> getEventList() {
+        return eventList;
     }
 
     @Override

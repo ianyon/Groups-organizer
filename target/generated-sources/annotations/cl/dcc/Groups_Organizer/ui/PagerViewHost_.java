@@ -5,7 +5,6 @@
 
 package cl.dcc.Groups_Organizer.ui;
 
-import java.util.Date;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +28,6 @@ public final class PagerViewHost_
 {
 
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
-    public final static String M_NAME_EXTRA = "mName";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +40,6 @@ public final class PagerViewHost_
 
     private void init_(Bundle savedInstanceState) {
         OnViewChangedNotifier.registerOnViewChangedListener(this);
-        injectExtras_();
-        restoreSavedInstanceState_(savedInstanceState);
     }
 
     @Override
@@ -86,47 +82,13 @@ public final class PagerViewHost_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mButtonGroups = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonGroups));
-        mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
-        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
         mCreateEvent = ((View) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonCreateEvent));
         mButtonProfile = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonProfile));
+        mButtonGroups = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonGroups));
+        mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
         mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
+        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
         initVars();
-    }
-
-    private void injectExtras_() {
-        Bundle extras_ = getIntent().getExtras();
-        if (extras_!= null) {
-            if (extras_.containsKey(M_NAME_EXTRA)) {
-                mName = extras_.getString(M_NAME_EXTRA);
-            }
-        }
-    }
-
-    @Override
-    public void setIntent(Intent newIntent) {
-        super.setIntent(newIntent);
-        injectExtras_();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
-        bundle.putSerializable("dateFin", dateFin);
-        bundle.putSerializable("dateInicio", dateInicio);
-        bundle.putBoolean("noRefrescar", noRefrescar);
-        bundle.putBoolean("viewFechaAbierto", viewFechaAbierto);
-    }
-
-    private void restoreSavedInstanceState_(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            return ;
-        }
-        dateFin = ((Date) savedInstanceState.getSerializable("dateFin"));
-        dateInicio = ((Date) savedInstanceState.getSerializable("dateInicio"));
-        noRefrescar = savedInstanceState.getBoolean("noRefrescar");
-        viewFechaAbierto = savedInstanceState.getBoolean("viewFechaAbierto");
     }
 
     public static class IntentBuilder_ {
@@ -180,11 +142,6 @@ public final class PagerViewHost_
                     }
                 }
             }
-        }
-
-        public PagerViewHost_.IntentBuilder_ mName(String mName) {
-            intent_.putExtra(M_NAME_EXTRA, mName);
-            return this;
         }
 
     }

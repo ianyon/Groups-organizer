@@ -15,20 +15,18 @@ import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
 import cl.dcc.Groups_Organizer.connection.GetEventListConn;
 import cl.dcc.Groups_Organizer.controller.TabsAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
+import cl.dcc.Groups_Organizer.data.Person;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.ViewById;
 import org.apache.http.Header;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import org.parceler.Parcels;
 
 @EActivity(R.layout.pager_view)
-public class PagerViewHost extends CustomFragmentActivity implements
-        OnSharedPreferenceChangeListener {
+public class PagerViewHost extends CustomFragmentActivity {
     private static final boolean DEBUG = false;
     // Sección pager
     @ViewById(android.R.id.tabhost)
@@ -36,12 +34,6 @@ public class PagerViewHost extends CustomFragmentActivity implements
 
     @ViewById(R.id.pager)
     ViewPager mViewPager;
-
-    /*@ViewById(R.id.pager)
-    ImageView botonRefresh;
-
-    @ViewById(R.id.pager)
-    ImageView botonFecha;*/
 
     @ViewById(R.id.pagerViewTextName)
     TextView mTextUserName;
@@ -55,30 +47,37 @@ public class PagerViewHost extends CustomFragmentActivity implements
     @ViewById(R.id.pagerViewButtonCreateEvent)
     View mCreateEvent;
 
-    @Extra
-    String mName;
+    Person mUser;
 
     TabsAdapter mTabsAdapter;
 
-    @InstanceState
-    Date dateInicio, dateFin;
-    // Sección fechas
-
-    @InstanceState
-    boolean noRefrescar = false;
-
-    @InstanceState
-    boolean viewFechaAbierto;
-
-    private TextView textViewRangoFechas;
-    private SimpleDateFormat formatterBoton = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-    private SimpleDateFormat formatterRango = new SimpleDateFormat("dd/MM/yy", Locale.US);
     private AdminPreferences preferences;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        preferences = new AdminPreferences(this);
+
+        Bundle extras = this.getIntent().getExtras();
+
+        if(extras != null && extras.containsKey("User")){
+            mUser = Parcels.unwrap(extras.getParcelable("User"));
+            preferences.setUser(mUser);
+        }else{
+            Toast.makeText(this,"Error fatal, no llego un usuario", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
+    }
 
     @AfterViews
     void initVars() {
-        preferences = new AdminPreferences(this);
-        mTextUserName.setText(mName);
+        mTextUserName.setText(mUser.getName());
 
         // TabHost configuration
         mTabHost.setup();
@@ -86,35 +85,18 @@ public class PagerViewHost extends CustomFragmentActivity implements
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
         mViewPager.setOffscreenPageLimit(2);
 
-        mTabsAdapter.addTab(
-                mTabHost.newTabSpec("tab1").setIndicator("Public events",
-                        getResources().getDrawable(R.drawable.ic_launcher)),
-                PublicEvents.class, null
-        );
-        mTabsAdapter.addTab(
-                mTabHost.newTabSpec("tab2").setIndicator("My events",
-                        getResources().getDrawable(R.drawable.ic_launcher)),
-                MyEvents.class, null
-        );
+        // Configure TabSpecs
+        TabHost.TabSpec tabSpec1 = mTabHost.newTabSpec("tab1");
+        tabSpec1.setIndicator("Public events", null);
+        mTabsAdapter.addTab(tabSpec1, PublicEvents.class, null);
+
+        TabHost.TabSpec tabSpec2 = mTabHost.newTabSpec("tab2");
+        tabSpec2.setIndicator("My events", null);
+        mTabsAdapter.addTab(tabSpec2, MyEvents.class, null);
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new AdminPreferences(this).getPreferenciasDatos()
-                .registerOnSharedPreferenceChangeListener(this);
-//        onDataChanged();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        new AdminPreferences(this).getPreferenciasDatos()
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    public void onBotonRefresh(View v) {
+    public void onRefreshTriggered(View v) {
+        // TODO: call this method when the user swipes from up to bottom
         refresh();
     }
 
@@ -126,12 +108,11 @@ public class PagerViewHost extends CustomFragmentActivity implements
 
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
-        RequestParams reqParams = eventsConn.generateParams("Public");
-        eventsConn.go(reqParams, new EventListHttpResponseHandler());
+        eventsConn.go(null, new EventListHttpResponseHandler());
 
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
-        reqParams = eventsConn.generateParams("Private");
+        RequestParams reqParams = eventsConn.generateParams(mUser.getEmail());
         eventsConn.go(reqParams, new EventListHttpResponseHandler());
     }
 
@@ -149,39 +130,9 @@ public class PagerViewHost extends CustomFragmentActivity implements
         }
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        if (key.equals(AdminPreferencias.INFO_MUNICIPALIDAD)
-//                || key.equals(AdminPreferencias.IMAGEN_COMUNA))
-//            onDataChanged();
-    }
-
-    /*private DatosSeccion generateRandomData(int j) {
-        Map<String, Object> auxMap = new HashMap<String, Object>();
-        Random rand = new Random();
-        for (int i = 0; i < 25; i++)
-            if (j == 0)
-                auxMap.put("Depto muni num " + i, Long.valueOf((Math.abs(rand.nextInt()))));
-            else if (j == 1)
-                auxMap.put("Depto muni num " + i, "" + Long.valueOf(Math.abs(rand.nextInt())) + ","
-                        + Long.valueOf(Math.abs(rand.nextInt())));
-        return new DatosSeccion(0, "Exito", auxMap);
-    }*/
-
     public void onRegisterClick(View v) {
         startActivity(new Intent(this, Register.class));
     }
-
-    /*private void onDataChanged() {
-        DatosSeccion datosSeccion = new AdminPreferencias(this)
-                .getValores(AdminPreferencias.INFO_MUNICIPALIDAD);
-        Map<String, Object> map = datosSeccion.getMap();
-        if (map != null && map.size() != 0) {
-            mTextUserName.setText(map.get("nombre_municipalidad").toString());
-        } else {
-            mTextUserName.setText("");
-        }
-    }*/
 
     public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));
@@ -205,6 +156,7 @@ public class PagerViewHost extends CustomFragmentActivity implements
         public void onSuccess(int statusCode, Header[] headers, String responseBody) {
             // TODO: hacer mas verboso el control de errores
             if (statusCode == 200 && parseResponse(responseBody)) {
+                preferences.setValores(category, data);
                 Toast.makeText(PagerViewHost.this, "Datos recibidos", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
@@ -219,9 +171,6 @@ public class PagerViewHost extends CustomFragmentActivity implements
 
             category = body.substring(0, i);
             data = body.substring(i);
-
-            AdminPreferences preferences = new AdminPreferences(PagerViewHost.this);
-            preferences.setValores(category, data);
             return true;
         }
     }

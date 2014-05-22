@@ -8,17 +8,7 @@ import android.net.NetworkInfo;
 /**
  * Created by Ian on 22-05-2014.
  */
-public abstract class ConnectionStatus {
-
-        /**
-         * Contexto desde el cual se ejecuta la conexión a la BD.
-         */
-        protected Context mContext;
-
-        public ConnectionStatus(Context context) {
-            this.mContext = context;
-        }
-
+public class ConnectionStatus {
         /**
          * Permite saber si el dispositivo tiene conexión a internet
          *
@@ -32,11 +22,5 @@ public abstract class ConnectionStatus {
                 return true;
             }
             return false;
-        }
-
-//        public abstract Object request(Request request) throws Exception;
-
-        protected Context getContext() {
-            return mContext;
         }
     }

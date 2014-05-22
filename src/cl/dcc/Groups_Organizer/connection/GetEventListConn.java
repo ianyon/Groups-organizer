@@ -12,8 +12,8 @@ public class GetEventListConn extends HttpConnection {
 
     public GetEventListConn(AsyncHttpClient client) { super(client); }
 
-    public RequestParams generateParams(CharSequence type) {
-        return new RequestParams("listType", type);
+    public RequestParams generateParams(CharSequence email) {
+        return new RequestParams("email", email);
     }
 
     @Override
