@@ -10,6 +10,7 @@ public class Person {
     public String name;
     public String gender;
     public String email;
+    private String password;
     public int age;
 
     public Person(){}
@@ -19,6 +20,11 @@ public class Person {
         this.gender = gender;
         this.email = email;
         this.age = age;
+    }
+
+    public Person(String name, String gender, String email, String pass,int age) {
+        this(name,gender,email,age);
+        password = pass;
     }
 
     public String getName() {
@@ -36,4 +42,6 @@ public class Person {
     public int getAge() {
         return age;
     }
+
+    public String getPassword() { return password; }
 }

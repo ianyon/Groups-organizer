@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
+import cl.dcc.Groups_Organizer.data.Person;
+import org.parceler.Parcels;
 
 /**
  * Created by Roberto
  */
 public class Register extends Activity implements AdapterView.OnItemSelectedListener {
 
+    private Person mPerson;
     EditText mUserName,
             mUserAge,
             mUserMail,
@@ -30,6 +33,24 @@ public class Register extends Activity implements AdapterView.OnItemSelectedList
         //create the link with register.xml
         setContentView(R.layout.register);
 
+        Bundle extras = this.getIntent().getExtras();
+        mSetup();
+
+        if(extras != null && extras.containsKey("Person")){
+            mPerson = Parcels.unwrap(extras.getParcelable("Person"));
+            mOkButton.setText("Guardar");
+
+            mUserName.setText(mPerson.getName());
+            mUserAge.setText(Integer.toString(mPerson.getAge()));
+            mUserMail.setText(mPerson.getEmail());
+            mUserConfMail.setText(mPerson.getEmail()) ;
+            mUserPass.setText(mPerson.getPassword());
+            mUserConfPass.setText(mPerson.getPassword());
+
+        }
+    }
+
+    private void mSetup(){
         mUserName = (EditText) findViewById(R.id.registerName);
         mUserAge = (EditText) findViewById(R.id.registerAge);
         mUserMail = (EditText) findViewById(R.id.registermail);

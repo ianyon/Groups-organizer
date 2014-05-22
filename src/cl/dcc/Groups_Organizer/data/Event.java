@@ -71,6 +71,8 @@ public class Event{
         return datetime;
     }
 
+    public String getTimeDare() {return datetime.toString();}
+
     public List<Person> getConfirmed() {
         return confirmed;
     }

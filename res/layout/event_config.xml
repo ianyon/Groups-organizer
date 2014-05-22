@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:ems="10"
-                android:id="@+id/editText"
+                android:id="@+id/eventConfigEventName"
                 android:layout_column="2"/>
         </TableRow>
 
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:ems="10"
-                android:id="@+id/editText2"
+                android:id="@+id/eventConfigEventDescription"
                 android:layout_column="2"/>
         </TableRow>
 
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress"
                 android:ems="10"
-                android:id="@+id/editText3"
+                android:id="@+id/eventConfigEventWhere"
                 android:layout_column="2"/>
         </TableRow>
 
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:ems="10"
-                android:id="@+id/editText4"
+                android:id="@+id/eventConfigEventWhen"
                 android:layout_column="2"/>
         </TableRow>
     </TableLayout>
