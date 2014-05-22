@@ -10,6 +10,8 @@ import android.widget.TextView;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.data.Event;
 
+import java.util.List;
+
 /**
  * Created by Ian on 14-04-2014.
  */
@@ -17,9 +19,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
     Context context;
     int layoutResourceId;
-    Event data[] = null;
+    List<Event> data = null;
 
-    public EventAdapter(Context context, int layoutResourceId, Event[] data) {
+    public EventAdapter(Context context, int layoutResourceId, List<Event> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -46,7 +48,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
             holder = (EventHolder) row.getTag();
         }
 
-        Event event = data[position];
+        Event event = data.get(position);
 
         holder.name.setText(event.name);
         holder.location.setText(event.location);
@@ -58,6 +60,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
     static class EventHolder {
         TextView name, location, confirmed, invited;
+    }
+
+    public List<Event> getList(){
+        return data;
     }
 
 }
