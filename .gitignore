@@ -25,3 +25,5 @@ proguard/
 # IDE Files
 .idea/
 *.iml
+/target
+/.apt_generated

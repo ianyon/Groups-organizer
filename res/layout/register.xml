@@ -76,15 +76,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/registerEditTextMail"
-                        android:id="@+id/textView5" android:layout_column="0"/>
+                        android:text="@string/registerEditTextUser"
+                        android:id="@+id/textView9" android:layout_column="0"/>
+
                 <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:ems="10"
-                        android:id="@+id/registermail"
-                        android:layout_column="3"/>
+                    android:id="@+id/registerUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:ems="10"
+                    android:inputType="text|textEmailAddress" />
+
             </TableRow>
             <TableRow
                     android:layout_width="fill_parent"
@@ -93,14 +95,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/registerEditTextReMail"
-                        android:id="@+id/textView7"/>
+                        android:text="@string/registerEditTextMail"
+                        android:id="@+id/textView5" android:layout_column="0"/>
                 <EditText
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
                         android:ems="10"
-                        android:id="@+id/registerCpnfirmMail" android:layout_column="3"/>
+                        android:id="@+id/registerMail"
+                        android:layout_column="3"/>
             </TableRow>
             <TableRow
                     android:layout_width="fill_parent"
