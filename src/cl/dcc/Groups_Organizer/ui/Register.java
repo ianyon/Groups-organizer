@@ -1,5 +1,9 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,62 +13,80 @@ import android.widget.EditText;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 
+import com.mobsandgeeks.saripaar.Rule;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.Validator.ValidationListener;
+import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NumberRule;
+import com.mobsandgeeks.saripaar.annotation.NumberRule.NumberType;
+import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.Required;
+import com.mobsandgeeks.saripaar.annotation.TextRule;
+
 /**
  * Created by Roberto
  */
-public class Register extends Activity {
+@EActivity(R.layout.register)
+public class Register extends Activity implements ValidationListener {
+	
+	@TextRule(order = 8, minLength = 5, maxLength = 60, messageResId = R.string.registerNameVerification)
+	@ViewById(R.id.registerName)
+    EditText mUserName;
+	
+	@NumberRule(order = 9, type = NumberType.INTEGER, gt = 1, lt = 120, messageResId = R.string.registerAgeVerification)
+	@ViewById(R.id.registerAge)
+    EditText mUserAge;
+	
+	@TextRule(order = 8, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
+	@ViewById(R.id.registerUser)
+    EditText mUserUsername;
+	
+	@Required(order = 4)
+	@Email(order = 7)
+	@TextRule(order = 8, maxLength = 60, messageResId = R.string.registerEmailVerification)
+	@ViewById(R.id.registerMail)
+    EditText mUserMail;
+	
+	@Password(order = 5)
+	@TextRule(order = 8, minLength = 5, messageResId = R.string.registerPassVerification)
+	@ViewById(R.id.registerPass)
+    EditText mUserPass;
+	
+	@ConfirmPassword(order = 1)
+	@ViewById(R.id.registerConfirmPass)
+    EditText mUserConfPass;
+	
+	Validator validator;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		validator = new Validator(this);
+		validator.setValidationListener(this);
+	}
 
-    EditText mUserName,
-            mUserAge,
-            mUserMail,
-            mUserConfMail,
-            mUserPass,
-            mUserConfPass;
-    Button mOkButton;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-        //create the link with register.xml
-        setContentView(R.layout.register);
-
-        mUserName = (EditText) findViewById(R.id.registerName);
-        mUserAge = (EditText) findViewById(R.id.registerAge);
-        mUserMail = (EditText) findViewById(R.id.registermail);
-        mUserConfMail = (EditText) findViewById(R.id.registerCpnfirmMail);
-        mUserPass = (EditText) findViewById(R.id.registerPass);
-        mUserConfPass = (EditText) findViewById(R.id.registerConfirmPass);
-
-        mOkButton = (Button) findViewById(R.id.registerButton);
+	@Click
+    void registerButton(){
+		validator.validate();
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    public void okInfo(View view){
-
-        boolean equalMail = mUserConfMail.equals(mUserMail);
-        boolean equalPass = mUserConfPass.equals(mUserPass);
-        boolean notEmptyName = mUserName.length() > 0;
-        boolean notEmptyAge = mUserAge.length() > 0;
-
-        if (equalMail && equalPass && notEmptyName && notEmptyAge)
-            showRegisterWarning("Register OK");
-        else {
-            if (!equalMail)
-                showRegisterWarning("E-mail don't match.");
-            if (!equalPass)
-                showRegisterWarning("Password don't match.");
-            if (!notEmptyName)
-                showRegisterWarning("Please enter a name.");
-            if (!notEmptyAge)
-                showRegisterWarning("Please enter age.");
-        }
-
-    }
+	
+	@Override
+	public void onValidationFailed(View view, Rule<?> rule) {
+		String message = rule.getFailureMessage();
+		if(view instanceof EditText) {
+			view.requestFocus();
+			((EditText)view).setError(message);
+		} else {
+			showRegisterWarning(message);
+		}
+		
+	}
+	
+	@Override
+	public void onValidationSucceeded() {
+		// Connect to server and register new user
+	}
 
     private void showRegisterWarning(CharSequence text){
 
