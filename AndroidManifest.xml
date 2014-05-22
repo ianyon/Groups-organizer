@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="cl.dcc.Groups_Organizer.ui.PagerViewHost"/>
+        <activity android:name=".ui.PagerViewHost_"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.Register"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.AddPeople"/>
         <activity android:name=".ui.EventConfig_"/>

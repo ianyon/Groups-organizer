@@ -14,7 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.controller.EventAdapter;
-import cl.dcc.Groups_Organizer.data.AdminPreferencias;
+import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
 import org.parceler.Parcels;
 
@@ -35,16 +35,16 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
         Event[] data = new Event[3];
         //TODO: Fake data: delete
         for (int i = 0; i < 3; i++)
-            data[i] = new Event("Evento " + i,"Un evento entretenido",  "Santa Rosa 950",new Date());
+            data[i] = new Event("Evento " + i, "Un evento entretenido", "Santa Rosa 950", new Date());
 
         EventAdapter adapter = new EventAdapter(getActivity(), R.layout.event_row, data);
         setListAdapter(adapter);
     }
 
-    public void onListItemClick (ListView l, View v, int position, long id){
-    Intent i = new Intent(this.getActivity(), EventConfig_.class);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Intent i = new Intent(this.getActivity(), EventConfig_.class);
         Bundle extras = new Bundle();
-        extras.putParcelable("Event", Parcels.wrap((Event)l.getItemAtPosition(position)));
+        extras.putParcelable("Event", Parcels.wrap((Event) l.getItemAtPosition(position)));
         i.putExtras(extras);
         startActivity(i);
     }
@@ -75,7 +75,6 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
 
         return v;
     }*/
-
     private void mostrarImagenBase64(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
         Bitmap bm = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -85,7 +84,7 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
     @Override
     public void onResume() {
         super.onResume();
-        new AdminPreferencias(getActivity()).getPreferenciasDatos()
+        new AdminPreferences(getActivity()).getPreferenciasDatos()
                 .registerOnSharedPreferenceChangeListener(this);
         onDataChanged();
     }
@@ -93,7 +92,7 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
     @Override
     public void onPause() {
         super.onPause();
-        new AdminPreferencias(getActivity()).getPreferenciasDatos()
+        new AdminPreferences(getActivity()).getPreferenciasDatos()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -142,7 +141,7 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(AdminPreferencias.INFO_MUNICIPALIDAD) || key.equals(AdminPreferencias.IMAGEN_COMUNA) || key.equals(AdminPreferencias.CONCEJALES))
+        if (key.equals(AdminPreferences.INFO_MUNICIPALIDAD) || key.equals(AdminPreferences.IMAGEN_COMUNA) || key.equals(AdminPreferences.CONCEJALES))
             onDataChanged();
     }
 

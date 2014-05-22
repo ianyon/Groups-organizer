@@ -11,31 +11,62 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.TabHost;
+import android.widget.TabWidget;
+import android.widget.TextView;
 import cl.dcc.Groups_Organizer.R;
-import cl.dcc.Groups_Organizer.data.AdminPreferencias;
+import cl.dcc.Groups_Organizer.data.AdminPreferences;
+import org.androidannotations.annotations.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
+@EActivity(R.layout.pager_view)
 public class PagerViewHost extends CustomFragmentActivity implements
         OnSharedPreferenceChangeListener {
     private static final boolean DEBUG = false;
     // Sección pager
+    @ViewById(android.R.id.tabhost)
     TabHost mTabHost;
+
+    @ViewById(R.id.pager)
     ViewPager mViewPager;
-    TabsAdapter mTabsAdapter;
+
+    /*@ViewById(R.id.pager)
     ImageView botonRefresh;
-    ImageView botonFecha;
+
+    @ViewById(R.id.pager)
+    ImageView botonFecha;*/
+
+    @ViewById(R.id.pagerViewTextName)
     TextView mTextUserName;
+
+    @ViewById(R.id.pagerViewButtonGroups)
     ImageButton mButtonGroups;
+
+    @ViewById(R.id.pagerViewButtonProfile)
     ImageButton mButtonProfile;
+
+    @ViewById(R.id.pagerViewButtonCreateEvent)
+    View mCreateEvent;
+
+    @Extra
+    String mName;
+
+    TabsAdapter mTabsAdapter;
+
+    @InstanceState
     Date dateInicio, dateFin;
     // Sección fechas
-    private View mCreateEvent;
+
+    @InstanceState
     private boolean noRefrescar = false;
+
+    @InstanceState
     private boolean viewFechaAbierto;
+
+    @InstanceState
     private boolean allTasksDone = true;
     private TextView textViewRangoFechas;
     private SimpleDateFormat formatterBoton = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
@@ -43,22 +74,12 @@ public class PagerViewHost extends CustomFragmentActivity implements
 
     private Map<String, Object> mapValoresEnCarga;
 
+    @InstanceState
     private boolean mDatosEstaticosCargados;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.pager_view);
-
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+    @AfterViews
+    void initTabHost() {
         mTabHost.setup();
-
-        mTextUserName = (TextView) findViewById(R.id.pagerViewTextName);
-        mCreateEvent = findViewById(R.id.pagerViewButtonCreateEvent);
-        mButtonGroups = (ImageButton) mCreateEvent.findViewById(R.id.pagerViewButtonGroups);
-        mButtonProfile = (ImageButton) mCreateEvent.findViewById(R.id.pagerViewButtonProfile);
-
 
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
         mViewPager.setOffscreenPageLimit(2);
@@ -73,21 +94,23 @@ public class PagerViewHost extends CustomFragmentActivity implements
                         getResources().getDrawable(R.drawable.ic_launcher)),
                 MyEvents.class, null
         );
+    }
 
-        AdminPreferencias ap = new AdminPreferencias(this);
-
-        if (savedInstanceState != null) {
-            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-        }
+    @AfterViews
+    void initVars() {
+        AdminPreferences ap = new AdminPreferences(this);
 
         mapValoresEnCarga = new HashMap<String, Object>();
         mDatosEstaticosCargados = false;
+
+        mTextUserName.setText(mName);
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        new AdminPreferencias(this).getPreferenciasDatos()
+        new AdminPreferences(this).getPreferenciasDatos()
                 .registerOnSharedPreferenceChangeListener(this);
 //        onDataChanged();
     }
@@ -95,7 +118,7 @@ public class PagerViewHost extends CustomFragmentActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        new AdminPreferencias(this).getPreferenciasDatos()
+        new AdminPreferences(this).getPreferenciasDatos()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -149,23 +172,14 @@ public class PagerViewHost extends CustomFragmentActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("tab", mTabHost.getCurrentTabTag());
-        outState.putBoolean("noRefrescar", noRefrescar);
-        outState.putBoolean("allTasksDone", allTasksDone);
-        outState.putBoolean("viewFechaAbierto", viewFechaAbierto);
-        outState.putSerializable("dateInicio", dateInicio);
-        outState.putSerializable("dateFin", dateFin);
-        outState.putBoolean("mLogoCargado", mDatosEstaticosCargados);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        noRefrescar = state.getBoolean("noRefrescar");
-        allTasksDone = state.getBoolean("allTasksDone");
-        viewFechaAbierto = state.getBoolean("viewFechaAbierto");
-        dateInicio = (Date) state.getSerializable("dateInicio");
-        dateFin = (Date) state.getSerializable("dateFin");
-        mDatosEstaticosCargados = state.getBoolean("mLogoCargado");
+        if (state != null) {
+            mTabHost.setCurrentTabByTag(state.getString("tab"));
+        }
     }
 //
 //    @Override
@@ -201,9 +215,9 @@ public class PagerViewHost extends CustomFragmentActivity implements
     private void volcarValoresCargados() {
         if (mapValoresEnCarga == null || mapValoresEnCarga.size() == 0)
             return;
-        AdminPreferencias adminPreferencias = new AdminPreferencias(this);
+        AdminPreferences adminPreferences = new AdminPreferences(this);
         for (String s : mapValoresEnCarga.keySet()) {
-            adminPreferencias.setValores(s, mapValoresEnCarga.get(s));
+            adminPreferences.setValores(s, mapValoresEnCarga.get(s));
         }
 
         // Si hacemos una conexión, estamos seguros que se habrán
@@ -241,15 +255,15 @@ public class PagerViewHost extends CustomFragmentActivity implements
         }
     }*/
 
-    public void onRegisterClick(View v){
+    public void onRegisterClick(View v) {
         startActivity(new Intent(this, Register.class));
     }
 
-    public void onAddFriendsClick(View v){
+    public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));
     }
 
-    public void onAddEventClick(View v){
+    public void onAddEventClick(View v) {
         startActivity(new Intent(this, EventConfig_.class));
     }
 

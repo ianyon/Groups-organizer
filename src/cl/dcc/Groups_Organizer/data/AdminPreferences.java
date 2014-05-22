@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import java.util.Date;
 import java.util.HashMap;
 
-public class AdminPreferencias {
+public class AdminPreferences {
     // Categorías en las preferencias PREFERENCIAS_DATOS.
     public static final String
             PERSONAL = "Personal", GIRADORES = "Giradores", RANKING = "Ranking",
@@ -25,7 +25,7 @@ public class AdminPreferencias {
 
     private Context mContext;
 
-    public AdminPreferencias(Context context) {
+    public AdminPreferences(Context context) {
         mContext = context;
     }
 
