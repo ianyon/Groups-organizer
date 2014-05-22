@@ -25,3 +25,6 @@ proguard/
 # IDE Files
 .idea/
 *.iml
+
+# Generated sources
+target/
