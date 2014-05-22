@@ -2,6 +2,7 @@ package cl.dcc.Groups_Organizer.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import org.json.JSONException;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -141,14 +142,14 @@ public class AdminPreferences {
         if (data == null) return;
         getPreferenciasDatos().edit().putString(tipoValores, data.toString()).commit();
     }
-    /*
-	public DatosSeccion getValores(String tipoValores) {
+
+	public EventListData getValores(String tipoValores) {
 		String jsonString = getPreferenciasDatos().getString(tipoValores, "{}");
 		try {
-			return new DatosSeccion(jsonString);
+			return new EventListData(jsonString);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 }

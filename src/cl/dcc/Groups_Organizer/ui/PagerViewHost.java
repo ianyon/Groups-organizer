@@ -1,26 +1,30 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
+import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
+import cl.dcc.Groups_Organizer.connection.GetEventListConn;
+import cl.dcc.Groups_Organizer.controller.TabsAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import org.androidannotations.annotations.*;
+import org.apache.http.Header;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @EActivity(R.layout.pager_view)
 public class PagerViewHost extends CustomFragmentActivity implements
@@ -61,24 +65,22 @@ public class PagerViewHost extends CustomFragmentActivity implements
     // Sección fechas
 
     @InstanceState
-    private boolean noRefrescar = false;
+    boolean noRefrescar = false;
 
     @InstanceState
-    private boolean viewFechaAbierto;
+    boolean viewFechaAbierto;
 
-    @InstanceState
-    private boolean allTasksDone = true;
     private TextView textViewRangoFechas;
     private SimpleDateFormat formatterBoton = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
     private SimpleDateFormat formatterRango = new SimpleDateFormat("dd/MM/yy", Locale.US);
-
-    private Map<String, Object> mapValoresEnCarga;
-
-    @InstanceState
-    private boolean mDatosEstaticosCargados;
+    private AdminPreferences preferences;
 
     @AfterViews
-    void initTabHost() {
+    void initVars() {
+        preferences = new AdminPreferences(this);
+        mTextUserName.setText(mName);
+
+        // TabHost configuration
         mTabHost.setup();
 
         mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
@@ -94,16 +96,6 @@ public class PagerViewHost extends CustomFragmentActivity implements
                         getResources().getDrawable(R.drawable.ic_launcher)),
                 MyEvents.class, null
         );
-    }
-
-    @AfterViews
-    void initVars() {
-        AdminPreferences ap = new AdminPreferences(this);
-
-        mapValoresEnCarga = new HashMap<String, Object>();
-        mDatosEstaticosCargados = false;
-
-        mTextUserName.setText(mName);
     }
 
 
@@ -127,45 +119,20 @@ public class PagerViewHost extends CustomFragmentActivity implements
     }
 
     public void refresh() {
-        /*for (TareaAsincrona ta : getRunningTasks()) {
-            ta.cancel(true);
-        }
-        allTasksDone = false;
-        if (!Conexion.isOnline(this)) {
+        if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
-            allTasksDone = true;
             return;
         }
-        mapValoresEnCarga.clear();
-        TareaAsincrona task;
-        task = new TraerDeudores(this, this);
-        ((TraerDeudores) task).setParametros(ano, dateInicio, dateFin);
-        runTask(task);
-        task = new TraerGastos(this, this);
-        ((TraerGastos) task).setParametros(ano, dateInicio, dateFin);
-        runTask(task);
-        task = new TraerGiradores(this, this);
-        ((TraerGiradores) task).setParametros(ano, 0, dateInicio, dateFin);
-        runTask(task);
-        task = new TraerRanking(this, this);
-        ((TraerRanking) task).setParametros(ano, 10, dateInicio, dateFin);
-        runTask(task);
-        task = new TraerIngresos(this, this);
-        ((TraerIngresos) task).setParametros(ano, dateInicio, dateFin);
-        runTask(task);
-        task = new TraerPersonal(this, this);
-        ((TraerPersonal) task).setParametros(ano, dateInicio, dateFin);
-        runTask(task);
-        // Introducimos una pequeña optimización en que se cargan el
-        // logo, los concejales y la info de comuna sólo una vez por sesión.
-        if (!mDatosEstaticosCargados) {
-            task = new TraerInfoMunicipalidad(this, this);
-            runTask(task);
-            task = new TraerLogo(this, this);
-            runTask(task);
-            task = new TraerConcejales(this, this);
-            runTask(task);
-        }*/
+
+        // Connection for public event list
+        GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
+        RequestParams reqParams = eventsConn.generateParams("Public");
+        eventsConn.go(reqParams, new EventListHttpResponseHandler());
+
+        // Connection for personal event list
+        eventsConn = new GetEventListConn(getHttpClient());
+        reqParams = eventsConn.generateParams("Private");
+        eventsConn.go(reqParams, new EventListHttpResponseHandler());
     }
 
     @Override
@@ -181,48 +148,12 @@ public class PagerViewHost extends CustomFragmentActivity implements
             mTabHost.setCurrentTabByTag(state.getString("tab"));
         }
     }
-//
-//    @Override
-//    public void onPostExecute(TareaAsincrona tarea, Object... vars) {
-//        super.onPostExecute(tarea, vars);
-//        AdminPreferencias adminPreferencias = new AdminPreferencias(this);
-////        if (tarea instanceof TraerDeudores) {
-////            mapValoresEnCarga.put(AdminPreferencias.DEUDORES, vars[0]);
-////        } else if (tarea instanceof TraerGastos) {
-////            mapValoresEnCarga.put(AdminPreferencias.GASTOS, vars[0]);
-////        } else if (tarea instanceof TraerGiradores) {
-////            mapValoresEnCarga.put(AdminPreferencias.GIRADORES, vars[0]);
-////        } else if (tarea instanceof TraerIngresos) {
-////            mapValoresEnCarga.put(AdminPreferencias.INGRESOS, vars[0]);
-////        } else if (tarea instanceof TraerPersonal) {
-////            mapValoresEnCarga.put(AdminPreferencias.PERSONAL, vars[0]);
-////        } else if (tarea instanceof TraerRanking) {
-////            mapValoresEnCarga.put(AdminPreferencias.RANKING, vars[0]);
-////        } else if (tarea instanceof TraerInfoMunicipalidad) {
-////            mapValoresEnCarga.put(AdminPreferencias.INFO_MUNICIPALIDAD, vars[0]);
-////        } else if (tarea instanceof TraerLogo) {
-////            mapValoresEnCarga.put(AdminPreferencias.IMAGEN_COMUNA, vars[0]);
-////        } else if (tarea instanceof TraerConcejales) {
-////            mapValoresEnCarga.put(AdminPreferencias.CONCEJALES, vars[0]);
-////        }
-//        if (getRunningTasks().size() == 0) {
-//            allTasksDone = true;
-//            volcarValoresCargados();
-//        }
-//
-//    }
 
-    private void volcarValoresCargados() {
-        if (mapValoresEnCarga == null || mapValoresEnCarga.size() == 0)
-            return;
-        AdminPreferences adminPreferences = new AdminPreferences(this);
-        for (String s : mapValoresEnCarga.keySet()) {
-            adminPreferences.setValores(s, mapValoresEnCarga.get(s));
-        }
-
-        // Si hacemos una conexión, estamos seguros que se habrán
-        // cargado al menos una vez los datos estáticos.
-        mDatosEstaticosCargados = true;
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+//        if (key.equals(AdminPreferencias.INFO_MUNICIPALIDAD)
+//                || key.equals(AdminPreferencias.IMAGEN_COMUNA))
+//            onDataChanged();
     }
 
     /*private DatosSeccion generateRandomData(int j) {
@@ -237,11 +168,8 @@ public class PagerViewHost extends CustomFragmentActivity implements
         return new DatosSeccion(0, "Exito", auxMap);
     }*/
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        if (key.equals(AdminPreferencias.INFO_MUNICIPALIDAD)
-//                || key.equals(AdminPreferencias.IMAGEN_COMUNA))
-//            onDataChanged();
+    public void onRegisterClick(View v) {
+        startActivity(new Intent(this, Register.class));
     }
 
     /*private void onDataChanged() {
@@ -255,10 +183,6 @@ public class PagerViewHost extends CustomFragmentActivity implements
         }
     }*/
 
-    public void onRegisterClick(View v) {
-        startActivity(new Intent(this, Register.class));
-    }
-
     public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));
     }
@@ -267,109 +191,38 @@ public class PagerViewHost extends CustomFragmentActivity implements
         startActivity(new Intent(this, EventConfig_.class));
     }
 
-    /**
-     * This is a helper class that implements the management of tabs and all
-     * details of connecting a ViewPager with associated TabHost. It relies on a
-     * trick. Normally a tab host has a simple API for supplying a View or
-     * Intent that each tab will show. This is not sufficient for switching
-     * between pages. So instead we make the content part of the tab host 0dp
-     * high (it is not shown) and the TabsAdapter supplies its own dummy view to
-     * show as the tab content. It listens to changes in tabs, and takes care of
-     * switch to the correct paged in the ViewPager whenever the selected tab
-     * changes.
-     */
-    public static class TabsAdapter extends FragmentPagerAdapter implements
-            TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
-        private final Context mContext;
-        private final TabHost mTabHost;
-        private final ViewPager mViewPager;
-        private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
+    // Object for Handling the http response
+    private class EventListHttpResponseHandler extends TextHttpResponseHandler {
+        private String category, data;
 
-        public TabsAdapter(FragmentActivity activity, TabHost tabHost, ViewPager pager) {
-            super(activity.getSupportFragmentManager());
-            mContext = activity;
-            mTabHost = tabHost;
-            mViewPager = pager;
-            mTabHost.setOnTabChangedListener(this);
-            mViewPager.setAdapter(this);
-            mViewPager.setOnPageChangeListener(this);
-        }
-
-        public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
-            tabSpec.setContent(new DummyTabFactory(mContext));
-            String tag = tabSpec.getTag();
-
-            TabInfo info = new TabInfo(tag, clss, args);
-            mTabs.add(info);
-            mTabHost.addTab(tabSpec);
-            notifyDataSetChanged();
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString,
+                              Throwable throwable) {
+            Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
         @Override
-        public int getCount() {
-            return mTabs.size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            TabInfo info = mTabs.get(position);
-            return Fragment.instantiate(mContext, info.clss.getName(), info.args);
-        }
-
-        @Override
-        public void onTabChanged(String tabId) {
-            int position = mTabHost.getCurrentTab();
-            mViewPager.setCurrentItem(position);
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            // Unfortunately when TabHost changes the current tab, it kindly
-            // also takes care of putting focus on it when not in touch mode.
-            // The jerk.
-            // This hack tries to prevent this from pulling focus out of our
-            // ViewPager.
-            TabWidget widget = mTabHost.getTabWidget();
-            int oldFocusability = widget.getDescendantFocusability();
-            widget.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            mTabHost.setCurrentTab(position);
-            widget.setDescendantFocusability(oldFocusability);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-        }
-
-        static final class TabInfo {
-            private final String tag;
-            private final Class<?> clss;
-            private final Bundle args;
-
-            TabInfo(String _tag, Class<?> _class, Bundle _args) {
-                tag = _tag;
-                clss = _class;
-                args = _args;
+        public void onSuccess(int statusCode, Header[] headers, String responseBody) {
+            // TODO: hacer mas verboso el control de errores
+            if (statusCode == 200 && parseResponse(responseBody)) {
+                Toast.makeText(PagerViewHost.this, "Datos recibidos", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
             }
         }
 
-        static class DummyTabFactory implements TabHost.TabContentFactory {
-            private final Context mContext;
+        private boolean parseResponse(String body) {
+            body = body.trim();
+            int i;
+            if ((i = body.indexOf("\n")) == -1)
+                return false;
 
-            public DummyTabFactory(Context context) {
-                mContext = context;
-            }
+            category = body.substring(0, i);
+            data = body.substring(i);
 
-            @Override
-            public View createTabContent(String tag) {
-                View v = new View(mContext);
-                v.setMinimumWidth(0);
-                v.setMinimumHeight(0);
-                return v;
-            }
+            AdminPreferences preferences = new AdminPreferences(PagerViewHost.this);
+            preferences.setValores(category, data);
+            return true;
         }
     }
 

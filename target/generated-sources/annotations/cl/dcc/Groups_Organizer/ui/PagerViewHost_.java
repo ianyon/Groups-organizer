@@ -86,14 +86,13 @@ public final class PagerViewHost_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
-        mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
-        mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
         mButtonGroups = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonGroups));
+        mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
+        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
         mCreateEvent = ((View) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonCreateEvent));
         mButtonProfile = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonProfile));
+        mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
         initVars();
-        initTabHost();
     }
 
     private void injectExtras_() {
@@ -116,6 +115,8 @@ public final class PagerViewHost_
         super.onSaveInstanceState(bundle);
         bundle.putSerializable("dateFin", dateFin);
         bundle.putSerializable("dateInicio", dateInicio);
+        bundle.putBoolean("noRefrescar", noRefrescar);
+        bundle.putBoolean("viewFechaAbierto", viewFechaAbierto);
     }
 
     private void restoreSavedInstanceState_(Bundle savedInstanceState) {
@@ -124,6 +125,8 @@ public final class PagerViewHost_
         }
         dateFin = ((Date) savedInstanceState.getSerializable("dateFin"));
         dateInicio = ((Date) savedInstanceState.getSerializable("dateInicio"));
+        noRefrescar = savedInstanceState.getBoolean("noRefrescar");
+        viewFechaAbierto = savedInstanceState.getBoolean("viewFechaAbierto");
     }
 
     public static class IntentBuilder_ {
