@@ -4,106 +4,100 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.data.Person;
+import com.mobsandgeeks.saripaar.Rule;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.Validator.ValidationListener;
+import com.mobsandgeeks.saripaar.annotation.*;
+import com.mobsandgeeks.saripaar.annotation.NumberRule.NumberType;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 import org.parceler.Parcels;
 
 /**
  * Created by Roberto
  */
-public class Register extends Activity implements AdapterView.OnItemSelectedListener {
+@EActivity(R.layout.register)
+public class Register extends Activity implements ValidationListener {
+	
+	@TextRule(order = 1, minLength = 5, maxLength = 60, messageResId = R.string.registerNameVerification)
+	@ViewById(R.id.registerName)
+    EditText mUserName;
+	
+	@NumberRule(order = 2, type = NumberType.INTEGER, gt = 1, lt = 120, messageResId = R.string.registerAgeVerification)
+	@ViewById(R.id.registerAge)
+    EditText mUserAge;
+	
+	@TextRule(order = 3, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
+	@ViewById(R.id.registerUser)
+    EditText mUserUsername;
+	
+	@Required(order = 4)
+	@Email(order = 5)
+	@TextRule(order = 6, maxLength = 60, messageResId = R.string.registerEmailVerification)
+	@ViewById(R.id.registerMail)
+    EditText mUserMail;
+	
+	@Password(order = 7)
+	@TextRule(order = 8, minLength = 5, messageResId = R.string.registerPassVerification)
+	@ViewById(R.id.registerPass)
+    EditText mUserPass;
+	
+	@ConfirmPassword(order = 9)
+	@ViewById(R.id.registerConfirmPass)
+    EditText mUserConfPass;
 
-    private Person mPerson;
-    EditText mUserName,
-            mUserAge,
-            mUserMail,
-            mUserConfMail,
-            mUserPass,
-            mUserConfPass;
-    Spinner mGenderSpiner;
-    String mGender = "";
-
+    @ViewById(R.id.registerButton)
     Button mOkButton;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-        //create the link with register.xml
-        setContentView(R.layout.register);
+    private Person mPerson;
+	
+	Validator validator;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		validator = new Validator(this);
+		validator.setValidationListener(this);
 
         Bundle extras = this.getIntent().getExtras();
-        mSetup();
 
         if(extras != null && extras.containsKey("Person")){
             mPerson = Parcels.unwrap(extras.getParcelable("Person"));
-            mOkButton.setText("Guardar");
-
             mUserName.setText(mPerson.getName());
-            mUserAge.setText(Integer.toString(mPerson.getAge()));
             mUserMail.setText(mPerson.getEmail());
-            mUserConfMail.setText(mPerson.getEmail()) ;
+            mUserUsername.setText(mPerson.getName());
+            mUserAge.setText(Integer.toString(mPerson.getAge()));
             mUserPass.setText(mPerson.getPassword());
-            mUserConfPass.setText(mPerson.getPassword());
-
+            mOkButton.setText("Guardar Cambios");
         }
+	}
+
+	@Click
+    void registerButton(){
+		validator.validate();
     }
-
-    private void mSetup(){
-        mUserName = (EditText) findViewById(R.id.registerName);
-        mUserAge = (EditText) findViewById(R.id.registerAge);
-        mUserMail = (EditText) findViewById(R.id.registermail);
-        mUserConfMail = (EditText) findViewById(R.id.registerCpnfirmMail);
-        mUserPass = (EditText) findViewById(R.id.registerPass);
-        mUserConfPass = (EditText) findViewById(R.id.registerConfirmPass);
-
-        mGenderSpiner = (Spinner) findViewById(R.id.registergender);
-        mGenderSpiner.setOnItemSelectedListener(this);
-
-        mOkButton = (Button) findViewById(R.id.registerButton);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    public void okInfo(View view){
-
-        boolean equalMail = mUserConfMail.equals(mUserMail);
-        boolean equalPass = mUserConfPass.equals(mUserPass);
-        boolean notEmptyName = mUserName.length() > 0;
-        boolean notEmptyAge = mUserAge.length() > 0;
-        boolean notEmptyMail = mUserMail.length() > 0;
-        boolean notEmptyPass = mUserPass.length() > 5;
-        boolean hasSelectGender = !mGender.equals("");
-
-        if (equalMail &&
-                equalPass &&
-                notEmptyName &&
-                notEmptyAge &&
-                notEmptyMail &&
-                notEmptyPass &&
-                hasSelectGender)
-            showRegisterWarning("Register OK");
-        else {
-            if (!equalMail)
-                showRegisterWarning("E-mail don't match.");
-            if (!equalPass)
-                showRegisterWarning("Password don't match.");
-            if (!notEmptyName)
-                showRegisterWarning("Please enter a name.");
-            if (!notEmptyAge)
-                showRegisterWarning("Please enter age.");
-            if(!notEmptyPass)
-                showRegisterWarning("Please enter a password.");
-            if(!notEmptyMail)
-                showRegisterWarning("Please enter a valid mail.");
-            if(!hasSelectGender)
-                showRegisterWarning("Please select a gender");
-        }
-    }
+	
+	@Override
+	public void onValidationFailed(View view, Rule<?> rule) {
+		String message = rule.getFailureMessage();
+		if(view instanceof EditText) {
+			view.requestFocus();
+			((EditText)view).setError(message);
+		} else {
+			showRegisterWarning(message);
+		}
+		
+	}
+	
+	@Override
+	public void onValidationSucceeded() {
+		// Connect to server and register new user
+	}
 
     private void showRegisterWarning(CharSequence text){
 
@@ -115,13 +109,4 @@ public class Register extends Activity implements AdapterView.OnItemSelectedList
         toast.show();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String gender = (String)parent.getItemAtPosition(position);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 }

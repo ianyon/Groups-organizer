@@ -28,8 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name="cl.dcc.Groups_Organizer.ui.PagerViewHost"/>
-        <activity android:name="cl.dcc.Groups_Organizer.ui.Register"/>
+        <activity android:name="cl.dcc.Groups_Organizer.ui.Register_"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.AddPeople"/>
-        <activity android:name=".ui.EventConfig_"/>
+        <activity android:name="cl.dcc.Groups_Organizer.ui.EventConfig_"/>
     </application>
 </manifest>

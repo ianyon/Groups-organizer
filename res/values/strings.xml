@@ -2,8 +2,9 @@
 <resources>
     <string name="app_name">Groups Organizer</string>
     <string name="registerEditTextName">Enter Name</string>
-    <string name="registerEditTextAge">Enter age</string>
+    <string name="registerEditTextAge">Enter Age</string>
     <string name="registerEditTextUsrLog">User login</string>
+    <string name="registerEditTextUser">User</string>
     <string name="registerEditTextMail">E-mail</string>
     <string name="registerEditTextReMail">Confirm E-mail</string>
     <string name="registerEditTextPass">Password</string>
@@ -11,6 +12,11 @@
     <string name="registerButtonNameCUsr">Create User</string>
     <string name="registerTextView2Label">User Information</string>
     <string name="registerTextViewLabelUs">Account Information</string>
+    <string name="registerNameVerification">Username should be 5&#8211;60 characters long</string>
+    <string name="registerUserVerification">Username should be 5&#8211;30 characters long</string>
+    <string name="registerAgeVerification">Age is not valid</string>
+    <string name="registerPassVerification">Password should be at least 5 characters long</string>
+    <string name="registerEmailVerification">Must be a valid email</string>
     <string name="eventconfigtextView">Event Configurationt</string>
     <string name="event_configEventName">Event Name</string>
     <string name="event_configDescription">Description</string>
