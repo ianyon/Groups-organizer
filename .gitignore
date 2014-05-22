@@ -28,3 +28,4 @@ proguard/
 
 # Generated sources
 target/
+/.apt_generated
