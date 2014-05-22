@@ -9,7 +9,7 @@ import com.loopj.android.http.RequestParams;
  * Created by Gonzalo on 08-05-2014.
  */
 public abstract class HttpConnection {
-    private static final String URL = "http://192.168.137.1/groups_organizer/";
+    private static final String URL = "http://201.241.125.195/groups_organizer/";
 	RequestHandle mRequestHandle;
 	private final AsyncHttpClient mClient;
 
