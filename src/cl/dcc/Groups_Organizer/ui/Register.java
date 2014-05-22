@@ -30,30 +30,30 @@ import com.mobsandgeeks.saripaar.annotation.TextRule;
 @EActivity(R.layout.register)
 public class Register extends Activity implements ValidationListener {
 	
-	@TextRule(order = 8, minLength = 5, maxLength = 60, messageResId = R.string.registerNameVerification)
+	@TextRule(order = 1, minLength = 5, maxLength = 60, messageResId = R.string.registerNameVerification)
 	@ViewById(R.id.registerName)
     EditText mUserName;
 	
-	@NumberRule(order = 9, type = NumberType.INTEGER, gt = 1, lt = 120, messageResId = R.string.registerAgeVerification)
+	@NumberRule(order = 2, type = NumberType.INTEGER, gt = 1, lt = 120, messageResId = R.string.registerAgeVerification)
 	@ViewById(R.id.registerAge)
     EditText mUserAge;
 	
-	@TextRule(order = 8, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
+	@TextRule(order = 3, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
 	@ViewById(R.id.registerUser)
     EditText mUserUsername;
 	
 	@Required(order = 4)
-	@Email(order = 7)
-	@TextRule(order = 8, maxLength = 60, messageResId = R.string.registerEmailVerification)
+	@Email(order = 5)
+	@TextRule(order = 6, maxLength = 60, messageResId = R.string.registerEmailVerification)
 	@ViewById(R.id.registerMail)
     EditText mUserMail;
 	
-	@Password(order = 5)
+	@Password(order = 7)
 	@TextRule(order = 8, minLength = 5, messageResId = R.string.registerPassVerification)
 	@ViewById(R.id.registerPass)
     EditText mUserPass;
 	
-	@ConfirmPassword(order = 1)
+	@ConfirmPassword(order = 9)
 	@ViewById(R.id.registerConfirmPass)
     EditText mUserConfPass;
 	
