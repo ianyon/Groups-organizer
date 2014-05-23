@@ -19,9 +19,7 @@ if(!$validator->validate() or json_last_error()) {
 	if(json_last_error()) {
 		echo "Error parsing invited users";
 	}
-	foreach($validator->errors() as $error) {
-		echo implode('\n', $error);
-	}
+	echo format_validation_errors($validator);
 	return;
 }
 

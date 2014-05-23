@@ -12,9 +12,7 @@ $validator->rule('lengthMax', 'user', 30);
 if(!$validator->validate()) {
 	$log->general("Invalid input in file login.php");
 	echo "INPUT VERIFICATION FAILED\n";
-	foreach($validator->errors() as $error) {
-		echo implode('\n', $error);
-	}
+	echo format_validation_errors($validator);
 	return;
 }
 
