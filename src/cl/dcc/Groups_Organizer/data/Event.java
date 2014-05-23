@@ -18,6 +18,8 @@ public class Event{
     public List<Person> confirmed;
     public List<Person> guestList;
 
+    private Person mAdmin;
+
     public Event(){}
 
     public Event(String name, String description, String location, Date datetime) {

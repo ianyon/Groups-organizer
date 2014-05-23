@@ -107,6 +107,7 @@
                 android:layout_column="2"/>
         </TableRow>
     </TableLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,4 +120,13 @@
         android:background="#00000000"
         android:drawableRight="@android:drawable/ic_menu_add"
         android:id="@+id/buttonAddPeople"/>
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tableLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/buttonAddPeople"
+            android:id="@+id/eventConfigAsistend"/>
+
 </RelativeLayout>
