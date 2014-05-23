@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.LoginConn;
+import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.Person;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -26,9 +27,6 @@ public class Login extends CustomFragmentActivity {
         tvPassword = (TextView) findViewById(R.id.pass);
     }
 
-    public void onSingupClick(View v){
-        startActivity(new Intent(this,Register_.class));
-    }
     public void onLoginClick(View v) {
         if (true) {
             // TODO: Borrar, Fake autentication
@@ -45,12 +43,18 @@ public class Login extends CustomFragmentActivity {
         loginConn.go(reqParams, httpHandler);
     }
 
+<<<<<<< HEAD
+    public void onSingupClick(View v){ startActivity(new Intent(this, Register_.class)); }
+    private void doLoginVerified() {
+        startActivity(new Intent(this, PagerViewHost.class));
+=======
     private void doLoginVerified(Person user) {
         Intent intent = PagerViewHost_.intent(this).get();
         Bundle extras = new Bundle();
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
         startActivity(intent);
+>>>>>>> origin/master
     }
 
     // Object for Handling the http response
