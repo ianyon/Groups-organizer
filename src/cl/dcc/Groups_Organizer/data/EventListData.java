@@ -36,16 +36,7 @@ public class EventListData {
         eventList = new ArrayList<Event>(array.length());
 
         for (int i = 0; i < array.length(); i++) {
-            JSONObject jsonEvent = (JSONObject) array.get(i);
-            String name = jsonEvent.getString("name");
-            String description = jsonEvent.getString("description");
-            String location = jsonEvent.getString("location");
-            Date datetime = new Date(jsonEvent.getLong("datetime") * 1000);
-            int confirmed = jsonEvent.getInt("confirmed");
-            int guestList = jsonEvent.getInt("guestList");
-            Event event = new Event(name, description, location, datetime);
-            event.setGuests(confirmed, guestList);
-            eventList.add(event);
+            eventList.add(new Event(array.getJSONObject(i)));
         }
 
         // Old code
