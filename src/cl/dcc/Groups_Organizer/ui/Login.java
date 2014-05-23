@@ -26,11 +26,11 @@ public class Login extends CustomFragmentActivity {
         tvPassword = (TextView) findViewById(R.id.pass);
     }
 
-    public void onSingupClick(View v){
+    public void onSignupClick(View v){
         startActivity(new Intent(this,Register_.class));
     }
     public void onLoginClick(View v) {
-        if (true) {
+        if (false) {
             // TODO: Borrar, Fake autentication
             doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
             return;
