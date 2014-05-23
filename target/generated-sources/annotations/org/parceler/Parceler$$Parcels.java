@@ -8,7 +8,7 @@ import cl.dcc.Groups_Organizer.data.Event$$Parcelable;
 import cl.dcc.Groups_Organizer.data.Person;
 import cl.dcc.Groups_Organizer.data.Person$$Parcelable;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T13:48-0400")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T15:10-0500")
 public class Parceler$$Parcels
     implements Repository<org.parceler.Parcels.ParcelableFactory>
 {
