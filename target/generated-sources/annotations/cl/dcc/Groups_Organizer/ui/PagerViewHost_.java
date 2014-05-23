@@ -82,11 +82,11 @@ public final class PagerViewHost_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
         mButtonGroups = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonGroups));
-        mButtonProfile = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonProfile));
-        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
         mCreateEvent = ((View) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonCreateEvent));
+        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
+        mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
+        mButtonProfile = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonProfile));
         mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
         initVars();
     }
