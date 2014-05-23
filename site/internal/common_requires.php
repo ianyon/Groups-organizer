@@ -1,8 +1,8 @@
 <?php
 require_once("internal/log.php");
 require_once("internal/conexion.php");
-$wd_was = getcwd();
-require_once("Validator.php");
+require_once("internal/Validator.php");
+require_once("internal/functions.php");
 
 $log = new Log();
 

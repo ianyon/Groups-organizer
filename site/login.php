@@ -18,13 +18,16 @@ if(!$validator->validate()) {
 	return;
 }
 
+// Quitar caracteres especiales (código de caracter < 32)
+$_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
+
 $stmt = $conn->prepare("SELECT * FROM user WHERE user_name = ?");
 $stmt->bind_param('s', $_POST['user']);
 $stmt->execute();
 $row = $stmt->get_result()->fetch_assoc();
 $hashedPass = $row['pass'];
 if(password_verify($_POST['pass'],$hashedPass)){
-	echo "OK";
+	echo "OK\n$row[name]";
 } else {
 	die("LOGIN_FAILED");
 }

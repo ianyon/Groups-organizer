@@ -14,6 +14,8 @@ $validator->rule('integer', 'age');
 $validator->rule('min', 'age', 1);
 $validator->rule('max', 'age', 120);
 
+$_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
+
 if(!$validator->validate()) {
 	$log->general("Invalid input in file register_user.php");
 	echo "INPUT VERIFICATION FAILED\n";
