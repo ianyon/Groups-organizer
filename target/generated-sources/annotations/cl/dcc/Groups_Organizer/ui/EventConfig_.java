@@ -82,11 +82,11 @@ public final class EventConfig_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+        mEventName = ((EditText) hasViews.findViewById(id.eventConfigEventName));
+        mAttendees = ((ListView) hasViews.findViewById(id.eventConfigAsistend));
+        mEventWhen = ((EditText) hasViews.findViewById(id.eventConfigEventWhen));
         mEventDescription = ((EditText) hasViews.findViewById(id.eventConfigEventDescription));
         mEventWhere = ((EditText) hasViews.findViewById(id.eventConfigEventWhere));
-        mAttendees = ((ListView) hasViews.findViewById(id.eventConfigAsistend));
-        mEventName = ((EditText) hasViews.findViewById(id.eventConfigEventName));
-        mEventWhen = ((EditText) hasViews.findViewById(id.eventConfigEventWhen));
         {
             View view = hasViews.findViewById(id.buttonAddPeople);
             if (view!= null) {
@@ -102,6 +102,7 @@ public final class EventConfig_
                 );
             }
         }
+        loadEventInfo();
         init();
     }
 

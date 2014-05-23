@@ -55,7 +55,7 @@ public class Login extends CustomFragmentActivity {
         }
     }
 
-    public void onSingupClick(View v){ startActivity(new Intent(this, EventConfig_.class)); }
+    public void onSingupClick(View v){ startActivity(new Intent(this, Register_.class)); }
     private void doLoginVerified() {
         startActivity(new Intent(this, PagerViewHost.class));
     }

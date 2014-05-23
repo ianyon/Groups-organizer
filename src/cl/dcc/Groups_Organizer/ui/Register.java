@@ -14,6 +14,7 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.*;
 import com.mobsandgeeks.saripaar.annotation.NumberRule.NumberType;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
@@ -68,6 +69,12 @@ public class Register extends Activity implements ValidationListener {
 
         if(extras != null && extras.containsKey("Person")){
             mPerson = Parcels.unwrap(extras.getParcelable("Person"));
+        }
+	}
+
+    @AfterViews
+    public void loadPersonInfo(){
+        if(mPerson != null) {
             mUserName.setText(mPerson.getName());
             mUserMail.setText(mPerson.getEmail());
             mUserUsername.setText(mPerson.getName());
@@ -75,7 +82,7 @@ public class Register extends Activity implements ValidationListener {
             mUserPass.setText(mPerson.getPassword());
             mOkButton.setText("Guardar Cambios");
         }
-	}
+    }
 
 	@Click
     void registerButton(){

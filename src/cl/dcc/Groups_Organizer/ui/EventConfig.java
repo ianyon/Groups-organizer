@@ -9,7 +9,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.data.Event;
-import cl.dcc.Groups_Organizer.data.Person;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
@@ -17,8 +16,6 @@ import org.androidannotations.annotations.ViewById;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Ian on 15-05-2014.
@@ -48,8 +45,17 @@ public class EventConfig extends CustomFragmentActivity{
 
         Bundle extras = this.getIntent().getExtras();
 
+
         if(extras != null && extras.containsKey("Event")){
             mEvent = Parcels.unwrap(extras.getParcelable("Event"));
+        }
+
+    }
+
+    @AfterViews
+    public void loadEventInfo(){
+
+        if (mEvent != null){
             mEventName.setText(mEvent.getName());
             mEventDescription.setText(mEvent.getDescription());
             mEventWhen.setText(mEvent.getTimeDare());
@@ -57,28 +63,7 @@ public class EventConfig extends CustomFragmentActivity{
             ArrayList<String> myStringArray = getUserList(mEvent);
             ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,myStringArray);
         }
-
-
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile" };
-
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-
-        if (adapter == null)
-            showRegisterWarning("It is NULL");
-        else{
-            mAttendees = (ListView) findViewById(R.id.eventConfigAsistend);
-            mAttendees.setAdapter(adapter);
-        }
-
+        //TODO hay que cambiar el evento al que corresponde e implemetar bien getUserList
     }
 
     private void showRegisterWarning(CharSequence text){
@@ -93,13 +78,17 @@ public class EventConfig extends CustomFragmentActivity{
 
     private ArrayList<String> getUserList(Event aEvent) {
 
-        ArrayList<String> toReturn =  new ArrayList<String>();
+        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
+                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
+                "Android", "iPhone", "WindowsMobile" };
 
-        for (Person aPerson:aEvent.getConfirmed()){
-            toReturn.add(aPerson.getName());
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < values.length; ++i) {
+            list.add(values[i]);
         }
-
-        return toReturn;
+        return list;
     }
 
     @AfterViews
@@ -125,29 +114,5 @@ public class EventConfig extends CustomFragmentActivity{
 
     }
 
-    private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-    }
 
 }
