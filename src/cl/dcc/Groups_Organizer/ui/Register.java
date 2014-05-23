@@ -1,9 +1,5 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,17 +8,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
-
+import cl.dcc.Groups_Organizer.data.Person;
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
-import com.mobsandgeeks.saripaar.annotation.Email;
-import com.mobsandgeeks.saripaar.annotation.NumberRule;
+import com.mobsandgeeks.saripaar.annotation.*;
 import com.mobsandgeeks.saripaar.annotation.NumberRule.NumberType;
-import com.mobsandgeeks.saripaar.annotation.Password;
-import com.mobsandgeeks.saripaar.annotation.Required;
-import com.mobsandgeeks.saripaar.annotation.TextRule;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.parceler.Parcels;
 
 /**
  * Created by Roberto
@@ -56,6 +52,10 @@ public class Register extends Activity implements ValidationListener {
 	@ConfirmPassword(order = 9)
 	@ViewById(R.id.registerConfirmPass)
     EditText mUserConfPass;
+
+    @ViewById(R.id.registerButton)
+    Button mOkButton;
+    private Person mPerson;
 	
 	Validator validator;
 	
@@ -64,7 +64,25 @@ public class Register extends Activity implements ValidationListener {
 		super.onCreate(savedInstanceState);
 		validator = new Validator(this);
 		validator.setValidationListener(this);
+
+        Bundle extras = this.getIntent().getExtras();
+
+        if(extras != null && extras.containsKey("Person")){
+            mPerson = Parcels.unwrap(extras.getParcelable("Person"));
+        }
 	}
+
+    @AfterViews
+    public void loadPersonInfo(){
+        if(mPerson != null) {
+            mUserName.setText(mPerson.getName());
+            mUserMail.setText(mPerson.getEmail());
+            mUserUsername.setText(mPerson.getName());
+            mUserAge.setText(Integer.toString(mPerson.getAge()));
+            mUserPass.setText(mPerson.getPassword());
+            mOkButton.setText("Guardar Cambios");
+        }
+    }
 
 	@Click
     void registerButton(){

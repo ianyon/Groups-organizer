@@ -73,9 +73,11 @@ public class Person {
         return age;
     }
 
+<<<<<<< HEAD
+    public String getPassword() { return password; }
+=======
     public String toPreferences() {
         return name + ";" + email;
     }
-
-    public String getPassword() { return password; }
+>>>>>>> origin/master
 }

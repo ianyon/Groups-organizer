@@ -130,7 +130,24 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
     }
 
+<<<<<<< HEAD
+    /*private void onDataChanged() {
+        DatosSeccion datosSeccion = new AdminPreferencias(this)
+                .getValores(AdminPreferencias.INFO_MUNICIPALIDAD);
+        Map<String, Object> map = datosSeccion.getMap();
+        if (map != null && map.size() != 0) {
+            mTextUserName.setText(map.get("nombre_municipalidad").toString());
+        } else {
+            mTextUserName.setText("");
+        }
+    }*/
+
     public void onRegisterClick(View v){ startActivity(new Intent(this, Register_.class));  }
+=======
+    public void onRegisterClick(View v) {
+        startActivity(new Intent(this, Register_.class));
+    }
+>>>>>>> origin/master
 
     public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));

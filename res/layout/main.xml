@@ -31,13 +31,29 @@
             android:id="@+id/pass"
             android:layout_gravity="center_horizontal"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:onClick="onLoginClick"
-            android:id="@+id/login"
-            android:layout_gravity="right"/>
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="right">
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sing up"
+                    android:onClick="onSingupClick"
+                    android:id="@+id/singup"
+                    />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log in"
+                android:onClick="onLoginClick"
+                android:id="@+id/login"
+                    />
+
+        </TableRow>
     </LinearLayout>
 
     <TextView
