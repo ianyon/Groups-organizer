@@ -38,8 +38,8 @@ public class Register extends CustomFragmentActivity implements ValidationListen
     @ViewById(R.id.registerAge)
     EditText mUserAge;
 
-    @Select(order = 3)
-    @ViewById
+    @Select(order = 3, message = "Select a Gender.")
+    @ViewById(R.id.registerGender)
     Spinner registerGender;
 
     @TextRule(order = 4, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
@@ -63,6 +63,7 @@ public class Register extends CustomFragmentActivity implements ValidationListen
 
     @ViewById(R.id.registerButton)
     Button mOkButton;
+
     Validator validator;
     private Person mPerson;
 

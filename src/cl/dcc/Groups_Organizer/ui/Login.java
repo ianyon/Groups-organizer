@@ -24,6 +24,7 @@ public class Login extends CustomFragmentActivity {
         tvUser = (TextView) findViewById(R.id.user);
 
         tvPassword = (TextView) findViewById(R.id.pass);
+
     }
 
     public void onSignupClick(View v){
