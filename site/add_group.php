@@ -6,13 +6,11 @@ $_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_
 $_POST['description'] = $saved_description;
 
 $validator = new Valitron\Validator($_POST);
-$validator->rule('required',['name', 'description', 'location', 'datetime', 'invited_people']);
-$validator->rule('lengthMin', array('name', 'location'), 3);
+$validator->rule('required',['name', 'description', 'users']);
+$validator->rule('lengthMin', 'name', 3);
 $validator->rule('lengthMax', 'name', 50);
-$validator->rule('lengthMax', 'location', 100);
-$validator->rule('datetime', 'dateFormat', 'Y-m-d H:i');
 
-$invited_people = $json_decode($_POST['invited_people']);
+$users = $json_decode($_POST['users']);
 
 if(!$validator->validate() or json_last_error()) {
 	$log->general("Invalid input in file login.php");
@@ -27,29 +25,26 @@ if(!$validator->validate() or json_last_error()) {
 $conn->autocommit(false);
 $conn->begin_transaction();
 
-$stmt = $conn->prepare("INSERT INTO event (name, description, creator, location, datetime, datetime_creation) VALUES(?,?,?,?,?, NOW())");
-$stmt->bind_param('sssss', $_POST['name'], $_POST['description'],
-		$_SESSION['logged_username'],$_POST['location'], $_POST['datetime']);
+$stmt = $conn->prepare("INSERT INTO group (name, description) VALUES(?,?)");
+$stmt->bind_param('ss', $_POST['name'], $_POST['description']);
 $stmt->execute();
 
 if($stmt->affected_rows <= 0 or $stmt->errno) {
-	$error_entry = "Event could not be added";
+	$error_entry = "Group could not be added";
 	if($stmt->errno) {
 		$error_entry.= "(error code $stmt->errno): $stmt->error";
 	}
 	$log->general($error_entry);
 	$conn->rollback();
-	die("COULD NOT ADD EVENT");
+	die("COULD NOT ADD GROUP");
 }
 
-$id = $stmt->insert_id;
-
-$stmt = $conn->prepare("INSERT INTO event_invited_users (event_id, user_id) VALUES(?,?)");
-foreach($invited_people as $user) {
-	$stmt->bind_param('ss', $id, $user);
+$stmt = $conn->prepare("INSERT INTO user_in_group (user_id, group_id) VALUES(?,?)");
+foreach($users as $user) {
+	$stmt->bind_param('ss', $_POST['name'], $user);
 	$stmt->execute();
 	if($stmt->errno) {
-		$error_entry = "User could not be added to event";
+		$error_entry = "User could not be added to group";
 		if($stmt->errno) {
 			$error_entry.= "(error code $stmt->errno): $stmt->error";
 		}
