@@ -8,6 +8,7 @@ import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.LoginConn;
 import cl.dcc.Groups_Organizer.data.Person;
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import org.apache.http.Header;
@@ -15,6 +16,8 @@ import org.parceler.Parcels;
 
 public class Login extends CustomFragmentActivity {
     private TextView tvUser, tvPassword;
+
+    private LoadingThing myLoadingMsg;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,12 +28,17 @@ public class Login extends CustomFragmentActivity {
 
         tvPassword = (TextView) findViewById(R.id.pass);
 
+        myLoadingMsg = new LoadingThing(Login.this,"","Conecting");
+
+
     }
 
     public void onSignupClick(View v){
+
         startActivity(new Intent(this,Register_.class));
     }
     public void onLoginClick(View v) {
+        myLoadingMsg.stratPopUp();
         if (false) {
             // TODO: Borrar, Fake autentication
             doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
@@ -38,6 +46,7 @@ public class Login extends CustomFragmentActivity {
         }
         if (tvUser.getText().length() == 0 || tvPassword.getText().length() == 0) {
             Toast.makeText(this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
+            myLoadingMsg.stopPopUp();
             return;
         }
 
@@ -47,10 +56,14 @@ public class Login extends CustomFragmentActivity {
     }
 
     private void doLoginVerified(Person user) {
+
         Intent intent = PagerViewHost_.intent(this).get();
         Bundle extras = new Bundle();
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
+
+        myLoadingMsg.stopPopUp();
+
         startActivity(intent);
     }
 

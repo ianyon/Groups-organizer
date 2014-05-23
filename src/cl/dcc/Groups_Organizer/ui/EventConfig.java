@@ -68,7 +68,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     @AfterViews
-    public void loadEventInfo(){
+    protected void loadEventInfo(){
 
         if (mEvent != null){
             mEventName.setText(mEvent.getName());
