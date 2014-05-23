@@ -23,6 +23,8 @@ public class Event{
     private int confirmedCount;
     private int guestListCount;
 
+    private Person mAdmin;
+
     public Event(){}
 
     public Event(String name, String description, String location, Date datetime) {
@@ -99,6 +101,8 @@ public class Event{
     public Date getDatetime() {
         return datetime;
     }
+
+    public String getTimeDare() {return datetime.toString();}
 
     public List<Person> getConfirmed() {
         return confirmed;

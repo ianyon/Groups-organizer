@@ -9,7 +9,7 @@ import org.parceler.Generated;
 import org.parceler.InjectionUtil;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T12:06-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T15:10-0500")
 public class Event$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Event>
 {
@@ -47,6 +47,7 @@ public class Event$$Parcelable
         InjectionUtil.setField(cl.dcc.Groups_Organizer.data.Event.class, event$$0, "guestListCount", parcel$$0 .readInt());
         event$$0 .description = parcel$$0 .readString();
         event$$0 .name = parcel$$0 .readString();
+        InjectionUtil.setField(cl.dcc.Groups_Organizer.data.Event.class, event$$0, "mAdmin", ((ParcelWrapper<cl.dcc.Groups_Organizer.data.Person> ) parcel$$0 .readParcelable(Event$$Parcelable.class.getClassLoader())).getParcel());
         event$$0 .datetime = ((Date) parcel$$0 .readSerializable());
     }
 
@@ -77,6 +78,7 @@ public class Event$$Parcelable
         parcel$$1 .writeInt(InjectionUtil.getField(int.class, cl.dcc.Groups_Organizer.data.Event.class, event$$0, "guestListCount"));
         parcel$$1 .writeString(event$$0 .description);
         parcel$$1 .writeString(event$$0 .name);
+        parcel$$1 .writeParcelable(org.parceler.Parcels.wrap(InjectionUtil.getField(cl.dcc.Groups_Organizer.data.Person.class, cl.dcc.Groups_Organizer.data.Event.class, event$$0, "mAdmin")), flags);
         parcel$$1 .writeSerializable(event$$0 .datetime);
     }
 

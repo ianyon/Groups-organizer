@@ -4,9 +4,10 @@ package cl.dcc.Groups_Organizer.data;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import org.parceler.Generated;
+import org.parceler.InjectionUtil;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T11:33-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T15:10-0500")
 public class Person$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Person>
 {
@@ -21,6 +22,7 @@ public class Person$$Parcelable
         person$$2 .age = parcel$$3 .readInt();
         person$$2 .name = parcel$$3 .readString();
         person$$2 .gender = parcel$$3 .readString();
+        InjectionUtil.setField(cl.dcc.Groups_Organizer.data.Person.class, person$$2, "password", parcel$$3 .readString());
     }
 
     public Person$$Parcelable(cl.dcc.Groups_Organizer.data.Person person$$3) {
@@ -33,6 +35,7 @@ public class Person$$Parcelable
         parcel$$4 .writeInt(person$$2 .age);
         parcel$$4 .writeString(person$$2 .name);
         parcel$$4 .writeString(person$$2 .gender);
+        parcel$$4 .writeString(InjectionUtil.getField(String.class, cl.dcc.Groups_Organizer.data.Person.class, person$$2, "password"));
     }
 
     @Override

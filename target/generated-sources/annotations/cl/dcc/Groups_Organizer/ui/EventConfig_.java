@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
+import android.widget.ListView;
 import cl.dcc.Groups_Organizer.R.id;
 import cl.dcc.Groups_Organizer.R.layout;
 import org.androidannotations.api.SdkVersionHelper;
@@ -80,6 +82,11 @@ public final class EventConfig_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+        mEventWhere = ((EditText) hasViews.findViewById(id.eventConfigEventWhere));
+        mAttendees = ((ListView) hasViews.findViewById(id.eventConfigAsistend));
+        mEventName = ((EditText) hasViews.findViewById(id.eventConfigEventName));
+        mEventWhen = ((EditText) hasViews.findViewById(id.eventConfigEventWhen));
+        mEventDescription = ((EditText) hasViews.findViewById(id.eventConfigEventDescription));
         {
             View view = hasViews.findViewById(id.buttonAddPeople);
             if (view!= null) {
@@ -96,6 +103,7 @@ public final class EventConfig_
             }
         }
         init();
+        loadEventInfo();
     }
 
     public static class IntentBuilder_ {
