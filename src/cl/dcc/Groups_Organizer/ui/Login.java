@@ -1,5 +1,11 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.parceler.Parcels;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,27 +13,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.LoginConn;
-import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.Person;
+
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import org.apache.http.Header;
-import org.parceler.Parcels;
+import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.TextRule;
 
+@EActivity(R.layout.main)
 public class Login extends CustomFragmentActivity {
-    private TextView tvUser, tvPassword;
+	
+	@TextRule(order = 1, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
+	@ViewById(R.id.user)
+    TextView tvUser;
+	
+	@Password(order = 2)
+	@TextRule(order = 3, minLength = 5, messageResId = R.string.registerPassVerification)
+	@ViewById(R.id.pass)
+    TextView tvPassword;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        tvUser = (TextView) findViewById(R.id.user);
-
-        tvPassword = (TextView) findViewById(R.id.pass);
-    }
-
-    public void onLoginClick(View v) {
+	@Click(R.id.login)
+    public void onLoginClick() {
         if (true) {
             // TODO: Borrar, Fake autentication
             doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
