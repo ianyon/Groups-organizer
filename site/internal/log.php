@@ -7,24 +7,30 @@ Class Log {
   // 
   const USER_ERROR_DIR = 'internal/logs/user_logs.txt'; 
   const GENERAL_ERROR_DIR = 'internal/logs/general_logs.txt'; 
-
+  var $timezone;
+  
+	public function Log() {
+		$this->timezone = new DateTimeZone('America/Santiago');
+	}
   /* 
    User Errors... 
   */ 
     public function user($msg,$username) 
-    { 
-    $date = date('d.m.Y h:i:s'); 
-    $log = $msg."   |  Date:  ".$date."  |  User:  ".$username."\n"; 
-    error_log($log, 3, self::USER_ERROR_DIR); 
+    {
+	$date = new DateTime();
+	$date->setTimezone($this->timezone);
+    $date = $date->format('d.m.Y H:i:s');
+    error_log("[$date][$username] $msg\n", 3, self::USER_ERROR_DIR); 
     } 
     /* 
    General Errors... 
   */ 
     public function general($msg) 
-    { 
-    $date = date('d.m.Y h:i:s'); 
-    $log = $msg."   |  Date:  ".$date."\n"; 
-    error_log($msg."   |  Tarih:  ".$date, 3, self::GENERAL_ERROR_DIR); 
+    {
+    $date = new DateTime();
+	$date->setTimezone($this->timezone);
+    $date = $date->format('d.m.Y H:i:s');
+    error_log("[$date] $msg\n", 3, self::GENERAL_ERROR_DIR); 
     } 
 
 }

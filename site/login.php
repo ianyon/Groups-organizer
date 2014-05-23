@@ -2,22 +2,16 @@
 require_once("internal/common_requires.php");
 require_once("internal/password_compat.php");
 
-header("Content-Type: text/plain");
-
 $validator = new Valitron\Validator($_POST);
 $validator->rule('required',['user', 'pass']);
 $validator->rule('lengthMin', array('user', 'pass'), 5);
 $validator->rule('lengthMax', 'user', 30);
 
-if(!$validator->validate()) {
-	$log->general("Invalid input in file login.php");
-	echo "INPUT VERIFICATION FAILED\n";
-	echo format_validation_errors($validator);
-	return;
-}
+verify_logged($validator, basename(__FILE__));
 
 // Quitar caracteres especiales (código de caracter < 32)
 $_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
+
 
 $stmt = $conn->prepare("SELECT * FROM user WHERE user_name = ?");
 $stmt->bind_param('s', $_POST['user']);

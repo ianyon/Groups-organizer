@@ -12,20 +12,15 @@ $validator->rule('lengthMax', 'name', 50);
 $validator->rule('lengthMax', 'location', 100);
 $validator->rule('datetime', 'dateFormat', 'Y-m-d H:i');
 
-$invited_people = $json_decode($_POST['invited_people']);
 
-if(!$validator->validate() or json_last_error()) {
-	$log->general("Invalid input in file login.php");
-	echo "INPUT VERIFICATION FAILED\n";
-	if(json_last_error()) {
-		echo "Error parsing invited users";
-	}
-	echo format_validation_errors($validator);
-	return;
-}
+verify_logged($validator, basename(__FILE__));
+
+$_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW, array('description'));
+
+$invited_people = json_decode_log($_POST['invited_people'], basename(__FILE__));
+
 
 $conn->autocommit(false);
-$conn->begin_transaction();
 
 $stmt = $conn->prepare("INSERT INTO event (name, description, creator, location, datetime, datetime_creation) VALUES(?,?,?,?,?, NOW())");
 $stmt->bind_param('sssss', $_POST['name'], $_POST['description'],
