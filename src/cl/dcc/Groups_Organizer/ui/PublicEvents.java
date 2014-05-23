@@ -2,174 +2,80 @@ package cl.dcc.Groups_Organizer.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Base64;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.controller.EventAdapter;
-import cl.dcc.Groups_Organizer.data.AdminPreferencias;
+import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
+import cl.dcc.Groups_Organizer.data.EventListData;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Ian on 13-04-2014.
  */
 public class PublicEvents extends ListFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public boolean bloquearUpdateSpinner;
-    private Spinner mAreaSpinner;
-    private TextView alcalde, SecMun, administrador, secPlac, concejales;
-    private ImageView imagenPrincipal;
+
+    private AdminPreferences preferences;
+    private EventAdapter mAdapter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Event[] data = new Event[3];
+
+        preferences = new AdminPreferences(getActivity());
+
+        List<Event> data = new ArrayList<Event>();
         //TODO: Fake data: delete
         for (int i = 0; i < 3; i++)
-            data[i] = new Event("Evento " + i,"Un evento entretenido",  "Santa Rosa 950",new Date());
+            data.add(new Event("Evento " + i, "Un evento entretenido", "Santa Rosa 950", new Date()));
 
-        EventAdapter adapter = new EventAdapter(getActivity(), R.layout.event_row, data);
-        setListAdapter(adapter);
+        mAdapter = new EventAdapter(getActivity(), R.layout.event_row, data);
+        setListAdapter(mAdapter);
     }
 
-    public void onListItemClick (ListView l, View v, int position, long id){
-    Intent i = new Intent(this.getActivity(), EventConfig_.class);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Intent i = new Intent(this.getActivity(), EventConfig_.class);
         Bundle extras = new Bundle();
-        extras.putParcelable("Event", Parcels.wrap((Event)l.getItemAtPosition(position)));
+        extras.putParcelable("Event", Parcels.wrap((Event) l.getItemAtPosition(position)));
         i.putExtras(extras);
         startActivity(i);
-    }
-
-    /**
-     * The Fragment's UI is just a simple text view showing its instance number.
-     */
-    /*@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.events_list, container, false);
-
-//
-//        alcalde = (TextView) v.findViewById(R.id.textAlcalde);
-//        SecMun = (TextView) v.findViewById(R.id.textSecretarioMunicipal);
-//        administrador = (TextView) v.findViewById(R.id.textAdministradorMunicipal);
-//        secPlac = (TextView) v.findViewById(R.id.textSecretarioPlanificacion);
-//        concejales = (TextView) v.findViewById(R.id.textConcejales);
-//
-//        imagenPrincipal = (ImageView) v.findViewById(R.id.logoMunicipalidad);
-        AdminPreferencias pref = new AdminPreferencias(getActivity());
-        HashMap<Integer, String> m = pref.getAreas();
-        ArrayList<Area> string_array = new ArrayList<Area>();
-        for (Entry<Integer, String> entry : m.entrySet()) {
-            string_array.add(new Area(entry.getKey(), entry.getValue()));
-        }
-        final Area[] areas = string_array.toArray(new Area[string_array.size()]);
-
-
-        return v;
-    }*/
-
-    private void mostrarImagenBase64(String base64) {
-        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-        Bitmap bm = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        imagenPrincipal.setImageBitmap(bm);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        new AdminPreferencias(getActivity()).getPreferenciasDatos()
-                .registerOnSharedPreferenceChangeListener(this);
+        preferences.getPreferencias().registerOnSharedPreferenceChangeListener(this);
         onDataChanged();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        new AdminPreferencias(getActivity()).getPreferenciasDatos()
-                .unregisterOnSharedPreferenceChangeListener(this);
+        preferences.getPreferencias().unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void onDataChanged() {
         /* Cargamos la info */
-//        DatosSeccion datosSeccion = new AdminPreferencias(getActivity())
-//                .getValores(AdminPreferencias.INFO_MUNICIPALIDAD);
-//        Map<String, Object> map = datosSeccion.getMap();
-//        if (map.size() != 0) {
-//            alcalde.setText(map.get("alcalde").toString());
-//            administrador.setText(map.get("administrador").toString());
-//            SecMun.setText(map.get("secretario_municipal").toString());
-//            secPlac.setText(map.get("secplac").toString());
-//        } else setInvalid(1);
+        EventListData listData = preferences.getValores(AdminPreferences.PUBLIC_EVENTS);
 
-//		/* Cargamos el logo */
-//        datosSeccion = new AdminPreferencias(getActivity()).getValores(AdminPreferencias.IMAGEN_COMUNA);
-//        map = datosSeccion.getMap();
-//        if (map.size() != 0) {
-//            mostrarImagenBase64(map.get("Imagen").toString());
-//        }
-//		/* Cargamos los concejales */
-//        datosSeccion = new AdminPreferencias(getActivity()).getValores(AdminPreferencias.CONCEJALES);
-//        map = datosSeccion.getMap();
-//        if (map.size() != 0) {
-//            JSONArray array;
-//            try {
-//                array = (JSONArray)map.get("Concejales");
-//                StringBuilder sb = new StringBuilder();
-//                for (int i=0;i<array.length();i++)
-//                    sb.append("> ").append(array.getString(i)).append("\n");
-//                concejales.setText(sb.toString());
-//            } catch (JSONException e) {
-//                concejales.setText("");
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        datosSeccion = new AdminPreferencias(getActivity())
-//                .getValores(AdminPreferencias.IMAGEN_COMUNA);
-//        map = datosSeccion.getMap();
-//        if (datosSeccion.getMap().size() != 0) {
-//            mostrarImagenBase64(map.get("Imagen").toString());
-//        }
+        if (listData == null)
+            return;
+
+        mAdapter.getList().clear();
+        mAdapter.getList().addAll(listData.getEventList());
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(AdminPreferencias.INFO_MUNICIPALIDAD) || key.equals(AdminPreferencias.IMAGEN_COMUNA) || key.equals(AdminPreferencias.CONCEJALES))
+        if (key.equals(AdminPreferences.PUBLIC_EVENTS))
             onDataChanged();
-    }
-
-    private void setInvalid(int i) {
-        if (i == 1) {
-            alcalde.setText("Región: No hay datos");
-            SecMun.setText("No hay datos");
-            administrador.setText("Provincia: No hay datos");
-            secPlac.setText("No hay datos");
-        } else concejales.setText("No hay datos");
-    }
-
-    private class Area {
-        String nombre;
-        int codigo;
-
-        public Area(int codigo, String nombre) {
-            this.codigo = codigo;
-            this.nombre = nombre;
-        }
-
-        public int getCodigo() {
-            return codigo;
-        }
-
-        public String toString() {
-            return nombre;
-        }
     }
 }
