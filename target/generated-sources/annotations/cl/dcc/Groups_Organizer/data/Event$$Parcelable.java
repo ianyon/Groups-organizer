@@ -6,9 +6,10 @@ import java.util.Date;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import org.parceler.Generated;
+import org.parceler.InjectionUtil;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-21T21:15-0400")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T00:42-0400")
 public class Event$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Event>
 {
@@ -19,6 +20,7 @@ public class Event$$Parcelable
 
     public Event$$Parcelable(android.os.Parcel parcel$$0) {
         event$$0 = new cl.dcc.Groups_Organizer.data.Event();
+        InjectionUtil.setField(cl.dcc.Groups_Organizer.data.Event.class, event$$0, "mAdmin", ((ParcelWrapper<cl.dcc.Groups_Organizer.data.Person> ) parcel$$0 .readParcelable(Event$$Parcelable.class.getClassLoader())).getParcel());
         event$$0 .datetime = ((Date) parcel$$0 .readSerializable());
         event$$0 .name = parcel$$0 .readString();
         event$$0 .description = parcel$$0 .readString();
@@ -53,6 +55,7 @@ public class Event$$Parcelable
 
     @Override
     public void writeToParcel(android.os.Parcel parcel$$1, int flags) {
+        parcel$$1 .writeParcelable(org.parceler.Parcels.wrap(InjectionUtil.getField(cl.dcc.Groups_Organizer.data.Person.class, cl.dcc.Groups_Organizer.data.Event.class, event$$0, "mAdmin")), flags);
         parcel$$1 .writeSerializable(event$$0 .datetime);
         parcel$$1 .writeString(event$$0 .name);
         parcel$$1 .writeString(event$$0 .description);

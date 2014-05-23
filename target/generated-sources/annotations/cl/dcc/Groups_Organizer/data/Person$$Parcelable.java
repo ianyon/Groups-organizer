@@ -7,7 +7,7 @@ import org.parceler.Generated;
 import org.parceler.InjectionUtil;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-21T21:15-0400")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T00:42-0400")
 public class Person$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Person>
 {

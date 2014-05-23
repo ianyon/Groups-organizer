@@ -241,9 +241,7 @@ public class PagerViewHost extends CustomFragmentActivity implements
         }
     }*/
 
-    public void onRegisterClick(View v){
-        startActivity(new Intent(this, Register.class));
-    }
+    public void onRegisterClick(View v){ startActivity(new Intent(this, Register_.class));  }
 
     public void onAddFriendsClick(View v){
         startActivity(new Intent(this, AddPeople.class));
