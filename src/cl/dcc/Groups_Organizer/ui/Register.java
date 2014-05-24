@@ -1,8 +1,13 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import android.content.Context;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.parceler.Parcels;
+
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -10,19 +15,19 @@ import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.RegisterConn;
 import cl.dcc.Groups_Organizer.data.Person;
+
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.*;
+import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NumberRule;
 import com.mobsandgeeks.saripaar.annotation.NumberRule.NumberType;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.parceler.Parcels;
+import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.Required;
+import com.mobsandgeeks.saripaar.annotation.Select;
+import com.mobsandgeeks.saripaar.annotation.TextRule;
 
 /**
  * Created by Roberto

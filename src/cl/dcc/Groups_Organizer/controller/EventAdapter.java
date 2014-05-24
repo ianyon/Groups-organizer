@@ -1,5 +1,7 @@
 package cl.dcc.Groups_Organizer.controller;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.data.Event;
-
-import java.util.List;
 
 /**
  * Created by Ian on 14-04-2014.

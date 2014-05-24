@@ -1,6 +1,7 @@
 package cl.dcc.Groups_Organizer.connection;
 
 import android.text.Editable;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 

@@ -17,7 +17,6 @@ import cl.dcc.Groups_Organizer.data.Person;
 
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Password;
@@ -39,11 +38,6 @@ public class Login extends CustomFragmentActivity {
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
-			if (true) {
-	            // TODO: Borrar, Fake autentication
-	            doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
-	            return;
-	        }
 	        LoginConn loginConn = new LoginConn(getHttpClient());
 	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
 	        loginConn.go(reqParams, httpHandler);

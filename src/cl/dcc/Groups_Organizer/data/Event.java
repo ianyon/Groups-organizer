@@ -1,19 +1,20 @@
 package cl.dcc.Groups_Organizer.data;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Ian on 14-04-2014.
  */
 @Parcel
 public class Event{
+	public int id;
     public String name;
     public String description;
     public String location;
@@ -27,7 +28,8 @@ public class Event{
 
     public Event(){}
 
-    public Event(String name, String description, String location, Date datetime) {
+    public Event(int id, String name, String description, String location, Date datetime) {
+    	this.id = id;
         this.name = name;
         this.description = description;
         this.location = location;
@@ -36,42 +38,65 @@ public class Event{
         this.guestList = new ArrayList<Person>();
     }
 
-    public Event(String name, String description, String location, Date datetime, ArrayList<Person> guestList) {
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.datetime = datetime;
-        this.confirmed = new ArrayList<Person>();
+    public Event(int id, String name, String description, String location, Date datetime, ArrayList<Person> guestList) {
+    	this(id, name, description, location, datetime);
         this.guestList = guestList;
     }
 
-    public Event(String name, String description, String location, Date datetime, ArrayList<Person> confirmed, ArrayList<Person> guestList) {
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.datetime = datetime;
+    public Event(int id, String name, String description, String location, Date datetime, ArrayList<Person> confirmed, ArrayList<Person> guestList) {
+    	this(id, name, description, location, datetime, guestList);
         this.confirmed = confirmed;
-        this.guestList = guestList;
     }
 
     public Event(JSONObject jsonEvent) throws JSONException {
+    	id = jsonEvent.getInt("id");
         name = jsonEvent.getString("name");
         description = jsonEvent.getString("description");
         location = jsonEvent.getString("location");
         datetime = new Date(jsonEvent.getLong("datetime") * 1000);
-        confirmedCount = jsonEvent.getInt("confirmedCount");
-        guestListCount = jsonEvent.getInt("guestListCount");
-        setGuests(confirmedCount, guestListCount);
-
+                
         guestList = new ArrayList<Person>();
-
-        // Check if there are info for the guestList
-        if(jsonEvent.has("guestList")) {
-            JSONArray jsonArray = jsonEvent.getJSONArray("guestList");
-            for (int j = 0; j < jsonArray.length(); j++) {
-                guestList.add(new Person(jsonArray.getJSONObject(j)));
-            }
+        confirmed = new ArrayList<Person>();
+        
+        if(jsonEvent.has("guests")) {
+        	JSONArray guests = jsonEvent.getJSONArray("guests");
+        	for(int i = 0; i < guests.length(); i++) {
+        		JSONObject entry = guests.getJSONObject(i);
+        		Person person = new Person(entry.getString("user_id"));
+        		guestList.add(person);
+        		if(entry.getBoolean("confirmed")) {
+        			confirmed.add(person);
+        		}
+        	}
+        	confirmedCount = confirmed.size();
+        	guestListCount = guestList.size();
+        } else {
+        	confirmedCount = jsonEvent.optInt("confirmedCount",0);
+        	guestListCount = jsonEvent.optInt("guestListCount",0);
         }
+    }
+    
+    @Override
+    public String toString() {
+    	JSONObject jsonObject = new JSONObject();
+    	try {
+    		jsonObject.put("id", id);
+    		jsonObject.put("name", id);
+    		jsonObject.put("description", id);
+    		jsonObject.put("location", id);
+    		jsonObject.put("datetime", id);
+    		JSONArray guests = new JSONArray();
+    		for(Person person : guestList) {
+    			JSONObject entry = new JSONObject();
+    			entry.put("user_id", person.getUsername());
+    			entry.put("confirmed", confirmed.indexOf(person.getUsername()) == -1 ? "0" : "1");
+    			guests.put(entry);
+    		}
+    		jsonObject.put("guests", id);
+    	} catch(JSONException e) {
+    		
+    	}
+    	return super.toString();
     }
 
     public Event(String jsonString) throws JSONException {
@@ -112,8 +137,7 @@ public class Event{
         return guestList;
     }
 
-    public void setGuests(int confirmed, int guestList) {
-        this.confirmedCount = confirmed;
-        this.guestListCount = guestList;
-    }
+	public int getId() {
+		return id;
+	}
 }
