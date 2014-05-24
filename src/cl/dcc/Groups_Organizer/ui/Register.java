@@ -1,8 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -13,7 +11,6 @@ import cl.dcc.Groups_Organizer.data.Person;
 import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.*;
@@ -67,12 +64,9 @@ public class Register extends CustomFragmentActivity {
 
     Validator validator;
     private Person mPerson;
+    private LoadingThing loadingMsg;
     
     private ValidationListener validationListener = new DefaultValidationListener(this) {
-
-
-        loadingMsg = new LoadingThing(Register.this);
-            mUserMail.setKeyListener(null);
 
     	@Override
     	public void onValidationSucceeded() {
@@ -98,7 +92,7 @@ public class Register extends CustomFragmentActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     if (statusCode == 200 && responseString.trim().equals("OK")) {
-                        Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "User is regitered", Toast.LENGTH_SHORT).show();
                     loadingMsg.stopPopUp();
                         finish();
                     } else {
@@ -121,6 +115,7 @@ public class Register extends CustomFragmentActivity {
         if (extras != null && extras.containsKey("Person")) {
             mPerson = Parcels.unwrap(extras.getParcelable("Person"));
         }
+        loadingMsg = new LoadingThing(Register.this);
     }
 
     @AfterViews
@@ -128,9 +123,10 @@ public class Register extends CustomFragmentActivity {
         if (mPerson != null) {
             mUserName.setText(mPerson.getName());
             mUserMail.setText(mPerson.getEmail());
+            mUserMail.setKeyListener(null);
             mUserUsername.setText(mPerson.getName());
             mUserAge.setText(Integer.toString(mPerson.getAge()));
-            mUserPass.setText(mPerson.getPassword());
+            registerGender.setSelection("Male".equals(mPerson.getGender())?1:2);
             mOkButton.setText("Guardar Cambios");
         }
     }
