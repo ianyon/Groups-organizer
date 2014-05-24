@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/user"
+            android:text="rfuentes"
             android:hint="Nombre de usuario"
             android:layout_gravity="center_horizontal"/>
 
@@ -28,15 +29,32 @@
             android:inputType="textPassword"
             android:ems="10"
             android:hint="Contraseña"
+            android:text="rfuentes"
             android:id="@+id/pass"
             android:layout_gravity="center_horizontal"/>
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="right">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login"
+                    android:text="Sign up"
+                    android:onClick="onSignupClick"
+                    android:id="@+id/singup"
+                    />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log in"
             android:id="@+id/login"
-            android:layout_gravity="right"/>
+                    />
+
+        </TableRow>
     </LinearLayout>
 
     <TextView

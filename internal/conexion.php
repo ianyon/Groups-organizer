@@ -4,7 +4,3 @@ $conn = new mysqli("localhost", "groups_organizer", "TcxBAedrqX2b3sML", "groups_
 if($conn->connect_errno) {
 	$log->general("Error mysql(cod. error $conn->connect_errno):\n$mysqli->connect_error\n",3,"internal/error_log.php");
 }
-$conn->set_charset("utf8");
-if($conn->connect_errno) {
-	$log->general("Error mysql(cod. error $conn->connect_errno):\n$mysqli->connect_error\n",3,"internal/error_log.php");
-}

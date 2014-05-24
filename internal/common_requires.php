@@ -1,10 +1,8 @@
 <?php
 require_once("internal/log.php");
 require_once("internal/conexion.php");
-require_once("internal/Validator.php");
-require_once("internal/functions.php");
-
-header("Content-Type: text/plain");
+$wd_was = getcwd();
+require_once("Validator.php");
 
 $log = new Log();
 

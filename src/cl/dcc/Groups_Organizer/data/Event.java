@@ -1,5 +1,8 @@
 package cl.dcc.Groups_Organizer.data;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
@@ -19,6 +22,8 @@ public class Event{
     public List<Person> guestList;
     private int confirmedCount;
     private int guestListCount;
+
+    private Person mAdmin;
 
     public Event(){}
 
@@ -49,6 +54,30 @@ public class Event{
         this.guestList = guestList;
     }
 
+    public Event(JSONObject jsonEvent) throws JSONException {
+        name = jsonEvent.getString("name");
+        description = jsonEvent.getString("description");
+        location = jsonEvent.getString("location");
+        datetime = new Date(jsonEvent.getLong("datetime") * 1000);
+        confirmedCount = jsonEvent.getInt("confirmedCount");
+        guestListCount = jsonEvent.getInt("guestListCount");
+        setGuests(confirmedCount, guestListCount);
+
+        guestList = new ArrayList<Person>();
+
+        // Check if there are info for the guestList
+        if(jsonEvent.has("guestList")) {
+            JSONArray jsonArray = jsonEvent.getJSONArray("guestList");
+            for (int j = 0; j < jsonArray.length(); j++) {
+                guestList.add(new Person(jsonArray.getJSONObject(j)));
+            }
+        }
+    }
+
+    public Event(String jsonString) throws JSONException {
+        this(new JSONObject(jsonString));
+    }
+
     public int getGuestCount() {
         return guestListCount;
     }
@@ -72,6 +101,8 @@ public class Event{
     public Date getDatetime() {
         return datetime;
     }
+
+    public String getTimeDare() {return datetime.toString();}
 
     public List<Person> getConfirmed() {
         return confirmed;

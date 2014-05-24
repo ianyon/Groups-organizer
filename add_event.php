@@ -1,30 +1,17 @@
 <?php
 require_once("internal/common_requires_session_check.php");
 
-$saved_description = $_POST['description'];
-$_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
-$_POST['description'] = $saved_description;
-
-$validator = new Valitron\Validator($_POST);
-$validator->rule('required',['name', 'description', 'location', 'datetime', 'invited_people']);
-$validator->rule('lengthMin', array('name', 'location'), 3);
-$validator->rule('lengthMax', 'name', 50);
-$validator->rule('lengthMax', 'location', 100);
-$validator->rule('datetime', 'dateFormat', 'Y-m-d H:i');
-
-
-verify_logged($validator, basename(__FILE__));
-
-$_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW, array('description'));
-
-$invited_people = json_decode_log($_POST['invited_people'], basename(__FILE__));
-
+$name = $_POST['name'];
+$description = $_POST['description'];
+$location = $_POST['location'];
+$datetime = $_POST['datetime'];
+$invited_people = $_POST['invited_people'];
 
 $conn->autocommit(false);
+$conn->begin_transaction();
 
 $stmt = $conn->prepare("INSERT INTO event (name, description, creator, location, datetime, datetime_creation) VALUES(?,?,?,?,?, NOW())");
-$stmt->bind_param('sssss', $_POST['name'], $_POST['description'],
-		$_SESSION['logged_username'],$_POST['location'], $_POST['datetime']);
+$stmt->bind_param('sssss', $name, $description, $creator, $_SESSION['logged_username'], $datetime);
 $stmt->execute();
 
 if($stmt->affected_rows <= 0 or $stmt->errno) {
