@@ -38,9 +38,11 @@ public class Login extends CustomFragmentActivity {
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
-	        LoginConn loginConn = new LoginConn(getHttpClient());
-	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
-	        loginConn.go(reqParams, httpHandler);
+            doLoginVerified(new Person("rfuentes","Roberto fuentes" ));
+            return;
+//	        LoginConn loginConn = new LoginConn(getHttpClient());
+//	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
+//	        loginConn.go(reqParams, httpHandler);
 		}
 	};
 	

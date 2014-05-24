@@ -3,6 +3,8 @@ package cl.dcc.Groups_Organizer.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import cl.dcc.Groups_Organizer.connection.CreateEventConn;
+import com.loopj.android.http.TextHttpResponseHandler;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
@@ -126,6 +128,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void refresh() {
+        if (mEvent == null)
+            return;
+
         if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
             return;
@@ -162,6 +167,29 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         });
     }
 
+    public void onCreateEvent(){
+        CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
+        RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
+                mEventWhen.getText(), mAdapter.getList());
+
+        createEventConn.go(params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                if (statusCode == 200 && responseString.trim().equals("OK")) {
+                    Toast.makeText(getApplicationContext(), "Evento creado", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     @Click
     void buttonAddPeople() {
         startActivity(new Intent(this, AddPeople.class));
@@ -189,6 +217,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     private void onDataChanged() {
+        if (mEvent == null)
+            return;
+
         /* Cargamos la info */
         Event event = preferences.getEvent(mEvent.getId());
 

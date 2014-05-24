@@ -81,6 +81,18 @@ public class Person {
         password = pass;
     }
 
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject jsonPerson = new JSONObject();
+
+        jsonPerson.put("",username);
+        jsonPerson.put("",name);
+        jsonPerson.put("",gender);
+        jsonPerson.put("",email);
+        jsonPerson.put("",age);
+
+        return jsonPerson;
+    }
+
     public String getName() {
         return name;
     }
@@ -102,5 +114,4 @@ public class Person {
     }
 
     public String getPassword() { return password; }
-    
 }

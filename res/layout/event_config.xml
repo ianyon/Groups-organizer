@@ -12,16 +12,16 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/eventconfigtextView"
         android:id="@+id/textView"
-        android:layout_above="@+id/tableLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="92dp"/>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
 
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/tableLayout">
+        android:id="@+id/tableLayout"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TableRow
             android:layout_width="fill_parent"
@@ -128,5 +128,15 @@
             android:layout_centerHorizontal="true"
             android:layout_above="@+id/buttonAddPeople"
             android:id="@+id/eventConfigAsistend"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear"
+        android:id="@+id/buttonCreate"
+        android:onClick="onCreateEvent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>
