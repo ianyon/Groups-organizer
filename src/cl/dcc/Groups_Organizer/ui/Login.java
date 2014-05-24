@@ -17,6 +17,9 @@ import cl.dcc.Groups_Organizer.data.Person;
 
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.mobsandgeeks.saripaar.Rule;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Password;
 import com.mobsandgeeks.saripaar.annotation.TextRule;
 
@@ -31,22 +34,37 @@ public class Login extends CustomFragmentActivity {
 	@TextRule(order = 3, minLength = 5, messageResId = R.string.registerPassVerification)
 	@ViewById(R.id.pass)
     TextView tvPassword;
+	
+	private Validator validator;
+	private ValidationListener validationListener = new DefaultValidationListener(this) {
+		@Override
+		public void onValidationSucceeded() {
+			if (true) {
+	            // TODO: Borrar, Fake autentication
+	            doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
+	            return;
+	        }
+	        LoginConn loginConn = new LoginConn(getHttpClient());
+	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
+	        loginConn.go(reqParams, httpHandler);
+		}
+	};
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		validator = new Validator(this);
+		validator.setValidationListener(validationListener);
+	}
+	
+	@Click(R.id.signup)
+	public void onSignupClick(View v){
+        startActivity(new Intent(this,Register_.class));
+    }
 
 	@Click(R.id.login)
     public void onLoginClick() {
-        if (true) {
-            // TODO: Borrar, Fake autentication
-            doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
-            return;
-        }
-        if (tvUser.getText().length() == 0 || tvPassword.getText().length() == 0) {
-            Toast.makeText(this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        LoginConn loginConn = new LoginConn(getHttpClient());
-        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
-        loginConn.go(reqParams, httpHandler);
+        validator.validate();
     }
 
     private void doLoginVerified(Person user) {

@@ -28,7 +28,7 @@ import org.parceler.Parcels;
  * Created by Roberto
  */
 @EActivity(R.layout.register)
-public class Register extends CustomFragmentActivity implements ValidationListener {
+public class Register extends CustomFragmentActivity {
 
     @TextRule(order = 1, minLength = 5, maxLength = 60, messageResId = R.string.registerNameVerification)
     @ViewById(R.id.registerName)
@@ -65,12 +65,42 @@ public class Register extends CustomFragmentActivity implements ValidationListen
     Button mOkButton;
     Validator validator;
     private Person mPerson;
+    
+    private ValidationListener validationListener = new DefaultValidationListener(this) {
+    	@Override
+    	public void onValidationSucceeded() {
+    		// Obtain gender position
+            String pos = "" + (registerGender.getSelectedItemPosition() - 1);
+            // Connect to server and register new user
+            RegisterConn registerConn = new RegisterConn(getHttpClient());
+            RequestParams requestParams = registerConn.generateParams(mUserName.getText(), mUserAge.getText(), pos
+                    , mUserUsername.getText(),
+                    mUserMail.getText(), mUserPass.getText());
+
+            registerConn.go(requestParams, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    if (statusCode == 200 && responseString.trim().equals("OK")) {
+                        Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+    	}
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         validator = new Validator(this);
-        validator.setValidationListener(this);
+        validator.setValidationListener(validationListener);
 
         Bundle extras = this.getIntent().getExtras();
 
@@ -94,56 +124,6 @@ public class Register extends CustomFragmentActivity implements ValidationListen
     @Click
     void registerButton() {
         validator.validate();
-    }
-
-    @Override
-    public void onValidationFailed(View view, Rule<?> rule) {
-        String message = rule.getFailureMessage();
-        if (view instanceof EditText) {
-            view.requestFocus();
-            ((EditText) view).setError(message);
-        } else {
-            showRegisterWarning(message);
-        }
-
-    }
-
-    @Override
-    public void onValidationSucceeded() {
-        // Obtain gender position
-        String pos = "" + (registerGender.getSelectedItemPosition() - 1);
-        // Connect to server and register new user
-        RegisterConn registerConn = new RegisterConn(getHttpClient());
-        RequestParams requestParams = registerConn.generateParams(mUserName.getText(), mUserAge.getText(), pos
-                , mUserUsername.getText(),
-                mUserMail.getText(), mUserPass.getText());
-
-        registerConn.go(requestParams, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                if (statusCode == 200 && responseString.trim().equals("OK")) {
-                    Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    private void showRegisterWarning(CharSequence text) {
-
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        assert context != null;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 
 }
