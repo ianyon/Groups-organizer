@@ -1,8 +1,11 @@
 package cl.dcc.Groups_Organizer.data;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +26,8 @@ public class Event{
     public List<Person> guestList;
     private int confirmedCount;
     private int guestListCount;
+    
+    private static SimpleDateFormat datetimeFormatJson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     private Person mAdmin;
 
@@ -51,9 +56,16 @@ public class Event{
     public Event(JSONObject jsonEvent) throws JSONException {
     	id = jsonEvent.getInt("id");
         name = jsonEvent.getString("name");
-        description = jsonEvent.getString("description");
-        location = jsonEvent.getString("location");
-        datetime = new Date(jsonEvent.getLong("datetime") * 1000);
+        description = jsonEvent.optString("description","");
+        location = jsonEvent.optString("location","");
+        if(jsonEvent.has("datetime"))
+			try {
+				datetime = datetimeFormatJson.parse(jsonEvent.getString("datetime"));
+			} catch (ParseException e) {
+				datetime = null;
+			}
+		else
+        	datetime = null;
                 
         guestList = new ArrayList<Person>();
         confirmed = new ArrayList<Person>();
@@ -84,7 +96,9 @@ public class Event{
     		jsonObject.put("name", id);
     		jsonObject.put("description", id);
     		jsonObject.put("location", id);
-    		jsonObject.put("datetime", id);
+    		if(datetime != null) {
+	    		jsonObject.put("datetime", datetimeFormatJson.format(datetime));
+    		}
     		JSONArray guests = new JSONArray();
     		for(Person person : guestList) {
     			JSONObject entry = new JSONObject();

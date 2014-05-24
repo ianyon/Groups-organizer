@@ -107,12 +107,13 @@ public class PagerViewHost extends CustomFragmentActivity {
 
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
-        eventsConn.go(null, new EventListHttpResponseHandler());
+        RequestParams reqParams = eventsConn.generateParams(false);
+        eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
-        RequestParams reqParams = eventsConn.generateParams(mUser.getEmail());
-        eventsConn.go(reqParams, new EventListHttpResponseHandler());
+        reqParams = eventsConn.generateParams(true);
+        eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
     }
 
     @Override
@@ -142,6 +143,11 @@ public class PagerViewHost extends CustomFragmentActivity {
     // Object for Handling the http response
     private class EventListHttpResponseHandler extends JsonHttpResponseHandler {
         private String category, data;
+        private String dataType;
+        
+        public EventListHttpResponseHandler(String dataType) {
+			this.dataType = dataType; 
+		}
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
@@ -149,7 +155,7 @@ public class PagerViewHost extends CustomFragmentActivity {
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
-        @Override
+       /* @Override
         public void onSuccess(int statusCode, Header[] headers, String responseBody) {
             // TODO: hacer mas verboso el control de errores
             if (statusCode == 200 && parseResponse(responseBody)) {
@@ -158,15 +164,15 @@ public class PagerViewHost extends CustomFragmentActivity {
             } else {
                 Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
         
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         	if(statusCode != 200) {
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
         	}
-        	
-        	super.onSuccess(statusCode, headers, response);
+        	preferences.setValores(dataType, response);
+        	//super.onSuccess(statusCode, headers, response);
         }
         
 
