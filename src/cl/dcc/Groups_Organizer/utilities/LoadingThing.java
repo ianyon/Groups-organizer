@@ -20,6 +20,12 @@ public class LoadingThing {
 
     }
 
+    public LoadingThing(Context aContext){
+        myContext = aContext;
+        myTitle = "";
+        myMsg = "Waitng...";
+    }
+
     public void stratPopUp(){
         progressDialog = ProgressDialog.show(myContext, myTitle, myMsg);
     }

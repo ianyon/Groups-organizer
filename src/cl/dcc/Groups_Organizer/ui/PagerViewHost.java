@@ -1,8 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -20,7 +18,6 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 import org.apache.http.Header;
 import org.parceler.Parcels;
@@ -130,7 +127,12 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
     }
 
-    public void onRegisterClick(View v){ startActivity(new Intent(this, Register_.class));  }
+    public void onRegisterClick(View v){
+        Intent aIntent = new Intent(this,Register_.class);
+        Bundle extras = new Bundle();
+        extras.putParcelable("User", Parcels.wrap(mUser));
+        aIntent.putExtras(extras);
+        startActivity(aIntent);  }
 
     public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));

@@ -4,38 +4,35 @@ package cl.dcc.Groups_Organizer.data;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import org.parceler.Generated;
-import org.parceler.InjectionUtil;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-23T18:02-0400")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-24T01:37-0400")
 public class Person$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Person>
 {
 
-    private cl.dcc.Groups_Organizer.data.Person person$$2;
+    private cl.dcc.Groups_Organizer.data.Person person$$0;
     @SuppressWarnings("UnusedDeclaration")
-    public final static Person$$Parcelable.Creator$$1 CREATOR = new Person$$Parcelable.Creator$$1();
+    public final static Person$$Parcelable.Creator$$0 CREATOR = new Person$$Parcelable.Creator$$0();
 
-    public Person$$Parcelable(android.os.Parcel parcel$$3) {
-        person$$2 = new cl.dcc.Groups_Organizer.data.Person();
-        InjectionUtil.setField(cl.dcc.Groups_Organizer.data.Person.class, person$$2, "password", parcel$$3 .readString());
-        person$$2 .gender = parcel$$3 .readString();
-        person$$2 .name = parcel$$3 .readString();
-        person$$2 .email = parcel$$3 .readString();
-        person$$2 .age = parcel$$3 .readInt();
+    public Person$$Parcelable(android.os.Parcel parcel$$0) {
+        person$$0 = new cl.dcc.Groups_Organizer.data.Person();
+        person$$0 .gender = parcel$$0 .readString();
+        person$$0 .name = parcel$$0 .readString();
+        person$$0 .email = parcel$$0 .readString();
+        person$$0 .age = parcel$$0 .readInt();
     }
 
-    public Person$$Parcelable(cl.dcc.Groups_Organizer.data.Person person$$3) {
-        person$$2 = person$$3;
+    public Person$$Parcelable(cl.dcc.Groups_Organizer.data.Person person$$1) {
+        person$$0 = person$$1;
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel parcel$$4, int flags) {
-        parcel$$4 .writeString(InjectionUtil.getField(String.class, cl.dcc.Groups_Organizer.data.Person.class, person$$2, "password"));
-        parcel$$4 .writeString(person$$2 .gender);
-        parcel$$4 .writeString(person$$2 .name);
-        parcel$$4 .writeString(person$$2 .email);
-        parcel$$4 .writeInt(person$$2 .age);
+    public void writeToParcel(android.os.Parcel parcel$$1, int flags) {
+        parcel$$1 .writeString(person$$0 .gender);
+        parcel$$1 .writeString(person$$0 .name);
+        parcel$$1 .writeString(person$$0 .email);
+        parcel$$1 .writeInt(person$$0 .age);
     }
 
     @Override
@@ -45,17 +42,17 @@ public class Person$$Parcelable
 
     @Override
     public cl.dcc.Groups_Organizer.data.Person getParcel() {
-        return person$$2;
+        return person$$0;
     }
 
-    private final static class Creator$$1
+    private final static class Creator$$0
         implements Creator<Person$$Parcelable>
     {
 
 
         @Override
-        public Person$$Parcelable createFromParcel(android.os.Parcel parcel$$5) {
-            return new Person$$Parcelable(parcel$$5);
+        public Person$$Parcelable createFromParcel(android.os.Parcel parcel$$2) {
+            return new Person$$Parcelable(parcel$$2);
         }
 
         @Override

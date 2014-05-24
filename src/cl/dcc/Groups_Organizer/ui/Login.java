@@ -74,6 +74,7 @@ public class Login extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
+            myLoadingMsg.stopPopUp();
             Toast.makeText(Login.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
@@ -91,6 +92,7 @@ public class Login extends CustomFragmentActivity {
 
                 doLoginVerified(user);
             }else{
+                myLoadingMsg.stopPopUp();
                 Toast.makeText(Login.this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
             }
         }

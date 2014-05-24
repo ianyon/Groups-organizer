@@ -10,6 +10,7 @@ import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.RegisterConn;
 import cl.dcc.Groups_Organizer.data.Person;
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.mobsandgeeks.saripaar.Rule;
@@ -67,6 +68,8 @@ public class Register extends CustomFragmentActivity implements ValidationListen
     Validator validator;
     private Person mPerson;
 
+    LoadingThing loadingMsg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +78,11 @@ public class Register extends CustomFragmentActivity implements ValidationListen
 
         Bundle extras = this.getIntent().getExtras();
 
-        if (extras != null && extras.containsKey("Person")) {
-            mPerson = Parcels.unwrap(extras.getParcelable("Person"));
+        if (extras != null && extras.containsKey("User")) {
+            mPerson = Parcels.unwrap(extras.getParcelable("User"));
         }
+
+        loadingMsg = new LoadingThing(Register.this);
     }
 
     @AfterViews
@@ -85,11 +90,13 @@ public class Register extends CustomFragmentActivity implements ValidationListen
         if (mPerson != null) {
             mUserName.setText(mPerson.getName());
             mUserMail.setText(mPerson.getEmail());
+            mUserMail.setKeyListener(null);
             mUserUsername.setText(mPerson.getName());
             mUserAge.setText(Integer.toString(mPerson.getAge()));
-            mUserPass.setText(mPerson.getPassword());
-            mOkButton.setText("Guardar Cambios");
+            registerGender.setSelection("Male".equals(mPerson.gender)?1:2);
+            mOkButton.setText("Save Changes");
         }
+
     }
 
     @Click
@@ -114,14 +121,19 @@ public class Register extends CustomFragmentActivity implements ValidationListen
         // Obtain gender position
         String pos = "" + (registerGender.getSelectedItemPosition() - 1);
         // Connect to server and register new user
+
+        loadingMsg.stratPopUp();
+
         RegisterConn registerConn = new RegisterConn(getHttpClient());
         RequestParams requestParams = registerConn.generateParams(mUserName.getText(), mUserAge.getText(), pos
                 , mUserUsername.getText(),
                 mUserMail.getText(), mUserPass.getText());
 
+
         registerConn.go(requestParams, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                loadingMsg.stopPopUp();
                 Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
             }
 
@@ -129,8 +141,10 @@ public class Register extends CustomFragmentActivity implements ValidationListen
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 if (statusCode == 200 && responseString.trim().equals("OK")) {
                     Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_SHORT).show();
+                    loadingMsg.stopPopUp();
                     finish();
                 } else {
+                    loadingMsg.stopPopUp();
                     Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
                 }
             }
