@@ -1,5 +1,11 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.parceler.Parcels;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,41 +14,51 @@ import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.LoginConn;
 import cl.dcc.Groups_Organizer.data.Person;
+
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import org.apache.http.Header;
-import org.parceler.Parcels;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.Validator.ValidationListener;
+import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.TextRule;
 
+@EActivity(R.layout.main)
 public class Login extends CustomFragmentActivity {
-    private TextView tvUser, tvPassword;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        tvUser = (TextView) findViewById(R.id.user);
-
-        tvPassword = (TextView) findViewById(R.id.pass);
-    }
-
-    public void onSignupClick(View v){
+	
+	@TextRule(order = 1, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
+	@ViewById(R.id.user)
+    TextView tvUser;
+	
+	@Password(order = 2)
+	@TextRule(order = 3, minLength = 5, messageResId = R.string.registerPassVerification)
+	@ViewById(R.id.pass)
+    TextView tvPassword;
+	
+	private Validator validator;
+	private ValidationListener validationListener = new DefaultValidationListener(this) {
+		@Override
+		public void onValidationSucceeded() {
+	        LoginConn loginConn = new LoginConn(getHttpClient());
+	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
+	        loginConn.go(reqParams, httpHandler);
+		}
+	};
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		validator = new Validator(this);
+		validator.setValidationListener(validationListener);
+	}
+	
+	@Click(R.id.signup)
+	public void onSignupClick(View v){
         startActivity(new Intent(this,Register_.class));
     }
-    public void onLoginClick(View v) {
-        if (false) {
-            // TODO: Borrar, Fake autentication
-            doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
-            return;
-        }
-        if (tvUser.getText().length() == 0 || tvPassword.getText().length() == 0) {
-            Toast.makeText(this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        LoginConn loginConn = new LoginConn(getHttpClient());
-        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
-        loginConn.go(reqParams, httpHandler);
+	@Click(R.id.login)
+    public void onLoginClick() {
+        validator.validate();
     }
 
     private void doLoginVerified(Person user) {

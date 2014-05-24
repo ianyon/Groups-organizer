@@ -1,6 +1,12 @@
 package cl.dcc.Groups_Organizer.ui;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.parceler.Parcels;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,11 +18,6 @@ import cl.dcc.Groups_Organizer.controller.EventAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.EventListData;
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Ian on 13-04-2014.
@@ -33,9 +34,6 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
         preferences = new AdminPreferences(getActivity());
 
         List<Event> data = new ArrayList<Event>();
-        //TODO: Fake data: delete
-        for (int i = 0; i < 3; i++)
-            data.add(new Event("Evento " + i, "Un evento entretenido", "Santa Rosa 950", new Date()));
 
         mAdapter = new EventAdapter(getActivity(), R.layout.event_row, data);
         setListAdapter(mAdapter);

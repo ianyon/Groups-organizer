@@ -1,8 +1,13 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.parceler.Parcels;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -16,18 +21,12 @@ import cl.dcc.Groups_Organizer.connection.GetEventListConn;
 import cl.dcc.Groups_Organizer.controller.TabsAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Person;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.parceler.Parcels;
 
 @EActivity(R.layout.pager_view)
 public class PagerViewHost extends CustomFragmentActivity {
-    private static final boolean DEBUG = false;
     // Sección pager
     @ViewById(android.R.id.tabhost)
     TabHost mTabHost;
@@ -70,8 +69,8 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         refresh();
     }
 
@@ -141,7 +140,7 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     // Object for Handling the http response
-    private class EventListHttpResponseHandler extends TextHttpResponseHandler {
+    private class EventListHttpResponseHandler extends JsonHttpResponseHandler {
         private String category, data;
 
         @Override
@@ -160,6 +159,16 @@ public class PagerViewHost extends CustomFragmentActivity {
                 Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
             }
         }
+        
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+        	if(statusCode != 200) {
+        		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
+        	}
+        	
+        	super.onSuccess(statusCode, headers, response);
+        }
+        
 
         private boolean parseResponse(String body) {
             body = body.trim();
