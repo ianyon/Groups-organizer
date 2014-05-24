@@ -3,6 +3,7 @@ package cl.dcc.Groups_Organizer.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.view.View;
 import cl.dcc.Groups_Organizer.connection.CreateEventConn;
 import com.loopj.android.http.TextHttpResponseHandler;
 import org.androidannotations.annotations.AfterViews;
@@ -167,7 +168,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         });
     }
 
-    public void onCreateEvent(){
+    public void onCreateEvent(View v){
         CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());
