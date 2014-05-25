@@ -29,16 +29,17 @@ public class Login extends CustomFragmentActivity {
 	@TextRule(order = 3, minLength = 5, messageResId = R.string.registerPassVerification)
 	@ViewById(R.id.pass)
     TextView tvPassword;
-	
+
+    private LoadingThing myLoadingMsg;
+
 	private Validator validator;
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
-            doLoginVerified(new Person("rfuentes","Roberto fuentes" ));
-            return;
-//	        LoginConn loginConn = new LoginConn(getHttpClient());
-//	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
-//	        loginConn.go(reqParams, httpHandler);
+            myLoadingMsg.stratPopUp();
+            LoginConn loginConn = new LoginConn(getHttpClient());
+	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
+	        loginConn.go(reqParams, httpHandler);
 		}
 	};
 	
@@ -47,25 +48,38 @@ public class Login extends CustomFragmentActivity {
 		super.onCreate(savedInstanceState);
 		validator = new Validator(this);
 		validator.setValidationListener(validationListener);
-	}
-	
-	@Click(R.id.signup)
+
+        myLoadingMsg = new LoadingThing(Login.this,"","Conecting");
+
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myLoadingMsg.stopPopUp();
+    }
+
+    @Click(R.id.signup)
 	public void onSignupClick(View v){
         startActivity(new Intent(this,Register_.class));
     }
 
 	@Click(R.id.login)
-    public void onLoginClick() {
-        validator.validate();
-    }
+    public void onLoginClick() { validator.validate();  }
 
     private void doLoginVerified(Person user) {
+
         Intent intent = PagerViewHost_.intent(this).get();
         Bundle extras = new Bundle();
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
+
         startActivity(intent);
     }
+
+
 
     // Object for Handling the http response
     private TextHttpResponseHandler httpHandler = new TextHttpResponseHandler() {
@@ -74,6 +88,7 @@ public class Login extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
+            myLoadingMsg.stopPopUp();
             Toast.makeText(Login.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
@@ -91,6 +106,7 @@ public class Login extends CustomFragmentActivity {
 
                 doLoginVerified(user);
             }else{
+                myLoadingMsg.stopPopUp();
                 Toast.makeText(Login.this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
             }
         }

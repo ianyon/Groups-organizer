@@ -141,6 +141,10 @@ public class Event{
         return datetime;
     }
 
+    public String getTimeDate() {
+        if (datetime == null)
+            return "";
+        return datetime.toString();}
     public List<Person> getConfirmed() {
         return confirmed;
     }

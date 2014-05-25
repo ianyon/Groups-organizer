@@ -1,5 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -49,6 +50,7 @@ public class PagerViewHost extends CustomFragmentActivity {
     TabsAdapter mTabsAdapter;
 
     private AdminPreferences preferences;
+    private LoadingThing mLoadingMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         }else{
             Toast.makeText(this,"Error fatal, no llego un usuario", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -90,6 +93,8 @@ public class PagerViewHost extends CustomFragmentActivity {
         TabHost.TabSpec tabSpec2 = mTabHost.newTabSpec("tab2");
         tabSpec2.setIndicator("My events", null);
         mTabsAdapter.addTab(tabSpec2, MyEvents.class, null);
+
+        mLoadingMsg = new LoadingThing(PagerViewHost.this);
     }
 
     public void onRefreshTriggered(View v) {
@@ -103,11 +108,13 @@ public class PagerViewHost extends CustomFragmentActivity {
             return;
         }
 
+        mLoadingMsg.stratPopUp();
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
         RequestParams reqParams = eventsConn.generateParams(false);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
+        mLoadingMsg.stratPopUp();
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
         reqParams = eventsConn.generateParams(true);
@@ -128,7 +135,14 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
     }
 
-    public void onRegisterClick(View v){ startActivity(new Intent(this, Register_.class));  }
+    public void onRegisterClick(View v){
+        Toast.makeText(PagerViewHost.this, mUser.getUsername(), Toast.LENGTH_LONG).show();
+        Intent aIntent = new Intent(this,Register_.class);
+        Bundle extras = new Bundle();
+        extras.putParcelable("User", Parcels.wrap(mUser));
+        aIntent.putExtras(extras);
+        startActivity(aIntent);
+        }
 
     public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));
@@ -150,14 +164,17 @@ public class PagerViewHost extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
+            mLoadingMsg.stopPopUp();
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
         
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         	if(statusCode != 200) {
+                mLoadingMsg.stopPopUp();
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
         	}
+            mLoadingMsg.stopPopUp();
         	preferences.setValores(dataType, response);
         }
     }

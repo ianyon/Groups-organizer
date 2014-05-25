@@ -14,7 +14,6 @@ public class Person {
     public String name;
     public String gender;
     public String email;
-    private String password;
     public int age;
 
     public Person(){}
@@ -75,11 +74,6 @@ public class Person {
         this(new JSONObject(jsonString));
     }
 
-    public Person(String username, String name, String gender, String email, String pass,int age) {
-        this(username, name,gender,email,age);
-        password = pass;
-    }
-
     public JSONObject toJSONObject() throws JSONException {
         JSONObject jsonPerson = new JSONObject();
 
@@ -111,6 +105,4 @@ public class Person {
     public String getUsername() {
     	return username;
     }
-
-    public String getPassword() { return password; }
 }
