@@ -1,6 +1,5 @@
 package cl.dcc.Groups_Organizer.data;
 
-import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -41,23 +40,12 @@ public class Person {
         this(new JSONObject(jsonString));
     }
 
-    public Person(JSONObject jsonPerson){
-    	username = "";
-        name = "";
-        gender = "";
-        email = "";
-        age = -1;
-
-        try {
-        	username = jsonPerson.getString("user_name");
-            name = jsonPerson.getString("name");
-            gender = jsonPerson.getString("gender");
-            email = jsonPerson.getString("email");
-            age = jsonPerson.getInt("age");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("JSON","JSON EXCEPTION: "+e);
-        }
+    public Person(JSONObject jsonPerson) throws JSONException {
+        username = jsonPerson.getString("user_name");
+        name = jsonPerson.optString("name");
+        gender = jsonPerson.optString("gender");
+        email = jsonPerson.optString("email");
+        age = jsonPerson.optInt("age", -1);
     }
 
     @Override

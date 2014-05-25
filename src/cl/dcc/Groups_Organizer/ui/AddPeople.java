@@ -132,6 +132,9 @@ public class AddPeople extends CustomFragmentActivity {
 					couldParseAll = false;
 				}
 			}
+			if(!couldParseAll) {
+				Toast.makeText(AddPeople.this, "Error al traer la lista de personas. Algunas personas no aparecerán", Toast.LENGTH_SHORT).show();
+			}
 			onDataChanged();
 		}
 	}
