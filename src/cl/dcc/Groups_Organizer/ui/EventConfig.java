@@ -201,7 +201,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());
 
-        createEventConn.go(params, new MyHttpResponseHandler("Event Created"));
+        createEventConn.go(params, new MyHttpResponseHandler("Event Created",true));
 
         mLoadingMsg.stopPopUp();
     }
@@ -212,7 +212,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mLoadingMsg.startPopUp();
             ConfirmConn confirmConn = new ConfirmConn(getHttpClient());
             RequestParams params = confirmConn.generateParams(mEvent.getId(),mEvent.isGoing(mUser)?0:1);
-            confirmConn.go(params,new MyHttpResponseHandler("Change attendance status"));
+            confirmConn.go(params,new MyHttpResponseHandler("Change attendance status",false));
             mLoadingMsg.stopPopUp();
             return;
         }
@@ -260,10 +260,12 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private class MyHttpResponseHandler extends TextHttpResponseHandler {
 
         private String mMsg;
+        private boolean mFinish;
 
-        public MyHttpResponseHandler(String message){
+        public MyHttpResponseHandler(String message,boolean end){
             super();
             mMsg = message;
+            mFinish = end;
         }
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -275,7 +277,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             if (statusCode == 200 && responseString.trim().equals("OK")) {
                 Toast.makeText(getApplicationContext(), mMsg, Toast.LENGTH_SHORT).show();
-                finish();
+                if(mFinish)
+                    finish();
             } else {
                 Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
             }

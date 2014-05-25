@@ -140,7 +140,6 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     public void onRegisterClick(View v){
-        Toast.makeText(PagerViewHost.this, mUser.getUsername(), Toast.LENGTH_LONG).show();
         Intent aIntent = new Intent(this,Register_.class);
         Bundle extras = new Bundle();
         extras.putParcelable("User", Parcels.wrap(mUser));
