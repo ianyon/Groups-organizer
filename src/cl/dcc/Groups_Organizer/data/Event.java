@@ -169,4 +169,14 @@ public class Event{
     public boolean isAdmin(Person mUser) {
         return mAdmin.equals(mUser.getUsername());
     }
+
+    public boolean isGoing(Person aPerson){
+        String userName = aPerson.getUsername();
+        for(Person confimPerson : confirmed){
+            if (userName.equals(confimPerson.getUsername())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
+import cl.dcc.Groups_Organizer.connection.ConfirmConn;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
 import cl.dcc.Groups_Organizer.connection.CreateEventConn;
 import cl.dcc.Groups_Organizer.connection.GetEventInfoConn;
@@ -81,6 +82,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             if (extras.containsKey("Event")) {
                 mEvent = Parcels.unwrap(extras.getParcelable("Event"));
                 mNewEvent = false;
+
             }
             if(PagerViewHost_.mUser != null) {
                 mUser = PagerViewHost_.mUser;//Parcels.unwrap(extras.getParcelable("User"));
@@ -199,31 +201,21 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());
 
-        createEventConn.go(params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-                Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                if (statusCode == 200 && responseString.trim().equals("OK")) {
-                    Toast.makeText(getApplicationContext(), "Evento creado", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        createEventConn.go(params, new MyHttpResponseHandler("Event Created"));
 
         mLoadingMsg.stopPopUp();
     }
 
     @Click
     void buttonAddPeople() {
-        if(!mNewEvent && !mEvent.isAdmin(mUser))
+        if(!mNewEvent && !mEvent.isAdmin(mUser)) {
+            mLoadingMsg.startPopUp();
+            ConfirmConn confirmConn = new ConfirmConn(getHttpClient());
+            RequestParams params = confirmConn.generateParams(mEvent.getId(),mEvent.isGoing(mUser)?0:1);
+            confirmConn.go(params,new MyHttpResponseHandler("Change attendance status"));
+            mLoadingMsg.stopPopUp();
             return;
+        }
         startActivity(new Intent(this, AddPeople_.class));
     }
 
@@ -265,4 +257,28 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
 
+    private class MyHttpResponseHandler extends TextHttpResponseHandler {
+
+        private String mMsg;
+
+        public MyHttpResponseHandler(String message){
+            super();
+            mMsg = message;
+        }
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+            if (statusCode == 200 && responseString.trim().equals("OK")) {
+                Toast.makeText(getApplicationContext(), mMsg, Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
