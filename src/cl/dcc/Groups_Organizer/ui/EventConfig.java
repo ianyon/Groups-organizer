@@ -190,7 +190,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Click
     void buttonAddPeople() {
-        startActivity(new Intent(this, AddPeople.class));
+        startActivity(new Intent(this, AddPeople_.class));
     }
 
     @Override

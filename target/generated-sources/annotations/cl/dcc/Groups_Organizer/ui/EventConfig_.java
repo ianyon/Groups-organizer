@@ -87,8 +87,8 @@ public final class EventConfig_
         mEventWhen = ((EditText) hasViews.findViewById(id.eventConfigEventWhen));
         mEventDescription = ((EditText) hasViews.findViewById(id.eventConfigEventDescription));
         mEventName = ((EditText) hasViews.findViewById(id.eventConfigEventName));
-        mEventWhere = ((EditText) hasViews.findViewById(id.eventConfigEventWhere));
         mAttendees = ((ListView) hasViews.findViewById(id.eventConfigAsistend));
+        mEventWhere = ((EditText) hasViews.findViewById(id.eventConfigEventWhere));
         {
             View view = hasViews.findViewById(id.buttonAddPeople);
             if (view!= null) {
