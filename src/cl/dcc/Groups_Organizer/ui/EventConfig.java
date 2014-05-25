@@ -64,6 +64,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     @ViewById
     Button buttonCreate;
 
+    @ViewById(R.id.buttonAddPeople)
+    Button mAddPeopleButton;
+
     @ViewById(R.id.buttonCreate)
     Button mCreateButton;
     @Override
@@ -79,8 +82,10 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
                 mEvent = Parcels.unwrap(extras.getParcelable("Event"));
                 mNewEvent = false;
             }
-            if(extras.containsKey("User"))
-                mUser = Parcels.unwrap(extras.getParcelable("User"));
+            if(PagerViewHost_.mUser != null) {
+                mUser = PagerViewHost_.mUser;//Parcels.unwrap(extras.getParcelable("User"));
+            }
+
         }
 
         mLoadingMsg = new LoadingThing(EventConfig.this);
@@ -101,8 +106,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
             canEditEvent();
-
-            buttonCreate.setText("Editar");
         }
     }
 
@@ -131,6 +134,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void refresh() {
+        mLoadingMsg.startPopUp();
         if (mEvent == null)
             return;
 
@@ -152,14 +156,17 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             	} else if("ERROR".equals(responseString)) {
             		message = "Error in server";
             	}
+
                 Toast.makeText(EventConfig.this, message, Toast.LENGTH_LONG).show();
+                mLoadingMsg.stopPopUp();
             }
             
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             	if (statusCode != 200 ) {
             		Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
-            		return;
+                    mLoadingMsg.stopPopUp();
+                    return;
             	}
 
             	try {
@@ -168,16 +175,20 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 				} catch (JSONException e) {
 					Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
 					e.printStackTrace();
+                    mLoadingMsg.stopPopUp();
 					return;
 				}
-            	
+                mLoadingMsg.stopPopUp();
             	loadEventInfo();
             	super.onSuccess(statusCode, headers, response);
             }
         });
+
     }
 
     public void onCreateEvent(View v){
+
+        mLoadingMsg.startPopUp();
         if(!mNewEvent && !mEvent.isAdmin(mUser)){
             finish();
         }
