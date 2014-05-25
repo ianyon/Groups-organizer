@@ -1,16 +1,14 @@
 package cl.dcc.Groups_Organizer.connection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.text.Editable;
 import cl.dcc.Groups_Organizer.data.Person;
+
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gonzalo on 29-04-2014.

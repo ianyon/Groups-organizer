@@ -1,11 +1,10 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import android.view.View;
-import cl.dcc.Groups_Organizer.connection.CreateEventConn;
-import com.loopj.android.http.TextHttpResponseHandler;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
@@ -20,12 +19,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
+import cl.dcc.Groups_Organizer.connection.CreateEventConn;
 import cl.dcc.Groups_Organizer.connection.GetEventInfoConn;
 import cl.dcc.Groups_Organizer.controller.PersonAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
@@ -34,13 +34,15 @@ import cl.dcc.Groups_Organizer.data.Person;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 /**
  * Created by Ian on 15-05-2014.
  */
 @EActivity(R.layout.event_config)
 public class EventConfig extends CustomFragmentActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	
     private AdminPreferences preferences;
     private Event mEvent;
     private PersonAdapter mAdapter;
@@ -80,13 +82,13 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         if (mEvent != null){
             mEventName.setText(mEvent.getName());
             mEventDescription.setText(mEvent.getDescription());
-            mEventWhen.setText(mEvent.getTimeDare());
+            if(mEvent.getDatetime() != null) 
+            	mEventWhen.setText(dateFormat.format(mEvent.getDatetime()));
             mEventWhere.setText(mEvent.getLocation());
             List<Person> guestList = mAdapter.getList();
             guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
-            //ArrayList<String> myStringArray = getUserList(mEvent);
         }
         //TODO hay que cambiar el evento al que corresponde e implemetar bien getUserList
     }
@@ -101,31 +103,11 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         toast.show();
     }
 
-    private ArrayList<String> getUserList(Event aEvent) {
-
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile" };
-
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        return list;
-    }
-
     @AfterViews
     protected void init() {
         if (mEvent != null) {
             Toast.makeText(this, "Llegó un evento", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void fillInfotmation(Event aEvent) {
-
-
     }
 
     public void refresh() {
@@ -141,10 +123,16 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         GetEventInfoConn eventsConn = new GetEventInfoConn(getHttpClient());
         RequestParams params = eventsConn.generateParams(mEvent.getId());
         eventsConn.go(params, new JsonHttpResponseHandler() {
-
+        	
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+            	String message = "Error when connecting to the server";
+            	if("EVENT NOT FOUND".equals(responseString)) {
+            		message = "Event not found";
+            	} else if("ERROR".equals(responseString)) {
+            		message = "Error in server";
+            	}
+                Toast.makeText(EventConfig.this, message, Toast.LENGTH_LONG).show();
             }
             
             @Override
@@ -197,24 +185,18 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-        preferences.getPreferencias().registerOnSharedPreferenceChangeListener(this);
+        preferences.getPreferencias(AdminPreferences.PREFERENCIAS_EVENTOS).registerOnSharedPreferenceChangeListener(this);
         onDataChanged();
         refresh();
 
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        preferences.getPreferencias().unregisterOnSharedPreferenceChangeListener(this);
+    public void onStop() {
+        super.onStop();
+        preferences.getPreferencias(AdminPreferences.PREFERENCIAS_EVENTOS).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void onDataChanged() {
@@ -226,15 +208,16 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
         if (event == null)
             return;
-
-        mAdapter.getList().clear();
-        mAdapter.getList().addAll(event.getGuestList());
-        mAdapter.notifyDataSetChanged();
+        
+        loadEventInfo();
+//        mAdapter.getList().clear();
+//        mAdapter.getList().addAll(event.getGuestList());
+//        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(AdminPreferences.PUBLIC_EVENTS))
+        if (key.equals(mEvent.getId()+""))
             onDataChanged();
     }
 

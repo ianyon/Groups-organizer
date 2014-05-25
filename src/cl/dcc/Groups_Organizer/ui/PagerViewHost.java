@@ -154,17 +154,6 @@ public class PagerViewHost extends CustomFragmentActivity {
                               Throwable throwable) {
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
-
-       /* @Override
-        public void onSuccess(int statusCode, Header[] headers, String responseBody) {
-            // TODO: hacer mas verboso el control de errores
-            if (statusCode == 200 && parseResponse(responseBody)) {
-                preferences.setValores(category, data);
-                Toast.makeText(PagerViewHost.this, "Datos recibidos", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
-            }
-        }*/
         
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -172,19 +161,6 @@ public class PagerViewHost extends CustomFragmentActivity {
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
         	}
         	preferences.setValores(dataType, response);
-        	//super.onSuccess(statusCode, headers, response);
-        }
-        
-
-        private boolean parseResponse(String body) {
-            body = body.trim();
-            int i;
-            if ((i = body.indexOf("\n")) == -1)
-                return false;
-
-            category = body.substring(0, i);
-            data = body.substring(i);
-            return true;
         }
     }
 

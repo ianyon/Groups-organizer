@@ -7,7 +7,7 @@ import com.loopj.android.http.RequestParams;
  * Created by Ian on 22-05-2014.
  */
 public class GetEventInfoConn extends HttpConnection{
-    private static final String mUrl = "list_users.php";
+    private static final String mUrl = "event_info.php";
 
     public GetEventInfoConn(AsyncHttpClient client) {
         super(client);
@@ -19,6 +19,6 @@ public class GetEventInfoConn extends HttpConnection{
     }
 
     public RequestParams generateParams(int id) {
-        return new RequestParams();
+        return new RequestParams("event_id", id);
     }
 }

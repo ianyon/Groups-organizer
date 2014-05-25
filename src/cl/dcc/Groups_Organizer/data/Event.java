@@ -17,7 +17,6 @@ import org.parceler.Parcel;
  */
 @Parcel
 public class Event{
-	public int id;
     public String name;
     public String description;
     public String location;
@@ -26,6 +25,7 @@ public class Event{
     public List<Person> guestList;
     private int confirmedCount;
     private int guestListCount;
+    private int id;
     
     private static SimpleDateFormat datetimeFormatJson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -140,8 +140,6 @@ public class Event{
     public Date getDatetime() {
         return datetime;
     }
-
-    public String getTimeDare() {return datetime.toString();}
 
     public List<Person> getConfirmed() {
         return confirmed;

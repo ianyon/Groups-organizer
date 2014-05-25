@@ -2,7 +2,6 @@ package cl.dcc.Groups_Organizer.ui;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.parceler.Parcels;
