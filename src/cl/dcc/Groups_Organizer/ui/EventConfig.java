@@ -43,7 +43,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private Event mEvent;
     private PersonAdapter mAdapter;
     private LoadingThing mLoadingMsg;
-    private Person mUser = new Person("noAdmin","mm");
+    private Person mUser;
     private boolean mNewEvent = true;
 
     @ViewById(R.id.eventConfigEventName)
@@ -79,9 +79,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
         if (extras != null) {
             if (extras.containsKey("Event")) {
-            mEvent = Parcels.unwrap(extras.getParcelable("Event"));
+                mEvent = Parcels.unwrap(extras.getParcelable("Event"));
                 mNewEvent = false;
-        }
+            }
             if(PagerViewHost_.mUser != null) {
                 mUser = PagerViewHost_.mUser;//Parcels.unwrap(extras.getParcelable("User"));
             }
