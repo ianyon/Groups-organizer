@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.mobsandgeeks.saripaar.Rule;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 

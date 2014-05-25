@@ -1,16 +1,16 @@
 package cl.dcc.Groups_Organizer.data;
 
-import org.json.JSONException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import org.json.JSONException;
 
 public class AdminPreferences {
     // Categorías en las preferencias PREFERENCIAS_DATOS.
     public static final String PERSONAL = "Personal";
     public static final String PUBLIC_EVENTS = "PUBLIC", PRIVATE_EVENTS = "PRIVATE", USER = "USER";
     // Preferencias disponibles en la aplicación.
-    private static final String PREFERENCIAS_GENERALES = "PREFERENCIAS_GENERALES", USUARIOS = "USUARIOS", EVENTOS = "EVENTOS";
+    public static final String PREFERENCIAS_GENERALES = "PREFERENCIAS_GENERALES",
+    		PREFERENCIAS_USUARIOS = "PREFERENCIAS_USUARIOS", PREFERENCIAS_EVENTOS = "PREFERENCIAS_EVENTOS";
     private Context mContext;
 
     public AdminPreferences(Context context) {
@@ -21,7 +21,7 @@ public class AdminPreferences {
         return mContext.getSharedPreferences(PREFERENCIAS_GENERALES, 0);
     }
     
-    private SharedPreferences getPreferencias(String tipo) {
+    public SharedPreferences getPreferencias(String tipo) {
     	return mContext.getSharedPreferences(tipo, 0);
     }
 
@@ -41,7 +41,7 @@ public class AdminPreferences {
     }
 
     public Person getPerson(String username) throws JSONException {
-    	return new Person(getPreferencias(USUARIOS).getString(username, "{}"));
+    	return new Person(getPreferencias(PREFERENCIAS_USUARIOS).getString(username, "{}"));
     }
     
     public Person getUser() {
@@ -54,15 +54,15 @@ public class AdminPreferences {
     }
     
     public void savePerson(Person user) {
-    	getPreferencias(USUARIOS).edit().putString(user.getUsername(), user.toString()).commit();
+    	getPreferencias(PREFERENCIAS_USUARIOS).edit().putString(user.getUsername(), user.toString()).commit();
     }
     
     public void saveEvent(Event event) {
-    	getPreferencias(EVENTOS).edit().putString(""+event.getId(), event.toString()).commit();
+    	getPreferencias(PREFERENCIAS_EVENTOS).edit().putString(""+event.getId(), event.toString()).commit();
     }
 
     public Event getEvent(int id) {
-        String jsonString = getPreferencias().getString(id+"", "{}");
+        String jsonString = getPreferencias(PREFERENCIAS_EVENTOS).getString(id+"", "{}");
         try {
             return new Event(jsonString);
         } catch (JSONException e) {

@@ -1,13 +1,13 @@
 package cl.dcc.Groups_Organizer.controller;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cl.dcc.Groups_Organizer.data.Person;
+
+import java.util.List;
 
 /**
  * Created by Ian on 23-05-2014.

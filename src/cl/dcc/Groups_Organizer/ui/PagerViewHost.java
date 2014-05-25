@@ -1,13 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
 import cl.dcc.Groups_Organizer.utilities.LoadingThing;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.parceler.Parcels;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -22,9 +15,14 @@ import cl.dcc.Groups_Organizer.connection.GetEventListConn;
 import cl.dcc.Groups_Organizer.controller.TabsAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Person;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.parceler.Parcels;
 
 @EActivity(R.layout.pager_view)
 public class PagerViewHost extends CustomFragmentActivity {
@@ -169,17 +167,6 @@ public class PagerViewHost extends CustomFragmentActivity {
             mLoadingMsg.stopPopUp();
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
-
-       /* @Override
-        public void onSuccess(int statusCode, Header[] headers, String responseBody) {
-            // TODO: hacer mas verboso el control de errores
-            if (statusCode == 200 && parseResponse(responseBody)) {
-                preferences.setValores(category, data);
-                Toast.makeText(PagerViewHost.this, "Datos recibidos", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
-            }
-        }*/
         
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -189,19 +176,6 @@ public class PagerViewHost extends CustomFragmentActivity {
         	}
             mLoadingMsg.stopPopUp();
         	preferences.setValores(dataType, response);
-        	//super.onSuccess(statusCode, headers, response);
-        }
-        
-
-        private boolean parseResponse(String body) {
-            body = body.trim();
-            int i;
-            if ((i = body.indexOf("\n")) == -1)
-                return false;
-
-            category = body.substring(0, i);
-            data = body.substring(i);
-            return true;
         }
     }
 

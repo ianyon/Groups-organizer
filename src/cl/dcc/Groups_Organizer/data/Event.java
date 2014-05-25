@@ -17,7 +17,6 @@ import java.util.Locale;
  */
 @Parcel
 public class Event{
-	public int id;
     public String name;
     public String description;
     public String location;
@@ -26,6 +25,7 @@ public class Event{
     public List<Person> guestList;
     private int confirmedCount;
     private int guestListCount;
+    private int id;
     
     private static SimpleDateFormat datetimeFormatJson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -93,9 +93,9 @@ public class Event{
     	JSONObject jsonObject = new JSONObject();
     	try {
     		jsonObject.put("id", id);
-    		jsonObject.put("name", id);
-    		jsonObject.put("description", id);
-    		jsonObject.put("location", id);
+    		jsonObject.put("name", name);
+    		jsonObject.put("description", description);
+    		jsonObject.put("location", location);
     		if(datetime != null) {
 	    		jsonObject.put("datetime", datetimeFormatJson.format(datetime));
     		}
@@ -106,11 +106,11 @@ public class Event{
     			entry.put("confirmed", confirmed.indexOf(person.getUsername()) == -1 ? "0" : "1");
     			guests.put(entry);
     		}
-    		jsonObject.put("guests", id);
+    		jsonObject.put("guests", guests);
     	} catch(JSONException e) {
     		
     	}
-    	return super.toString();
+    	return jsonObject.toString();
     }
 
     public Event(String jsonString) throws JSONException {
@@ -145,7 +145,6 @@ public class Event{
         if (datetime == null)
             return "";
         return datetime.toString();}
-
     public List<Person> getConfirmed() {
         return confirmed;
     }

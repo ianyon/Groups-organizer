@@ -1,12 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.parceler.Parcels;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +12,10 @@ import cl.dcc.Groups_Organizer.controller.EventAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.EventListData;
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ian on 13-04-2014.
