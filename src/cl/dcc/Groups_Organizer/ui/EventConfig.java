@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
 import cl.dcc.Groups_Organizer.connection.CreateEventConn;
@@ -64,8 +61,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     @ViewById(R.id.eventConfigAsistend)
     ListView mAttendees;
 
-    @ViewById(R.id.buttonAddPeople)
-    Button mAddPeopleButton;
+    @ViewById
+    Button buttonCreate;
 
     @ViewById(R.id.buttonCreate)
     Button mCreateButton;
@@ -105,6 +102,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mAdapter.notifyDataSetChanged();
             canEditEvent();
 
+            buttonCreate.setText("Editar");
         }
     }
 
@@ -163,9 +161,10 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             		Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
             		return;
             	}
-            	
+
             	try {
-					preferences.saveEvent(new Event(response));
+                    mEvent = new Event(response);
+					preferences.saveEvent(mEvent);
 				} catch (JSONException e) {
 					Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
 					e.printStackTrace();
@@ -182,7 +181,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         if(!mNewEvent && !mEvent.isAdmin(mUser)){
             finish();
         }
-        mLoadingMsg.stratPopUp();
         CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());

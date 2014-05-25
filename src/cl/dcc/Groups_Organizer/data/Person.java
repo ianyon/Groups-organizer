@@ -15,6 +15,7 @@ public class Person {
     public String gender;
     public String email;
     public int age;
+    public String id;
 
     public Person(){}
     
@@ -35,6 +36,11 @@ public class Person {
     	this.gender = gender;
         this.age = age;
     }
+
+    public Person(String jsonString) throws JSONException {
+        this(new JSONObject(jsonString));
+    }
+
     public Person(JSONObject jsonPerson){
     	username = "";
         name = "";
@@ -43,7 +49,7 @@ public class Person {
         age = -1;
 
         try {
-        	username = jsonPerson.getString("user_name"); 
+        	username = jsonPerson.getString("user_name");
             name = jsonPerson.getString("name");
             gender = jsonPerson.getString("gender");
             email = jsonPerson.getString("email");
@@ -53,7 +59,7 @@ public class Person {
             Log.e("JSON","JSON EXCEPTION: "+e);
         }
     }
-    
+
     @Override
     public String toString() {
     	JSONObject jsonObject = new JSONObject();
@@ -68,10 +74,6 @@ public class Person {
 			e.printStackTrace();
 		}
     	return "{}";
-    }
-    
-    public Person(String jsonString) throws JSONException {
-        this(new JSONObject(jsonString));
     }
 
     public JSONObject toJSONObject() throws JSONException {

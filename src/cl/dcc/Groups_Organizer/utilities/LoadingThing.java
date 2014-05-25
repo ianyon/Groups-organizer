@@ -26,7 +26,7 @@ public class LoadingThing {
         myMsg = "Waiting for server response";
     }
 
-    public void stratPopUp(){
+    public void startPopUp(){
         progressDialog = ProgressDialog.show(myContext, myTitle, myMsg);
     }
 

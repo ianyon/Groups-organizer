@@ -82,12 +82,21 @@ public final class PagerViewHost_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+<<<<<<< HEAD
         mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
         mCreateEvent = ((View) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonCreateEvent));
         mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
         mButtonGroups = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonGroups));
         mButtonProfile = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonProfile));
         mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
+=======
+        mViewPager = ((ViewPager) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pager));
+        mButtonGroups = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonGroups));
+        mTextUserName = ((TextView) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewTextName));
+        mCreateEvent = ((View) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonCreateEvent));
+        mTabHost = ((TabHost) hasViews.findViewById(android.R.id.tabhost));
+        mButtonProfile = ((ImageButton) hasViews.findViewById(cl.dcc.Groups_Organizer.R.id.pagerViewButtonProfile));
+>>>>>>> origin/master
         initVars();
     }
 

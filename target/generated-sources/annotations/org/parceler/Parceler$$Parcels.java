@@ -6,7 +6,11 @@ import java.util.Map;
 import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.Event$$Parcelable;
 
+<<<<<<< HEAD
 @Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-25T03:06-0400")
+=======
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-25T09:20-0500")
+>>>>>>> origin/master
 public class Parceler$$Parcels
     implements Repository<org.parceler.Parcels.ParcelableFactory>
 {
