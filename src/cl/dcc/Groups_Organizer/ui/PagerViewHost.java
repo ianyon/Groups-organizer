@@ -114,11 +114,13 @@ public class PagerViewHost extends CustomFragmentActivity {
         RequestParams reqParams = eventsConn.generateParams(false);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
-        mLoadingMsg.stratPopUp();
+
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
         reqParams = eventsConn.generateParams(true);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
+
+        mLoadingMsg.stopPopUp();
     }
 
     @Override
@@ -164,17 +166,16 @@ public class PagerViewHost extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
-            mLoadingMsg.stopPopUp();
+           // mLoadingMsg.stopPopUp();
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
         
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         	if(statusCode != 200) {
-                mLoadingMsg.stopPopUp();
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
         	}
-            mLoadingMsg.stopPopUp();
+            //mLoadingMsg.stopPopUp();
         	preferences.setValores(dataType, response);
         }
     }
