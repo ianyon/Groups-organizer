@@ -46,7 +46,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private Event mEvent;
     private PersonAdapter mAdapter;
     private LoadingThing mLoadingMsg;
-    private Person mUser;
+    private Person mUser = new Person("noAdmin","mm");
     private boolean mNewEvent = true;
 
     @ViewById(R.id.eventConfigEventName)
@@ -120,7 +120,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             } else {
                 mCreateButton.setText("Save Changes");
             }
-
         }
     }
     private void showRegisterWarning(CharSequence text){
@@ -191,22 +190,22 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         createEventConn.go(params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                mLoadingMsg.stopPopUp();
+
                 Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 if (statusCode == 200 && responseString.trim().equals("OK")) {
-                    mLoadingMsg.stopPopUp();
                     Toast.makeText(getApplicationContext(), "Evento creado", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    mLoadingMsg.stopPopUp();
                     Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        mLoadingMsg.stopPopUp();
     }
 
     @Click

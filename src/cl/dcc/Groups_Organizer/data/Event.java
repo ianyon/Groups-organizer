@@ -72,7 +72,7 @@ public class Event{
             mAdmin = jsonEvent.getString("creator");
         }
         catch (Exception e){
-            mAdmin = "notAdmin";
+            mAdmin = "noAdmin";
         }
         guestList = new ArrayList<Person>();
         confirmed = new ArrayList<Person>();
