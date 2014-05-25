@@ -12,8 +12,8 @@ public class GetEventListConn extends HttpConnection {
 
     public GetEventListConn(AsyncHttpClient client) { super(client); }
 
-    public RequestParams generateParams(CharSequence email) {
-        return new RequestParams("email", email);
+    public RequestParams generateParams(boolean onlyPrivate) {
+        return new RequestParams("only_invited_to", onlyPrivate?"1":"0");
     }
 
     @Override

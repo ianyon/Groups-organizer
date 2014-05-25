@@ -1,5 +1,12 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.parceler.Parcels;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,17 +21,12 @@ import cl.dcc.Groups_Organizer.connection.GetEventListConn;
 import cl.dcc.Groups_Organizer.controller.TabsAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Person;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.parceler.Parcels;
 
 @EActivity(R.layout.pager_view)
 public class PagerViewHost extends CustomFragmentActivity {
-    private static final boolean DEBUG = false;
     // Sección pager
     @ViewById(android.R.id.tabhost)
     TabHost mTabHost;
@@ -67,8 +69,8 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         refresh();
     }
 
@@ -105,12 +107,13 @@ public class PagerViewHost extends CustomFragmentActivity {
 
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
-        eventsConn.go(null, new EventListHttpResponseHandler());
+        RequestParams reqParams = eventsConn.generateParams(false);
+        eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
-        RequestParams reqParams = eventsConn.generateParams(mUser.getEmail());
-        eventsConn.go(reqParams, new EventListHttpResponseHandler());
+        reqParams = eventsConn.generateParams(true);
+        eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
     }
 
     @Override
@@ -128,11 +131,13 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     public void onRegisterClick(View v){
+        Toast.makeText(PagerViewHost.this, mUser.getUsername(), Toast.LENGTH_LONG).show();
         Intent aIntent = new Intent(this,Register_.class);
         Bundle extras = new Bundle();
         extras.putParcelable("User", Parcels.wrap(mUser));
         aIntent.putExtras(extras);
-        startActivity(aIntent);  }
+        startActivity(aIntent);
+        }
 
     public void onAddFriendsClick(View v) {
         startActivity(new Intent(this, AddPeople.class));
@@ -143,8 +148,13 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     // Object for Handling the http response
-    private class EventListHttpResponseHandler extends TextHttpResponseHandler {
+    private class EventListHttpResponseHandler extends JsonHttpResponseHandler {
         private String category, data;
+        private String dataType;
+        
+        public EventListHttpResponseHandler(String dataType) {
+			this.dataType = dataType; 
+		}
 
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
@@ -152,7 +162,7 @@ public class PagerViewHost extends CustomFragmentActivity {
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
-        @Override
+       /* @Override
         public void onSuccess(int statusCode, Header[] headers, String responseBody) {
             // TODO: hacer mas verboso el control de errores
             if (statusCode == 200 && parseResponse(responseBody)) {
@@ -161,7 +171,17 @@ public class PagerViewHost extends CustomFragmentActivity {
             } else {
                 Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
             }
+        }*/
+        
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+        	if(statusCode != 200) {
+        		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
+        	}
+        	preferences.setValores(dataType, response);
+        	//super.onSuccess(statusCode, headers, response);
         }
+        
 
         private boolean parseResponse(String body) {
             body = body.trim();

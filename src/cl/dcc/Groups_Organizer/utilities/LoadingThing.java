@@ -31,6 +31,9 @@ public class LoadingThing {
     }
 
     public void stopPopUp(){
+
+        if(progressDialog == null)
+            return;
         progressDialog.dismiss();
     }
 }

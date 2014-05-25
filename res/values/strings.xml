@@ -17,7 +17,7 @@
     <string name="registerAgeVerification">Age is not valid</string>
     <string name="registerPassVerification">Password should be at least 5 characters long</string>
     <string name="registerEmailVerification">Must be a valid email</string>
-    <string name="eventconfigtextView">Event Configurationt</string>
+    <string name="eventconfigtextView">Event Configuration</string>
     <string name="event_configEventName">Event Name</string>
     <string name="event_configDescription">Description</string>
     <string name="event_configWhen">When?</string>

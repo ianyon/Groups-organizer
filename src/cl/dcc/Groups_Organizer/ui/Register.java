@@ -1,5 +1,12 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.parceler.Parcels;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,14 +20,14 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
-import com.mobsandgeeks.saripaar.annotation.*;
+import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NumberRule;
 import com.mobsandgeeks.saripaar.annotation.NumberRule.NumberType;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.parceler.Parcels;
+import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.Required;
+import com.mobsandgeeks.saripaar.annotation.Select;
+import com.mobsandgeeks.saripaar.annotation.TextRule;
 
 /**
  * Created by Roberto
@@ -112,8 +119,8 @@ public class Register extends CustomFragmentActivity {
 
         Bundle extras = this.getIntent().getExtras();
 
-        if (extras != null && extras.containsKey("Person")) {
-            mPerson = Parcels.unwrap(extras.getParcelable("Person"));
+        if (extras != null && extras.containsKey("User")) {
+            mPerson = Parcels.unwrap(extras.getParcelable("User"));
         }
         loadingMsg = new LoadingThing(Register.this);
     }
@@ -123,10 +130,17 @@ public class Register extends CustomFragmentActivity {
         if (mPerson != null) {
             mUserName.setText(mPerson.getName());
             mUserMail.setText(mPerson.getEmail());
-            mUserMail.setKeyListener(null);
-            mUserUsername.setText(mPerson.getName());
+            mUserUsername.setText(mPerson.getUsername());
+            mUserUsername.setKeyListener(null);
             mUserAge.setText(Integer.toString(mPerson.getAge()));
-            registerGender.setSelection("Male".equals(mPerson.getGender())?1:2);
+            try {
+                registerGender.setSelection((Integer.parseInt(mPerson.getGender()) + 1));
+            }
+            catch(Exception e){
+                Toast.makeText(Register.this, "Error Gender, yours " + mPerson.getGender(), Toast.LENGTH_SHORT).show();
+                registerGender.setSelection(0);
+            }
+
             mOkButton.setText("Guardar Cambios");
         }
     }

@@ -39,14 +39,7 @@ public class Login extends CustomFragmentActivity {
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
-			if (true) {
-        myLoadingMsg.stratPopUp();
-	            // TODO: Borrar, Fake autentication
-	            doLoginVerified(new Person("Juan Valdes", "el_cafetero_mas_loco@gmail.com"));
-	            return;
-	        }
-            myLoadingMsg.stopPopUp();
-	        LoginConn loginConn = new LoginConn(getHttpClient());
+            LoginConn loginConn = new LoginConn(getHttpClient());
 	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
 	        loginConn.go(reqParams, httpHandler);
 		}
@@ -62,14 +55,22 @@ public class Login extends CustomFragmentActivity {
 
 
     }
-	
-	@Click(R.id.signup)
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myLoadingMsg.stopPopUp();
+    }
+
+    @Click(R.id.signup)
 	public void onSignupClick(View v){
         startActivity(new Intent(this,Register_.class));
     }
 
 	@Click(R.id.login)
     public void onLoginClick() {
+        myLoadingMsg.stratPopUp();
         validator.validate();
     }
 
@@ -80,10 +81,10 @@ public class Login extends CustomFragmentActivity {
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
 
-        myLoadingMsg.stopPopUp();
-
         startActivity(intent);
     }
+
+
 
     // Object for Handling the http response
     private TextHttpResponseHandler httpHandler = new TextHttpResponseHandler() {
