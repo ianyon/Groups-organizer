@@ -73,12 +73,7 @@ public class Event{
         if(jsonEvent.has("guests")) {
         	JSONArray guests = jsonEvent.getJSONArray("guests");
         	for(int i = 0; i < guests.length(); i++) {
-        		JSONObject entry = guests.getJSONObject(i);
-        		Person person = new Person(entry.getString("user_id"));
-        		guestList.add(person);
-        		if(entry.getBoolean("confirmed")) {
-        			confirmed.add(person);
-        		}
+                populateGuests(guests.getJSONObject(i));
         	}
         	confirmedCount = confirmed.size();
         	guestListCount = guestList.size();
@@ -87,7 +82,17 @@ public class Event{
         	guestListCount = jsonEvent.optInt("guestListCount",0);
         }
     }
-    
+
+    private void populateGuests(JSONObject entry) throws JSONException {
+        Person person = new Person();
+        person.id = entry.getString("user_id");
+        person.name = entry.getString("name");
+        guestList.add(person);
+        if(entry.getBoolean("confirmed")) {
+            confirmed.add(person);
+        }
+    }
+
     @Override
     public String toString() {
     	JSONObject jsonObject = new JSONObject();

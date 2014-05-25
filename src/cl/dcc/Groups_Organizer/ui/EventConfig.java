@@ -145,9 +145,10 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             		Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
             		return;
             	}
-            	
+
             	try {
-					preferences.saveEvent(new Event(response));
+                    mEvent = new Event(response);
+					preferences.saveEvent(mEvent);
 				} catch (JSONException e) {
 					Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
 					e.printStackTrace();

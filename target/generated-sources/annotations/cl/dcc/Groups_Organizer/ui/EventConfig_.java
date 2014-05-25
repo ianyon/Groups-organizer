@@ -83,12 +83,12 @@ public final class EventConfig_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mEventName = ((EditText) hasViews.findViewById(id.eventConfigEventName));
-        mAttendees = ((ListView) hasViews.findViewById(id.eventConfigAsistend));
         buttonCreate = ((Button) hasViews.findViewById(id.buttonCreate));
         mEventWhen = ((EditText) hasViews.findViewById(id.eventConfigEventWhen));
-        mEventWhere = ((EditText) hasViews.findViewById(id.eventConfigEventWhere));
         mEventDescription = ((EditText) hasViews.findViewById(id.eventConfigEventDescription));
+        mEventName = ((EditText) hasViews.findViewById(id.eventConfigEventName));
+        mEventWhere = ((EditText) hasViews.findViewById(id.eventConfigEventWhere));
+        mAttendees = ((ListView) hasViews.findViewById(id.eventConfigAsistend));
         {
             View view = hasViews.findViewById(id.buttonAddPeople);
             if (view!= null) {

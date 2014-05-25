@@ -15,8 +15,9 @@ if($stmt->execute()) {
 		die("EVENT NOT FOUND");
 	}
 	$event = $result->fetch_assoc();
-	
-	$stmt = $conn->prepare("SELECT user_id, confirmed FROM event_invited_users WHERE event_id = ?");
+	$stmt = $conn->prepare("SELECT user_id, confirmed, name
+							FROM event_invited_users join user on user_id = user_name  
+							WHERE event_id = ?");
 	$stmt->bind_param('s', $_POST['event_id']);
 	if($stmt->execute()) {
 		$result = $stmt->get_result();

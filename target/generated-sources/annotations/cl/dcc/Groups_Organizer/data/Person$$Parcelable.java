@@ -6,7 +6,7 @@ import android.os.Parcelable.Creator;
 import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-25T08:08-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2014-05-25T09:19-0500")
 public class Person$$Parcelable
     implements Parcelable, ParcelWrapper<cl.dcc.Groups_Organizer.data.Person>
 {
@@ -17,6 +17,7 @@ public class Person$$Parcelable
 
     public Person$$Parcelable(android.os.Parcel parcel$$3) {
         person$$2 = new cl.dcc.Groups_Organizer.data.Person();
+        person$$2 .id = parcel$$3 .readString();
         person$$2 .username = parcel$$3 .readString();
         person$$2 .email = parcel$$3 .readString();
         person$$2 .age = parcel$$3 .readInt();
@@ -30,6 +31,7 @@ public class Person$$Parcelable
 
     @Override
     public void writeToParcel(android.os.Parcel parcel$$4, int flags) {
+        parcel$$4 .writeString(person$$2 .id);
         parcel$$4 .writeString(person$$2 .username);
         parcel$$4 .writeString(person$$2 .email);
         parcel$$4 .writeInt(person$$2 .age);
