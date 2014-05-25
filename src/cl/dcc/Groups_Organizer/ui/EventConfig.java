@@ -116,7 +116,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
                 mEventDescription.setKeyListener(null);
                 mEventWhen.setKeyListener(null);
                 mEventWhere.setKeyListener(null);
-                mAddPeopleButton.setText("Just a button");
+                mAddPeopleButton.setText("I am Going");
                 mCreateButton.setText("Return");
             } else {
                 mCreateButton.setText("Save Changes");
