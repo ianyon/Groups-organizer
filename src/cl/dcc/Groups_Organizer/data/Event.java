@@ -1,16 +1,16 @@
 package cl.dcc.Groups_Organizer.data;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.parceler.Parcel;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.parceler.Parcel;
 
 /**
  * Created by Ian on 14-04-2014.
@@ -93,9 +93,9 @@ public class Event{
     	JSONObject jsonObject = new JSONObject();
     	try {
     		jsonObject.put("id", id);
-    		jsonObject.put("name", id);
-    		jsonObject.put("description", id);
-    		jsonObject.put("location", id);
+    		jsonObject.put("name", name);
+    		jsonObject.put("description", description);
+    		jsonObject.put("location", location);
     		if(datetime != null) {
 	    		jsonObject.put("datetime", datetimeFormatJson.format(datetime));
     		}
@@ -106,11 +106,11 @@ public class Event{
     			entry.put("confirmed", confirmed.indexOf(person.getUsername()) == -1 ? "0" : "1");
     			guests.put(entry);
     		}
-    		jsonObject.put("guests", id);
+    		jsonObject.put("guests", guests);
     	} catch(JSONException e) {
     		
     	}
-    	return super.toString();
+    	return jsonObject.toString();
     }
 
     public Event(String jsonString) throws JSONException {

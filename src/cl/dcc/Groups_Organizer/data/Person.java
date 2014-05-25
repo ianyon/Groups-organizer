@@ -1,10 +1,9 @@
 package cl.dcc.Groups_Organizer.data;
 
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
-
-import android.util.Log;
 
 /**
  * Created by Ian on 21-05-2014.

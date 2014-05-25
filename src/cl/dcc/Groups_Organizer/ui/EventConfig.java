@@ -1,20 +1,5 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.parceler.Parcels;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,10 +16,22 @@ import cl.dcc.Groups_Organizer.controller.PersonAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.Person;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.parceler.Parcels;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Ian on 15-05-2014.
@@ -101,13 +98,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         assert context != null;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-    }
-
-    @AfterViews
-    protected void init() {
-        if (mEvent != null) {
-            Toast.makeText(this, "Llegó un evento", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void refresh() {
@@ -208,7 +198,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
         if (event == null)
             return;
-        
+        mEvent = event;
         loadEventInfo();
 //        mAdapter.getList().clear();
 //        mAdapter.getList().addAll(event.getGuestList());

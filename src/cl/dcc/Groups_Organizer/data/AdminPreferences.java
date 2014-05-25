@@ -1,9 +1,8 @@
 package cl.dcc.Groups_Organizer.data;
 
-import org.json.JSONException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import org.json.JSONException;
 
 public class AdminPreferences {
     // Categorías en las preferencias PREFERENCIAS_DATOS.
@@ -63,7 +62,7 @@ public class AdminPreferences {
     }
 
     public Event getEvent(int id) {
-        String jsonString = getPreferencias().getString(id+"", "{}");
+        String jsonString = getPreferencias(PREFERENCIAS_EVENTOS).getString(id+"", "{}");
         try {
             return new Event(jsonString);
         } catch (JSONException e) {
