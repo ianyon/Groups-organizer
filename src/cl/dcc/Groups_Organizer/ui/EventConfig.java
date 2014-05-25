@@ -70,7 +70,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mEvent = Parcels.unwrap(extras.getParcelable("Event"));
         }
         
-        mAdapter = new PersonAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<Person>());
+        mAdapter = new PersonAdapter(this, new ArrayList<Person>());
     }
 
     @AfterViews
