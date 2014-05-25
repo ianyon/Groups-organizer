@@ -90,6 +90,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
+
         }
     }
 
