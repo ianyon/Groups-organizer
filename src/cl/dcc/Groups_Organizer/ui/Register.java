@@ -81,7 +81,7 @@ public class Register extends CustomFragmentActivity {
             String pos = "" + (registerGender.getSelectedItemPosition() - 1);
             // Connect to server and register new user
 
-        loadingMsg.stratPopUp();
+            loadingMsg.stratPopUp();
 
             RegisterConn registerConn = new RegisterConn(getHttpClient());
             RequestParams requestParams = registerConn.generateParams(mUserName.getText(), mUserAge.getText(), pos

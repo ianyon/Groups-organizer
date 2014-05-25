@@ -16,6 +16,7 @@ import cl.dcc.Groups_Organizer.controller.PersonAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.Person;
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -40,6 +41,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private AdminPreferences preferences;
     private Event mEvent;
     private PersonAdapter mAdapter;
+    private LoadingThing mLoadingMsg;
+
     @ViewById(R.id.eventConfigEventName)
     EditText mEventName;
 
@@ -66,7 +69,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         if (extras != null && extras.containsKey("Event")) {
             mEvent = Parcels.unwrap(extras.getParcelable("Event"));
         }
-        
+
+        mLoadingMsg = new LoadingThing(EventConfig.this);
         mAdapter = new PersonAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<Person>());
     }
 
@@ -82,9 +86,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
-            //ArrayList<String> myStringArray = getUserList(mEvent);
         }
-        //TODO hay que cambiar el evento al que corresponde e implemetar bien getUserList
     }
 
     private void canEditEvent(){
@@ -103,21 +105,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         assert context != null;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-    }
-
-    private ArrayList<String> getUserList(Event aEvent) {
-
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile" };
-
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        return list;
     }
 
     @AfterViews
@@ -173,6 +160,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void onCreateEvent(View v){
+        mLoadingMsg.stratPopUp();
         CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());
@@ -180,15 +168,18 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         createEventConn.go(params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                mLoadingMsg.stopPopUp();
                 Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 if (statusCode == 200 && responseString.trim().equals("OK")) {
+                    mLoadingMsg.stopPopUp();
                     Toast.makeText(getApplicationContext(), "Evento creado", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
+                    mLoadingMsg.stopPopUp();
                     Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
                 }
             }

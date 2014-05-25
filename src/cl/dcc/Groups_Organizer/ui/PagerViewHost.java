@@ -1,5 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
@@ -51,6 +52,7 @@ public class PagerViewHost extends CustomFragmentActivity {
     TabsAdapter mTabsAdapter;
 
     private AdminPreferences preferences;
+    private LoadingThing mLoadingMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         }else{
             Toast.makeText(this,"Error fatal, no llego un usuario", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -92,6 +95,8 @@ public class PagerViewHost extends CustomFragmentActivity {
         TabHost.TabSpec tabSpec2 = mTabHost.newTabSpec("tab2");
         tabSpec2.setIndicator("My events", null);
         mTabsAdapter.addTab(tabSpec2, MyEvents.class, null);
+
+        mLoadingMsg = new LoadingThing(PagerViewHost.this);
     }
 
     public void onRefreshTriggered(View v) {
@@ -105,11 +110,13 @@ public class PagerViewHost extends CustomFragmentActivity {
             return;
         }
 
+        mLoadingMsg.stratPopUp();
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
         RequestParams reqParams = eventsConn.generateParams(false);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
+        mLoadingMsg.stratPopUp();
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
         reqParams = eventsConn.generateParams(true);
@@ -159,6 +166,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
+            mLoadingMsg.stopPopUp();
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
@@ -176,8 +184,10 @@ public class PagerViewHost extends CustomFragmentActivity {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         	if(statusCode != 200) {
+                mLoadingMsg.stopPopUp();
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
         	}
+            mLoadingMsg.stopPopUp();
         	preferences.setValores(dataType, response);
         	//super.onSuccess(statusCode, headers, response);
         }

@@ -23,7 +23,7 @@ public class LoadingThing {
     public LoadingThing(Context aContext){
         myContext = aContext;
         myTitle = "";
-        myMsg = "Waitng...";
+        myMsg = "Waiting for server response";
     }
 
     public void stratPopUp(){

@@ -39,6 +39,7 @@ public class Login extends CustomFragmentActivity {
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
+            myLoadingMsg.stratPopUp();
             LoginConn loginConn = new LoginConn(getHttpClient());
 	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
 	        loginConn.go(reqParams, httpHandler);
@@ -69,10 +70,7 @@ public class Login extends CustomFragmentActivity {
     }
 
 	@Click(R.id.login)
-    public void onLoginClick() {
-        myLoadingMsg.stratPopUp();
-        validator.validate();
-    }
+    public void onLoginClick() { validator.validate();  }
 
     private void doLoginVerified(Person user) {
 
