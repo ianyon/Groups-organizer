@@ -65,10 +65,10 @@
         android:layout_gravity="center"
         android:gravity="center_vertical">
 
-        <MultiAutoCompleteTextView
+        <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/multiAutoCompleteSearch"
+            android:id="@+id/addPeopleEditTextSearch"
             android:layout_below="@+id/textView"
             android:layout_alignParentLeft="true"
             android:hint="Claudio Jorquera or futbol team"

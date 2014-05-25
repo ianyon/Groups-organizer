@@ -1,10 +1,7 @@
 package cl.dcc.Groups_Organizer.ui;
 
 import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
+import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
 import cl.dcc.Groups_Organizer.connection.GetGroupListConn;
@@ -17,6 +14,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.ViewById;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -30,6 +28,9 @@ import java.util.ArrayList;
 @EActivity(R.layout.add_people)
 public class AddPeople extends CustomFragmentActivity {
 
+	@ViewById(R.id.addPeopleEditTextSearch)
+	EditText searchEditText;
+
 	@ViewById(R.id.radioGroupType)
 	RadioGroup radioGroup;
 
@@ -41,6 +42,8 @@ public class AddPeople extends CustomFragmentActivity {
 
 	boolean showingPeople = true;
 
+	GroupAdapter groupAdapter;
+	PersonAdapter personAdapter;
 	ArrayList<Person> peopleList;
 	ArrayList<Group> groupsList;
 
@@ -49,6 +52,8 @@ public class AddPeople extends CustomFragmentActivity {
 		super.onCreate(savedInstanceState);
 		peopleList = new ArrayList<Person>();
 		groupsList = new ArrayList<Group>();
+		groupAdapter = new GroupAdapter(this, groupsList);
+		personAdapter = new PersonAdapter(this, peopleList);
 	}
 
 	@AfterViews
@@ -69,17 +74,25 @@ public class AddPeople extends CustomFragmentActivity {
 
 	}
 
-	private void onDataChanged() {
+	@TextChange(R.id.addPeopleEditTextSearch)
+	public void onTextChange(TextView tv, CharSequence text) {
+		groupAdapter.getFilter().filter(text.toString());
+		personAdapter.getFilter().filter(text.toString());
+	}
 
+	private void onDataChanged() {
 		if(showingPeople) {
+			personAdapter = new PersonAdapter(this, new ArrayList<Person>(peopleList));
             /* Cargamos la info */
 			listView.setAdapter(
-					new PersonAdapter(this, peopleList));
+					personAdapter);
 
 		} else {
+			groupAdapter = new GroupAdapter(this, new ArrayList<Group>(groupsList));
 			listView.setAdapter(
-					new GroupAdapter(this, groupsList));
+					groupAdapter);
 		}
+		onTextChange(null, searchEditText.getText().toString());
 	}
 
 	private void refresh() {
