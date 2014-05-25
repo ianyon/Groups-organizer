@@ -45,7 +45,7 @@ public class PagerViewHost extends CustomFragmentActivity {
     @ViewById(R.id.pagerViewButtonCreateEvent)
     View mCreateEvent;
 
-    Person mUser;
+    static public Person mUser;
 
     TabsAdapter mTabsAdapter;
 
@@ -103,12 +103,14 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     public void refresh() {
+        mLoadingMsg.startPopUp();
         if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
+            mLoadingMsg.stopPopUp();
             return;
         }
 
-        mLoadingMsg.startPopUp();
+
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
         RequestParams reqParams = eventsConn.generateParams(false);
