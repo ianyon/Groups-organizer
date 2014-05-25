@@ -29,7 +29,7 @@ public class Event{
     
     private static SimpleDateFormat datetimeFormatJson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-    private Person mAdmin;
+    private String mAdmin;
 
     public Event(){}
 
@@ -66,7 +66,11 @@ public class Event{
 			}
 		else
         	datetime = null;
-                
+        try{
+            mAdmin = jsonEvent.getString("creator");
+        } catch(Exception e){
+            mAdmin = "";
+        }
         guestList = new ArrayList<Person>();
         confirmed = new ArrayList<Person>();
         
@@ -162,7 +166,7 @@ public class Event{
 		return id;
 	}
 
-	public boolean isAdmin(Person mUser) {
-		return mUser.equals(mAdmin);
-	}
+    public boolean isAdmin(Person mUser) {
+        return mAdmin.equals(mUser.getUsername());
+    }
 }
