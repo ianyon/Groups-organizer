@@ -1,6 +1,5 @@
 package cl.dcc.Groups_Organizer.controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +35,7 @@ public class PersonAdapter extends ArrayAdapter<Person> {
                 row = inflater.inflate(layoutResourceId, parent, false);
 
                 holder = new PersonHolder();
-                holder.name = (TextView) row.findViewById(android.R.id.text1);
+                holder.name = (TextView) row.findViewById(R.id.personRowTextPersonName);
 
                 row.setTag(holder);
             } else {

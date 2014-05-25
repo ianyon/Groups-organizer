@@ -161,4 +161,8 @@ public class Event{
 	public int getId() {
 		return id;
 	}
+
+	public boolean isAdmin(Person mUser) {
+		return mUser.equals(mAdmin);
+	}
 }
