@@ -135,11 +135,14 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
     public void refresh() {
         mLoadingMsg.startPopUp();
-        if (mEvent == null)
+        if (mEvent == null) {
+            mLoadingMsg.stopPopUp();
             return;
+        }
 
         if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
+            mLoadingMsg.stopPopUp();
             return;
         }
 
