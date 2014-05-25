@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -45,6 +46,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private Event mEvent;
     private PersonAdapter mAdapter;
     private LoadingThing mLoadingMsg;
+    private Person mUser;
+    private boolean mNewEvent = true;
 
     @ViewById(R.id.eventConfigEventName)
     EditText mEventName;
@@ -61,6 +64,11 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     @ViewById(R.id.eventConfigAsistend)
     ListView mAttendees;
 
+    @ViewById(R.id.buttonAddPeople)
+    Button mAddPeopleButton;
+
+    @ViewById(R.id.buttonCreate)
+    Button mCreateButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +77,13 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
         Bundle extras = this.getIntent().getExtras();
 
-        if (extras != null && extras.containsKey("Event")) {
-            mEvent = Parcels.unwrap(extras.getParcelable("Event"));
+        if (extras != null) {
+            if (extras.containsKey("Event")) {
+                mEvent = Parcels.unwrap(extras.getParcelable("Event"));
+                mNewEvent = false;
+            }
+            if(extras.containsKey("User"))
+                mUser = Parcels.unwrap(extras.getParcelable("User"));
         }
 
         mLoadingMsg = new LoadingThing(EventConfig.this);
@@ -80,7 +93,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     @AfterViews
     protected void loadEventInfo(){
 
-        if (mEvent != null){
+        if (!mNewEvent){
             mEventName.setText(mEvent.getName());
             mEventDescription.setText(mEvent.getDescription());
             if(mEvent.getDatetime() != null) 
@@ -90,16 +103,24 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
+            canEditEvent();
 
         }
     }
 
     private void canEditEvent(){
-        if(true) {
-            mEventName.setKeyListener(null);
-            mEventDescription.setKeyListener(null);
-            mEventWhen.setKeyListener(null);
-            mEventWhere.setKeyListener(null);
+        if(mUser != null) {
+            if(!mEvent.isAdmin(mUser)) {
+                mEventName.setKeyListener(null);
+                mEventDescription.setKeyListener(null);
+                mEventWhen.setKeyListener(null);
+                mEventWhere.setKeyListener(null);
+                mAddPeopleButton.setText("Just a button");
+                mCreateButton.setText("Return");
+            } else {
+                mCreateButton.setText("Save Changes");
+            }
+
         }
     }
     private void showRegisterWarning(CharSequence text){
@@ -159,6 +180,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void onCreateEvent(View v){
+        if(!mNewEvent && !mEvent.isAdmin(mUser)){
+            finish();
+        }
         mLoadingMsg.stratPopUp();
         CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
@@ -187,7 +211,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Click
     void buttonAddPeople() {
-        startActivity(new Intent(this, AddPeople.class));
+        if(!mNewEvent && !mEvent.isAdmin(mUser))
+            return;
+        startActivity(new Intent(this, AddPeople_.class));
     }
 
     @Override

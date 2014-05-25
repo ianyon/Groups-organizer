@@ -7,7 +7,7 @@ $validator->rule('integer', 'event_id');
 $validator->rule('min', 'event_id', 0);
 
 $stmt = $conn->prepare(
-	"SELECT id, name, location, description, datetime , creator FROM `group` WHERE id=?");
+	"SELECT id, name, creator, location, description, datetime , FROM `group` WHERE id=?");
 $stmt->bind_param('s', $_POST['event_id']);
 if($stmt->execute()) {
 	$result = $stmt->get_result();

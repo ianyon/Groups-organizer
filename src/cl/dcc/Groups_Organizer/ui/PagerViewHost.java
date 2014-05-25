@@ -103,12 +103,14 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     public void refresh() {
+        mLoadingMsg.stratPopUp();
         if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
+            mLoadingMsg.stopPopUp();
             return;
         }
 
-        mLoadingMsg.stratPopUp();
+
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
         RequestParams reqParams = eventsConn.generateParams(false);
@@ -147,7 +149,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
 
     public void onAddFriendsClick(View v) {
-        startActivity(new Intent(this, AddPeople.class));
+        startActivity(new Intent(this, AddPeople_.class));
     }
 
     public void onAddEventClick(View v) {
