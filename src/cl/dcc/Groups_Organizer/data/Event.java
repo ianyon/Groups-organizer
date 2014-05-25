@@ -29,7 +29,7 @@ public class Event{
     
     private static SimpleDateFormat datetimeFormatJson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-    private Person mAdmin;
+    private String mAdmin;
 
     public Event(){}
 
@@ -66,6 +66,8 @@ public class Event{
 			}
 		else
         	datetime = null;
+
+        mAdmin = jsonEvent.getString("creator");
                 
         guestList = new ArrayList<Person>();
         confirmed = new ArrayList<Person>();
