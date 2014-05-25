@@ -1,10 +1,13 @@
 package cl.dcc.Groups_Organizer.controller;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.data.Person;
 
 import java.util.List;
@@ -13,7 +16,6 @@ import java.util.List;
  * Created by Ian on 23-05-2014.
  */
 public class PersonAdapter extends ArrayAdapter<Person> {
-        // TODO: Hacer clase. Está copiada de EventAdapter
         Context context;
         int layoutResourceId;
         List<Person> data = null;
@@ -28,35 +30,29 @@ public class PersonAdapter extends ArrayAdapter<Person> {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            /*EventHolder holder = null;
+            PersonHolder holder = null;
 
             if (row == null) {
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();
                 row = inflater.inflate(layoutResourceId, parent, false);
 
-                holder = new EventHolder();
-                holder.name = (TextView) row.findViewById(R.id.eventRowTextEventName);
-                holder.location = (TextView) row.findViewById(R.id.eventRowTextLocation);
-                holder.confirmed = (TextView) row.findViewById(R.id.eventRowTextConfirmed);
-                holder.invited = (TextView) row.findViewById(R.id.eventRowTextInvited);
+                holder = new PersonHolder();
+                holder.name = (TextView) row.findViewById(android.R.id.text1);
 
                 row.setTag(holder);
             } else {
-                holder = (EventHolder) row.getTag();
+                holder = (PersonHolder) row.getTag();
             }
 
-            Event event = data.get(position);
+            Person person = data.get(position);
 
-            holder.name.setText(event.name);
-            holder.location.setText(event.location);
-            holder.confirmed.setText(""+event.getConfirmedCount());
-            holder.invited.setText(""+event.getGuestCount());*/
+            holder.name.setText(person.name);
 
             return row;
         }
 
-        static class EventHolder {
-            TextView name, location, confirmed, invited;
+        static class PersonHolder {
+            TextView name;
         }
 
         public List<Person> getList(){

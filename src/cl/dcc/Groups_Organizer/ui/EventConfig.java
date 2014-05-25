@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
 import cl.dcc.Groups_Organizer.connection.CreateEventConn;
@@ -61,6 +59,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     @ViewById(R.id.eventConfigAsistend)
     ListView mAttendees;
 
+    @ViewById
+    Button buttonCreate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +92,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
 
+            buttonCreate.setText("Editar");
         }
     }
 
@@ -159,7 +161,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void onCreateEvent(View v){
-        mLoadingMsg.stratPopUp();
+        mLoadingMsg.startPopUp();
         CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());

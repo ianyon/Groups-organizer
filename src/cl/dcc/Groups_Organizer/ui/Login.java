@@ -39,7 +39,7 @@ public class Login extends CustomFragmentActivity {
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
-            myLoadingMsg.stratPopUp();
+            myLoadingMsg.startPopUp();
             LoginConn loginConn = new LoginConn(getHttpClient());
 	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
 	        loginConn.go(reqParams, httpHandler);
@@ -52,7 +52,7 @@ public class Login extends CustomFragmentActivity {
 		validator = new Validator(this);
 		validator.setValidationListener(validationListener);
 
-        myLoadingMsg = new LoadingThing(Login.this,"","Conecting");
+        myLoadingMsg = new LoadingThing(Login.this,"","Connecting");
 
 
     }
@@ -101,7 +101,7 @@ public class Login extends CustomFragmentActivity {
             if (statusCode == 200 && parseResponse(responseBody) && message.equals("OK")) {
                 Toast.makeText(Login.this, getString(R.string.loginSuccessfull), Toast.LENGTH_SHORT).show();
 
-                Person user = new Person(name, "" + tvUser.getText());
+                Person user = new Person("" + tvUser.getText(),name);
 
                 // Clear the textviews
                 tvUser.setText("");

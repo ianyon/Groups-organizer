@@ -108,7 +108,7 @@ public class PagerViewHost extends CustomFragmentActivity {
             return;
         }
 
-        mLoadingMsg.stratPopUp();
+        mLoadingMsg.startPopUp();
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
         RequestParams reqParams = eventsConn.generateParams(false);
