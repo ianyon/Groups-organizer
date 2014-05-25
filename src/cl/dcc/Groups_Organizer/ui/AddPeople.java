@@ -30,7 +30,7 @@ import java.util.ArrayList;
 @EActivity(R.layout.add_people)
 public class AddPeople extends CustomFragmentActivity {
 
-	@ViewById(R.id.radioGroup)
+	@ViewById(R.id.radioGroupType)
 	RadioGroup radioGroup;
 
 	@ViewById(R.id.radioPeople)

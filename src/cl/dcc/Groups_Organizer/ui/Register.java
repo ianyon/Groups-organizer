@@ -8,6 +8,7 @@ import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.RegisterConn;
 import cl.dcc.Groups_Organizer.data.Person;
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.mobsandgeeks.saripaar.Validator;
@@ -35,8 +36,8 @@ public class Register extends CustomFragmentActivity {
     @ViewById(R.id.registerAge)
     EditText mUserAge;
 
-    @Select(order = 3)
-    @ViewById
+    @Select(order = 3, message = "Select a Gender.")
+    @ViewById(R.id.registerGender)
     Spinner registerGender;
 
     @TextRule(order = 4, minLength = 5, maxLength = 30, messageResId = R.string.registerUserVerification)
@@ -60,32 +61,42 @@ public class Register extends CustomFragmentActivity {
 
     @ViewById(R.id.registerButton)
     Button mOkButton;
+
     Validator validator;
     private Person mPerson;
+    private LoadingThing loadingMsg;
     
     private ValidationListener validationListener = new DefaultValidationListener(this) {
+
     	@Override
     	public void onValidationSucceeded() {
     		// Obtain gender position
             String pos = "" + (registerGender.getSelectedItemPosition() - 1);
             // Connect to server and register new user
+
+            loadingMsg.startPopUp();
+
             RegisterConn registerConn = new RegisterConn(getHttpClient());
             RequestParams requestParams = registerConn.generateParams(mUserName.getText(), mUserAge.getText(), pos
                     , mUserUsername.getText(),
                     mUserMail.getText(), mUserPass.getText());
 
+
             registerConn.go(requestParams, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                loadingMsg.stopPopUp();
                     Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     if (statusCode == 200 && responseString.trim().equals("OK")) {
-                        Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "User is regitered", Toast.LENGTH_SHORT).show();
+                    loadingMsg.stopPopUp();
                         finish();
                     } else {
+                    loadingMsg.stopPopUp();
                         Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -101,9 +112,10 @@ public class Register extends CustomFragmentActivity {
 
         Bundle extras = this.getIntent().getExtras();
 
-        if (extras != null && extras.containsKey("Person")) {
-            mPerson = Parcels.unwrap(extras.getParcelable("Person"));
+        if (extras != null && extras.containsKey("User")) {
+            mPerson = Parcels.unwrap(extras.getParcelable("User"));
         }
+        loadingMsg = new LoadingThing(Register.this);
     }
 
     @AfterViews
@@ -111,9 +123,17 @@ public class Register extends CustomFragmentActivity {
         if (mPerson != null) {
             mUserName.setText(mPerson.getName());
             mUserMail.setText(mPerson.getEmail());
-            mUserUsername.setText(mPerson.getName());
+            mUserUsername.setText(mPerson.getUsername());
+            mUserUsername.setKeyListener(null);
             mUserAge.setText(Integer.toString(mPerson.getAge()));
-            mUserPass.setText(mPerson.getPassword());
+            try {
+                registerGender.setSelection((Integer.parseInt(mPerson.getGender()) + 1));
+            }
+            catch(Exception e){
+                Toast.makeText(Register.this, "Error Gender, yours " + mPerson.getGender(), Toast.LENGTH_SHORT).show();
+                registerGender.setSelection(0);
+            }
+
             mOkButton.setText("Guardar Cambios");
         }
     }

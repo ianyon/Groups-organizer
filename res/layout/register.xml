@@ -53,13 +53,28 @@
                         android:ems="10"
                         android:id="@+id/registerAge"/>
             </TableRow>
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Gender"
+                        android:id="@+id/textView7"/>
+
+                <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/registerGender" android:layout_gravity="center_horizontal" android:clickable="true"
+                        android:gravity="center" android:spinnerMode="dialog"
+                        android:entries="@array/gender"/>
+
+            </TableRow>
         </TableLayout>
-        <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/registerGender" android:layout_gravity="center_horizontal" android:clickable="true"
-                android:gravity="center" android:spinnerMode="dialog"
-                android:entries="@array/gender"/>
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,5 +1,6 @@
 package cl.dcc.Groups_Organizer.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import java.util.List;
  * Created by Ian on 23-05-2014.
  */
 public class PersonAdapter extends ArrayAdapter<Person> {
-        // TODO: Hacer clase. Está copiada de EventAdapter
         Context context;
 		private final static int layoutResourceId = R.layout.person_row;
         List<Person> data = null;
@@ -29,18 +29,18 @@ public class PersonAdapter extends ArrayAdapter<Person> {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            EventHolder holder = null;
+            PersonHolder holder = null;
 
             if (row == null) {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 row = inflater.inflate(layoutResourceId, parent, false);
 
-                holder = new EventHolder();
-                holder.name = (TextView) row.findViewById(R.id.personRowTextPersonName);
+                holder = new PersonHolder();
+                holder.name = (TextView) row.findViewById(android.R.id.text1);
 
                 row.setTag(holder);
             } else {
-                holder = (EventHolder) row.getTag();
+                holder = (PersonHolder) row.getTag();
             }
 
             Person person = data.get(position);
@@ -50,7 +50,7 @@ public class PersonAdapter extends ArrayAdapter<Person> {
             return row;
         }
 
-        static class EventHolder {
+        static class PersonHolder {
             TextView name;
         }
 
@@ -59,3 +59,4 @@ public class PersonAdapter extends ArrayAdapter<Person> {
         }
 
     }
+

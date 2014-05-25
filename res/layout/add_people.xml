@@ -24,12 +24,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/radioGroup"/>
+        android:layout_below="@+id/radioGroupType"/>
 
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioGroupType"
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center_vertical|center_horizontal"
@@ -68,7 +68,7 @@
         <MultiAutoCompleteTextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/multiAutoCompleteTextView"
+            android:id="@+id/multiAutoCompleteSearch"
             android:layout_below="@+id/textView"
             android:layout_alignParentLeft="true"
             android:hint="Claudio Jorquera or futbol team"
@@ -78,10 +78,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="#00000000"
-            android:id="@+id/imageButton"
+            android:id="@+id/buttonSearch"
             android:src="@android:drawable/ic_menu_search"
-            android:layout_alignTop="@+id/multiAutoCompleteTextView"
-            android:layout_toRightOf="@+id/multiAutoCompleteTextView"
+            android:layout_alignTop="@+id/multiAutoCompleteSearch"
+            android:layout_toRightOf="@+id/multiAutoCompleteSearch"
+            android:onClick="onSearch"
             android:layout_weight="0.8"/>
     </LinearLayout>
 
