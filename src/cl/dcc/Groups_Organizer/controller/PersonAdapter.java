@@ -1,6 +1,5 @@
 package cl.dcc.Groups_Organizer.controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +16,11 @@ import java.util.List;
  */
 public class PersonAdapter extends ArrayAdapter<Person> {
         Context context;
-        int layoutResourceId;
+		private final static int layoutResourceId = R.layout.person_row;
         List<Person> data = null;
 
-        public PersonAdapter(Context context, int layoutResourceId, List<Person> data) {
+        public PersonAdapter(Context context, List<Person> data) {
             super(context, layoutResourceId, data);
-            this.layoutResourceId = layoutResourceId;
             this.context = context;
             this.data = data;
         }
@@ -33,11 +31,11 @@ public class PersonAdapter extends ArrayAdapter<Person> {
             PersonHolder holder = null;
 
             if (row == null) {
-                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                LayoutInflater inflater = LayoutInflater.from(context);
                 row = inflater.inflate(layoutResourceId, parent, false);
 
                 holder = new PersonHolder();
-                holder.name = (TextView) row.findViewById(android.R.id.text1);
+                holder.name = (TextView) row.findViewById(R.id.personRowTextPersonName);
 
                 row.setTag(holder);
             } else {
@@ -46,7 +44,7 @@ public class PersonAdapter extends ArrayAdapter<Person> {
 
             Person person = data.get(position);
 
-            holder.name.setText(person.name);
+            holder.name.setText(person.getUsername());
 
             return row;
         }
@@ -60,3 +58,4 @@ public class PersonAdapter extends ArrayAdapter<Person> {
         }
 
     }
+

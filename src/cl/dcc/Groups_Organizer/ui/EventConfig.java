@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
+import cl.dcc.Groups_Organizer.connection.ConfirmConn;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
 import cl.dcc.Groups_Organizer.connection.CreateEventConn;
 import cl.dcc.Groups_Organizer.connection.GetEventInfoConn;
@@ -43,7 +44,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private Event mEvent;
     private PersonAdapter mAdapter;
     private LoadingThing mLoadingMsg;
-    private Person mUser = new Person("noAdmin","mm");
+    private Person mUser;
     private boolean mNewEvent = true;
 
     @ViewById(R.id.eventConfigEventName)
@@ -81,6 +82,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             if (extras.containsKey("Event")) {
                 mEvent = Parcels.unwrap(extras.getParcelable("Event"));
                 mNewEvent = false;
+
             }
             if(PagerViewHost_.mUser != null) {
                 mUser = PagerViewHost_.mUser;//Parcels.unwrap(extras.getParcelable("User"));
@@ -89,7 +91,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         }
 
         mLoadingMsg = new LoadingThing(EventConfig.this);
-        mAdapter = new PersonAdapter(this, android.R.layout.simple_list_item_1, new ArrayList<Person>());
+        mAdapter = new PersonAdapter(this, new ArrayList<Person>());
     }
 
     @AfterViews
@@ -112,16 +114,16 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private void canEditEvent(){
         if(mUser != null) {
             if(!mEvent.isAdmin(mUser)) {
-                mEventName.setKeyListener(null);
-                mEventDescription.setKeyListener(null);
-                mEventWhen.setKeyListener(null);
-                mEventWhere.setKeyListener(null);
+            mEventName.setKeyListener(null);
+            mEventDescription.setKeyListener(null);
+            mEventWhen.setKeyListener(null);
+            mEventWhere.setKeyListener(null);
                 mAddPeopleButton.setText("I am Going");
                 mCreateButton.setText("Return");
             } else {
                 mCreateButton.setText("Save Changes");
-            }
         }
+    }
     }
     private void showRegisterWarning(CharSequence text){
 
@@ -169,7 +171,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             	if (statusCode != 200 ) {
             		Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
                     mLoadingMsg.stopPopUp();
-                    return;
+            		return;
             	}
 
             	try {
@@ -199,31 +201,21 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
                 mEventWhen.getText(), mAdapter.getList());
 
-        createEventConn.go(params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-                Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                if (statusCode == 200 && responseString.trim().equals("OK")) {
-                    Toast.makeText(getApplicationContext(), "Evento creado", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        createEventConn.go(params, new MyHttpResponseHandler("Event Created",true));
 
         mLoadingMsg.stopPopUp();
     }
 
     @Click
     void buttonAddPeople() {
-        if(!mNewEvent && !mEvent.isAdmin(mUser))
+        if(!mNewEvent && !mEvent.isAdmin(mUser)) {
+            mLoadingMsg.startPopUp();
+            ConfirmConn confirmConn = new ConfirmConn(getHttpClient());
+            RequestParams params = confirmConn.generateParams(mEvent.getId(),mEvent.isGoing(mUser)?0:1);
+            confirmConn.go(params,new MyHttpResponseHandler("Change attendance status",false));
+            mLoadingMsg.stopPopUp();
             return;
+        }
         startActivity(new Intent(this, AddPeople_.class));
     }
 
@@ -265,4 +257,31 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
 
+    private class MyHttpResponseHandler extends TextHttpResponseHandler {
+
+        private String mMsg;
+        private boolean mFinish;
+
+        public MyHttpResponseHandler(String message,boolean end){
+            super();
+            mMsg = message;
+            mFinish = end;
+        }
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+            if (statusCode == 200 && responseString.trim().equals("OK")) {
+                Toast.makeText(getApplicationContext(), mMsg, Toast.LENGTH_SHORT).show();
+                if(mFinish)
+                    finish();
+            } else {
+                Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

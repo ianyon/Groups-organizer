@@ -1,6 +1,5 @@
 package cl.dcc.Groups_Organizer.data;
 
-import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,12 +66,10 @@ public class Event{
 			}
 		else
         	datetime = null;
-
-        try {
+        try{
             mAdmin = jsonEvent.getString("creator");
-        }
-        catch (Exception e){
-            mAdmin = "noAdmin";
+        } catch(Exception e){
+            mAdmin = "";
         }
         guestList = new ArrayList<Person>();
         confirmed = new ArrayList<Person>();
@@ -127,8 +124,6 @@ public class Event{
 
     public Event(String jsonString) throws JSONException {
         this(new JSONObject(jsonString));
-
-        Log.w("Json event", jsonString);
     }
 
     public int getGuestCount() {
@@ -171,7 +166,17 @@ public class Event{
 		return id;
 	}
 
-    public boolean isAdmin(Person aPerson) {
-        return mAdmin.equals(aPerson.getUsername());
+    public boolean isAdmin(Person mUser) {
+        return mAdmin.equals(mUser.getUsername());
+    }
+
+    public boolean isGoing(Person aPerson){
+        String userName = aPerson.getUsername();
+        for(Person confimPerson : confirmed){
+            if (userName.equals(confimPerson.getUsername())){
+                return true;
+            }
+        }
+        return false;
     }
 }

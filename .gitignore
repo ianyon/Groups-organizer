@@ -29,3 +29,4 @@ proguard/
 # Generated sources
 target/
 /.apt_generated
+/classes/production/Groups_Organizer/androidannotations.log
