@@ -7,10 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
-import cl.dcc.Groups_Organizer.connection.ConfirmConn;
-import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
-import cl.dcc.Groups_Organizer.connection.CreateEventConn;
-import cl.dcc.Groups_Organizer.connection.GetEventInfoConn;
+import cl.dcc.Groups_Organizer.connection.*;
 import cl.dcc.Groups_Organizer.controller.PersonAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
@@ -101,10 +98,10 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mEventName.setText(mEvent.getName());
             mEventDescription.setText(mEvent.getDescription());
             if(mEvent.getDatetime() != null) 
-            	mEventWhen.setText(dateFormat.format(mEvent.getDatetime()));
+            	mEventWhen.setText( mEvent.getDatetime());
             mEventWhere.setText(mEvent.getLocation());
             List<Person> guestList = mAdapter.getList();
-            guestList.clear();
+            //guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
             canEditEvent();
@@ -114,16 +111,21 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private void canEditEvent(){
         if(mUser != null) {
             if(!mEvent.isAdmin(mUser)) {
-            mEventName.setKeyListener(null);
-            mEventDescription.setKeyListener(null);
-            mEventWhen.setKeyListener(null);
-            mEventWhere.setKeyListener(null);
+                mEventName.setFocusable(false);
+                mEventDescription.setFocusable(false);
+                mEventWhen.setFocusable(false);
+                mEventWhere.setFocusable(false);
                 mAddPeopleButton.setText("I am Going");
                 mCreateButton.setText("Return");
             } else {
+                mEventName.setFocusableInTouchMode(true);
+                mEventDescription.setFocusableInTouchMode(true);
+                mEventWhen.setFocusableInTouchMode(true);
+                mEventWhere.setFocusableInTouchMode(true);
                 mCreateButton.setText("Save Changes");
+                mAddPeopleButton.setText("Add People");
+            }
         }
-    }
     }
     private void showRegisterWarning(CharSequence text){
 
@@ -197,13 +199,21 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         if(!mNewEvent && !mEvent.isAdmin(mUser)){
             finish();
         }
-        CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
-        RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
-                mEventWhen.getText(), mAdapter.getList());
 
-        createEventConn.go(params, new MyHttpResponseHandler("Event Created",true));
+        if(mNewEvent) {
+            CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
+            RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
+                    mEventWhen.getText(), mAdapter.getList());
+
+            createEventConn.go(params, new MyHttpResponseHandler("Event Created"));
+        } else {
+            UpdateEventConn updateEvent = new UpdateEventConn(getHttpClient());
+            RequestParams params = updateEvent.generateParams(mEvent.getId(),mEventName.getText(),mEventDescription.getText(),mEventWhere.getText(),mEventWhen.getText(),mAdapter.getList());
+            updateEvent.go(params, new MyHttpResponseHandler("Event Updated"));
+        }
 
         mLoadingMsg.stopPopUp();
+        finish();
     }
 
     @Click
@@ -212,11 +222,35 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mLoadingMsg.startPopUp();
             ConfirmConn confirmConn = new ConfirmConn(getHttpClient());
             RequestParams params = confirmConn.generateParams(mEvent.getId(),mEvent.isGoing(mUser)?0:1);
-            confirmConn.go(params,new MyHttpResponseHandler("Change attendance status",false));
+            confirmConn.go(params,new MyHttpResponseHandler("Change attendance status"));
             mLoadingMsg.stopPopUp();
             return;
         }
-        startActivity(new Intent(this, AddPeople_.class));
+        startActivityForResult(new Intent(this, AddPeople_.class), 42);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if (requestCode == 42) {
+            if(resultCode == RESULT_OK){
+
+                    if(data.getParcelableExtra("People") != null) {
+                        List<Person> newOnes = Parcels.unwrap(data.getParcelableExtra("People"));
+                        for(Person aPerson: newOnes){
+                            Toast.makeText(EventConfig.this, aPerson.getName(), Toast.LENGTH_LONG).show();
+                        }
+                        mAdapter.addPeopleToList(newOnes);
+
+
+                    }
+            }
+            if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(EventConfig.this, "Fail to recive list", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -260,12 +294,12 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private class MyHttpResponseHandler extends TextHttpResponseHandler {
 
         private String mMsg;
-        private boolean mFinish;
 
-        public MyHttpResponseHandler(String message,boolean end){
+
+        public MyHttpResponseHandler(String message){
             super();
             mMsg = message;
-            mFinish = end;
+
         }
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -277,8 +311,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         public void onSuccess(int statusCode, Header[] headers, String responseString) {
             if (statusCode == 200 && responseString.trim().equals("OK")) {
                 Toast.makeText(getApplicationContext(), mMsg, Toast.LENGTH_SHORT).show();
-                if(mFinish)
-                    finish();
             } else {
                 Toast.makeText(EventConfig.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
             }

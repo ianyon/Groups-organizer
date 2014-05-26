@@ -1,6 +1,8 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
@@ -12,13 +14,11 @@ import cl.dcc.Groups_Organizer.data.Group;
 import cl.dcc.Groups_Organizer.data.Person;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.TextChange;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -42,29 +42,45 @@ public class AddPeople extends CustomFragmentActivity {
 
 	boolean showingPeople = true;
 
-	GroupAdapter groupAdapter;
-	PersonAdapter personAdapter;
-	ArrayList<Person> peopleList;
-	ArrayList<Group> groupsList;
+	ArrayList<Person> peopleList, peopleSelected;
+	ArrayList<Group> groupsList, groupSelected;
+    GroupAdapter groupAdapter;
+    PersonAdapter personAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		peopleList = new ArrayList<Person>();
 		groupsList = new ArrayList<Group>();
+        peopleSelected = new ArrayList<Person>();
+        groupSelected = new ArrayList<Group>();
 		groupAdapter = new GroupAdapter(this, groupsList);
 		personAdapter = new PersonAdapter(this, peopleList);
+
 	}
 
 	@AfterViews
 	public void init() {
 		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				showingPeople = radioPeople.isChecked();
-				onDataChanged();
-			}
-		});
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                showingPeople = radioPeople.isChecked();
+                onDataChanged();
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (showingPeople) {
+                    Toast.makeText(AddPeople.this, peopleList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
+                    peopleSelected.add(peopleList.get(position));
+                } else {
+                    Toast.makeText(AddPeople.this, groupsList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                    groupSelected.add(groupsList.get(position));
+                }
+            }
+        });
 	}
 
 	@Override
@@ -73,6 +89,22 @@ public class AddPeople extends CustomFragmentActivity {
 		refresh();
 
 	}
+
+
+    void onClickFinish(View v){
+
+        Intent returnIntent = new Intent();
+
+        if(!peopleSelected.isEmpty())
+            returnIntent.putExtra("People" , Parcels.wrap(peopleSelected));
+
+        if(!groupSelected.isEmpty())
+            returnIntent.putExtra("Group", Parcels.wrap(groupSelected));
+
+        setResult(RESULT_OK,returnIntent);
+        Toast.makeText(this, "Returning selected list.", Toast.LENGTH_SHORT).show();
+        finish();
+    }
 
 	@TextChange(R.id.addPeopleEditTextSearch)
 	public void onTextChange(TextView tv, CharSequence text) {
