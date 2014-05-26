@@ -104,8 +104,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             //guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
-            showRegisterWarning(mEvent.getAdmin());
-            showRegisterWarning(mUser.getUsername()+"  e");
             canEditEvent();
         }
     }
@@ -121,6 +119,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
                 mCreateButton.setText("Return");
             } else {
                 mCreateButton.setText("Save Changes");
+                mAddPeopleButton.setText("Add People");
         }
     }
     }

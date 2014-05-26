@@ -91,7 +91,8 @@ public class AddPeople extends CustomFragmentActivity {
 	}
 
 
-    void onClickFinish(){
+    void onClickFinish(View v){
+
         Intent returnIntent = new Intent();
 
         if(!peopleSelected.isEmpty())
