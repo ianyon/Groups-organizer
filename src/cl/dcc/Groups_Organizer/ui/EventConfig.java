@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.*;
 import cl.dcc.Groups_Organizer.controller.PersonAdapter;
@@ -26,9 +29,7 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Ian on 15-05-2014.
@@ -238,8 +239,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
                         for(Person aPerson: newOnes){
                             Toast.makeText(EventConfig.this, aPerson.getName(), Toast.LENGTH_LONG).show();
                         }
-                        mAdapter.addPeopleToList(newOnes);
-
+	                    mEvent.addGuests(newOnes);
+						mAttendees.setAdapter(new PersonAdapter(this, mEvent.getGuestList()));
 
                     }
             }
