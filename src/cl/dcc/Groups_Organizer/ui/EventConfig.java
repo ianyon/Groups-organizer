@@ -61,9 +61,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     @ViewById(R.id.eventConfigAsistend)
     ListView mAttendees;
 
-    @ViewById
-    Button buttonCreate;
-
     @ViewById(R.id.buttonAddPeople)
     Button mAddPeopleButton;
 
@@ -197,10 +194,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void onCreateEvent(View v){
-
-        mLoadingMsg.startPopUp();
         if(!mNewEvent && !mEvent.isAdmin(mUser)){
             finish();
+            return;
         }
 
         if(mNewEvent) {
