@@ -6,10 +6,7 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Ian on 14-04-2014.
@@ -175,4 +172,13 @@ public class Event{
     public String getAdmin() {
         return mAdmin;
     }
+
+	public void addGuests(Collection<Person> newOnes) {
+		Set<Person> personSet = new HashSet<Person>();
+		personSet.addAll(getGuestList());
+		personSet.addAll(newOnes);
+		getGuestList().clear();
+		getGuestList().addAll(newOnes);
+		guestListCount = guestList.size();
+	}
 }

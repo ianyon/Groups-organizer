@@ -57,10 +57,6 @@ public class PersonAdapter extends ArrayAdapter<Person> implements Filterable {
         return row;
     }
 
-    public void addPeopleToList(List<Person> newOnes) {
-        data.addAll(newOnes);
-    }
-
     static class PersonHolder {
         TextView name;
     }

@@ -91,13 +91,14 @@ public class AddPeople extends CustomFragmentActivity {
 	}
 
 
-    void onClickFinish(View v){
+    public void onClickFinish(View v){
 
         Intent returnIntent = new Intent();
 
         if(!peopleSelected.isEmpty())
             returnIntent.putExtra("People" , Parcels.wrap(peopleSelected));
-
+		Object o = Parcels.unwrap(returnIntent.getExtras().getParcelable("People"));
+	    System.out.println(o.toString());
         if(!groupSelected.isEmpty())
             returnIntent.putExtra("Group", Parcels.wrap(groupSelected));
 
