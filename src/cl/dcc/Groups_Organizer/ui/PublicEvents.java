@@ -59,7 +59,7 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
 
     private void onDataChanged() {
         /* Cargamos la info */
-        EventListData listData = preferences.getValores(AdminPreferences.PUBLIC_EVENTS);
+        EventListData listData = preferences.getEventsSimpleList(AdminPreferences.PUBLIC_EVENTS);
 
         if (listData == null)
             return;

@@ -1,5 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
+import cl.dcc.Groups_Organizer.connection.GetGroupListConn;
 import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import android.content.Intent;
 import android.os.Bundle;
@@ -94,6 +95,10 @@ public class PagerViewHost extends CustomFragmentActivity {
         tabSpec2.setIndicator("My events", null);
         mTabsAdapter.addTab(tabSpec2, MyEvents.class, null);
 
+	    TabHost.TabSpec tabSpec3 = mTabHost.newTabSpec("tab3");
+	    tabSpec3.setIndicator("My groups", null);
+	    mTabsAdapter.addTab(tabSpec3, MyGroups.class, null);
+
         mLoadingMsg = new LoadingThing(PagerViewHost.this);
     }
 
@@ -121,6 +126,11 @@ public class PagerViewHost extends CustomFragmentActivity {
         eventsConn = new GetEventListConn(getHttpClient());
         reqParams = eventsConn.generateParams(true);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
+
+	    // Connection for personal groups list
+	    GetGroupListConn groupsConn = new GetGroupListConn(getHttpClient());
+	    reqParams = groupsConn.generateParams(true);
+	    groupsConn.go(reqParams, new GroupListHttpResponseHandler(AdminPreferences.PRIVATE_GROUPS));
 
         mLoadingMsg.stopPopUp();
     }
@@ -181,5 +191,31 @@ public class PagerViewHost extends CustomFragmentActivity {
         	preferences.setValores(dataType, response);
         }
     }
+
+	// Object for Handling the http response
+	private class GroupListHttpResponseHandler extends JsonHttpResponseHandler {
+		private String category, data;
+		private String dataType;
+
+		public GroupListHttpResponseHandler(String dataType) {
+			this.dataType = dataType;
+		}
+
+		@Override
+		public void onFailure(int statusCode, Header[] headers, String responseString,
+		                      Throwable throwable) {
+			// mLoadingMsg.stopPopUp();
+			Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+			if(statusCode != 200) {
+				Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
+			}
+			//mLoadingMsg.stopPopUp();
+			preferences.setValores(dataType, response);
+		}
+	}
 
 }

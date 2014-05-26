@@ -12,7 +12,8 @@ import java.util.Map;
 public class AdminPreferences {
     // Categorías en las preferencias PREFERENCIAS_DATOS.
     public static final String PERSONAL = "Personal";
-    public static final String PUBLIC_EVENTS = "PUBLIC", PRIVATE_EVENTS = "PRIVATE", USER = "USER";
+    public static final String PUBLIC_EVENTS = "PUBLIC", PRIVATE_EVENTS = "PRIVATE", USER = "USER",
+		    PRIVATE_GROUPS = "PRIVATE_GROUPS";
     // Preferencias disponibles en la aplicación.
     public static final String PREFERENCIAS_GENERALES = "PREFERENCIAS_GENERALES",
     		PREFERENCIAS_USUARIOS = "PREFERENCIAS_USUARIOS", PREFERENCIAS_EVENTOS = "PREFERENCIAS_EVENTOS"
@@ -36,8 +37,8 @@ public class AdminPreferences {
         getPreferencias().edit().putString(tipoValores, data.toString()).commit();
     }
 
-    public EventListData getValores(String tipoValores) {
-        String jsonString = getPreferencias().getString(tipoValores, "{}");
+    public EventListData getEventsSimpleList(String eventType) {
+        String jsonString = getPreferencias().getString(eventType, "{}");
         try {
             return new EventListData(jsonString);
         } catch (JSONException e) {
@@ -45,6 +46,16 @@ public class AdminPreferences {
         }
         return null;
     }
+
+	public GroupListData getGroupsSimpleList(String groupType) {
+		String jsonString = getPreferencias().getString(groupType, "{}");
+		try {
+			return new GroupListData(jsonString);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
     public Person getUser() {
     	String[] array = getPreferencias().getString(USER, "{}").split(";");
@@ -97,8 +108,14 @@ public class AdminPreferences {
 		return list;
 	}
 
-	public Person getGroup(String groupName) throws JSONException {
-		return new Person(getPreferencias(PREFERENCIAS_GRUPOS).getString(groupName, "{}"));
+	public Group getGroup(String groupName) {
+		String json = getPreferencias(PREFERENCIAS_GRUPOS).getString(groupName, "{}");
+		try {
+			return new Group(json);
+		} catch(JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public void saveGroup(Group group) {

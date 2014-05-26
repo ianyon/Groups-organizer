@@ -32,5 +32,6 @@
         <activity android:name="cl.dcc.Groups_Organizer.ui.PagerViewHost_"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.AddPeople_"/>
         <activity android:name="cl.dcc.Groups_Organizer.ui.EventConfig_"/>
+        <activity android:name="cl.dcc.Groups_Organizer.ui.GroupConfig_"/>
     </application>
 </manifest>

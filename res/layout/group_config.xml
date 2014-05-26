@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/eventconfigtextView"
+        android:text="@string/groupconfigtextView"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/event_configEventName"
+                android:text="@string/group_configEventName"
                 android:id="@+id/textView3"/>
 
             <EditText
@@ -64,48 +64,6 @@
                 android:layout_column="2"/>
         </TableRow>
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/event_configWhere"
-                android:id="@+id/textView5"
-                android:layout_column="0"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPostalAddress"
-                android:ems="10"
-                android:id="@+id/eventConfigEventWhere"
-                android:layout_column="2"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/event_configWhen"
-                android:id="@+id/textView6"
-                android:layout_column="0"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="date"
-                android:ems="10"
-                android:id="@+id/eventConfigEventWhen"
-                android:layout_column="2"/>
-        </TableRow>
     </TableLayout>
 
     <Button

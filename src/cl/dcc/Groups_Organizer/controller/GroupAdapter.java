@@ -51,7 +51,6 @@ public class GroupAdapter extends ArrayAdapter<Group> implements Filterable {
         } else {
             holder = (EventHolder) row.getTag();
         }
-
         Group group = data.get(position);
 
         holder.name.setText(group.getName());
