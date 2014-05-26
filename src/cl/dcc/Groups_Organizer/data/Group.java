@@ -1,19 +1,23 @@
 package cl.dcc.Groups_Organizer.data;
 
-import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ian on 21-05-2014.
  */
+@Parcel
 public class Group {
     public String name, description;
     public ArrayList<Person> members;
 	private int membersCount;
+
+	public Group() {}
 
 	public Group(String name, String description, int membersCount) {
         this.name = name;
@@ -29,20 +33,21 @@ public class Group {
 	    this.membersCount = members.size();
     }
 
-	public Group(JSONObject json) {
+	public Group(String json) throws JSONException {
+		this(new JSONObject(json));
+	}
 
-		name = json.optString("name", "");
+	public Group(JSONObject json) throws JSONException {
+
+		name = json.getString("name");
 		description = json.optString("description", "");
 
 		members = new ArrayList<Person>();
-		try {
+		if(json.has("members")) {
 			JSONArray membersJson = json.getJSONArray("members");
 			for(int i = 0; i < membersJson.length(); i++) {
 				members.add(new Person(membersJson.getString(i)));
 			}
-		} catch (JSONException e) {
-			Log.i("Group", "Members list not found. Ommiting.");
-			members.clear();
 		}
 		membersCount = json.optInt("membersCount");
 	}
@@ -75,5 +80,9 @@ public class Group {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public List<Person> getMemberList() {
+		return members;
 	}
 }

@@ -60,7 +60,7 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
 
     private void onDataChanged() {
         /* Cargamos la info */
-        EventListData listData = preferences.getValores(AdminPreferences.PRIVATE_EVENTS);
+        EventListData listData = preferences.getEventsSimpleList(AdminPreferences.PRIVATE_EVENTS);
 
         if (listData == null)
             return;
