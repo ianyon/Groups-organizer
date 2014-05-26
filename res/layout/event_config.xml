@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:text="Crear"
         android:id="@+id/buttonCreate"
-        android:onClick="onCreateGroup"
+        android:onClick="onCreateEvent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>

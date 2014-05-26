@@ -178,7 +178,7 @@ public class Event{
 		personSet.addAll(getGuestList());
 		personSet.addAll(newOnes);
 		getGuestList().clear();
-		getGuestList().addAll(newOnes);
+		getGuestList().addAll(personSet);
 		guestListCount = guestList.size();
 	}
 }

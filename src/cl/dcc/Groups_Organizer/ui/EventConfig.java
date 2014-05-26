@@ -43,6 +43,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private PersonAdapter mAdapter;
     private LoadingThing mLoadingMsg;
     private Person mUser;
+	private Set<Person> guestSet;
     private boolean mNewEvent = true;
 
     @ViewById(R.id.eventConfigEventName)
@@ -73,6 +74,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         super.onCreate(savedInstanceState);
 
         preferences = new AdminPreferences(this);
+	    guestSet = new HashSet<Person>();
 
         Bundle extras = this.getIntent().getExtras();
 
@@ -204,7 +206,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         if(mNewEvent) {
             CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
             RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
-                    mEventWhen.getText(), mAdapter.getList());
+                    mEventWhen.getText(), new ArrayList<Person>(guestSet));
 
             createEventConn.go(params, new MyHttpResponseHandler("Event Created"));
         } else {
@@ -243,8 +245,8 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
                         for(Person aPerson: newOnes){
                             Toast.makeText(EventConfig.this, aPerson.getName(), Toast.LENGTH_LONG).show();
                         }
-	                    mEvent.addGuests(newOnes);
-						mAttendees.setAdapter(new PersonAdapter(this, mEvent.getGuestList()));
+	                    guestSet.addAll(newOnes);
+						mAttendees.setAdapter(new PersonAdapter(this, new ArrayList<Person>(newOnes)));
 
                     }
             }
