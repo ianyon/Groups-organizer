@@ -52,6 +52,16 @@
             android:id="@+id/radioGroups"
             android:checked="false"
             android:layout_weight="1"/>
+
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Ready"
+                android:id="@+id/addPeopleFinish"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/textView"
+                android:onClick="onClickFinish"
+                android:layout_weight="1"/>
     </RadioGroup>
 
     <LinearLayout
