@@ -111,17 +111,21 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     private void canEditEvent(){
         if(mUser != null) {
             if(!mEvent.isAdmin(mUser)) {
-            mEventName.setKeyListener(null);
-            mEventDescription.setKeyListener(null);
-            mEventWhen.setKeyListener(null);
-            mEventWhere.setKeyListener(null);
+                mEventName.setFocusable(false);
+                mEventDescription.setFocusable(false);
+                mEventWhen.setFocusable(false);
+                mEventWhere.setFocusable(false);
                 mAddPeopleButton.setText("I am Going");
                 mCreateButton.setText("Return");
             } else {
+                mEventName.setFocusableInTouchMode(true);
+                mEventDescription.setFocusableInTouchMode(true);
+                mEventWhen.setFocusableInTouchMode(true);
+                mEventWhere.setFocusableInTouchMode(true);
                 mCreateButton.setText("Save Changes");
                 mAddPeopleButton.setText("Add People");
+            }
         }
-    }
     }
     private void showRegisterWarning(CharSequence text){
 

@@ -102,6 +102,7 @@ public class AddPeople extends CustomFragmentActivity {
             returnIntent.putExtra("Group", Parcels.wrap(groupSelected));
 
         setResult(RESULT_OK,returnIntent);
+        Toast.makeText(this, "Returning selected list.", Toast.LENGTH_SHORT).show();
         finish();
     }
 
