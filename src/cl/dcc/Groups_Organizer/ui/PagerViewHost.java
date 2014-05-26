@@ -151,6 +151,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         startActivity(new Intent(this, AddPeople_.class));
     }
 
+
     public void onAddEventClick(View v) {
         startActivity(new Intent(this, EventConfig_.class));
     }

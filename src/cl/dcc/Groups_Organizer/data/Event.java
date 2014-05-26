@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +19,7 @@ public class Event{
     public String name;
     public String description;
     public String location;
-    public Date datetime;
+    public String datetime;
     public List<Person> confirmed;
     public List<Person> guestList;
     private int confirmedCount;
@@ -38,7 +37,7 @@ public class Event{
         this.name = name;
         this.description = description;
         this.location = location;
-        this.datetime = datetime;
+        this.datetime = datetime.toString();
         this.confirmed = new ArrayList<Person>();
         this.guestList = new ArrayList<Person>();
     }
@@ -58,14 +57,11 @@ public class Event{
         name = jsonEvent.getString("name");
         description = jsonEvent.optString("description","");
         location = jsonEvent.optString("location","");
-        if(jsonEvent.has("datetime"))
-			try {
-				datetime = datetimeFormatJson.parse(jsonEvent.getString("datetime"));
-			} catch (ParseException e) {
-				datetime = null;
-			}
-		else
-        	datetime = null;
+        try {
+            datetime = jsonEvent.getString("datetime");
+        } catch (Exception e){
+            datetime = "";
+        }
         try{
             mAdmin = jsonEvent.getString("creator");
         } catch(Exception e){
@@ -106,13 +102,13 @@ public class Event{
     		jsonObject.put("description", description);
     		jsonObject.put("location", location);
     		if(datetime != null) {
-	    		jsonObject.put("datetime", datetimeFormatJson.format(datetime));
+	    		jsonObject.put("datetime",datetime);
     		}
     		JSONArray guests = new JSONArray();
     		for(Person person : guestList) {
     			JSONObject entry = new JSONObject();
     			entry.put("user_id", person.getUsername());
-    			entry.put("confirmed", confirmed.indexOf(person.getUsername()) == -1 ? "0" : "1");
+    			entry.put("confirmed", confirmed.indexOf(person) == -1 ? "0" : "1");
     			guests.put(entry);
     		}
     		jsonObject.put("guests", guests);
@@ -146,14 +142,10 @@ public class Event{
         return location;
     }
 
-    public Date getDatetime() {
+    public String getDatetime() {
         return datetime;
     }
 
-    public String getTimeDate() {
-        if (datetime == null)
-            return "";
-        return datetime.toString();}
     public List<Person> getConfirmed() {
         return confirmed;
     }
@@ -178,5 +170,9 @@ public class Event{
             }
         }
         return false;
+    }
+
+    public String getAdmin() {
+        return mAdmin;
     }
 }

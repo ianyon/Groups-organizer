@@ -7,10 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
-import cl.dcc.Groups_Organizer.connection.ConfirmConn;
-import cl.dcc.Groups_Organizer.connection.ConnectionStatus;
-import cl.dcc.Groups_Organizer.connection.CreateEventConn;
-import cl.dcc.Groups_Organizer.connection.GetEventInfoConn;
+import cl.dcc.Groups_Organizer.connection.*;
 import cl.dcc.Groups_Organizer.controller.PersonAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
@@ -101,12 +98,14 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mEventName.setText(mEvent.getName());
             mEventDescription.setText(mEvent.getDescription());
             if(mEvent.getDatetime() != null) 
-            	mEventWhen.setText(dateFormat.format(mEvent.getDatetime()));
+            	mEventWhen.setText( mEvent.getDatetime());
             mEventWhere.setText(mEvent.getLocation());
             List<Person> guestList = mAdapter.getList();
-            guestList.clear();
+            //guestList.clear();
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
+            showRegisterWarning(mEvent.getAdmin());
+            showRegisterWarning(mUser.getUsername());
             canEditEvent();
         }
     }
@@ -197,13 +196,20 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         if(!mNewEvent && !mEvent.isAdmin(mUser)){
             finish();
         }
-        CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
-        RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
-                mEventWhen.getText(), mAdapter.getList());
 
-        createEventConn.go(params, new MyHttpResponseHandler("Event Created",true));
+        if(mNewEvent) {
+            CreateEventConn createEventConn = new CreateEventConn(getHttpClient());
+            RequestParams params = createEventConn.generateParams(mEventName.getText(), mEventDescription.getText(), mEventWhere.getText(),
+                    mEventWhen.getText(), mAdapter.getList());
+
+            createEventConn.go(params, new MyHttpResponseHandler("Event Created", true));
+        } else {
+            UpdateEventConn updateEvent = new UpdateEventConn(getHttpClient());
+            RequestParams params = updateEvent.generateParams(mEvent.getId(),mEventName.getText(),mEventDescription.getText(),mEventWhere.getText(),mEventWhen.getText(),mAdapter.getList());
+        }
 
         mLoadingMsg.stopPopUp();
+        finish();
     }
 
     @Click
@@ -216,7 +222,31 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mLoadingMsg.stopPopUp();
             return;
         }
-        startActivity(new Intent(this, AddPeople_.class));
+        startActivityForResult(new Intent(this, AddPeople_.class), 42);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if (requestCode == 42) {
+            if(resultCode == RESULT_OK){
+
+                    if(data.getParcelableExtra("People") != null) {
+                        List<Person> newOnes = Parcels.unwrap(data.getParcelableExtra("People"));
+                        for(Person aPerson: newOnes){
+                            Toast.makeText(EventConfig.this, aPerson.getName(), Toast.LENGTH_LONG).show();
+                        }
+                        mAdapter.addPeopleToList(newOnes);
+
+
+                    }
+            }
+            if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(EventConfig.this, "Fail to recive list", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override

@@ -57,5 +57,9 @@ public class PersonAdapter extends ArrayAdapter<Person> {
             return data;
         }
 
+    public void addPeopleToList(List<Person> newOnes){
+        data.addAll(newOnes);
+    }
+
     }
 
