@@ -14,9 +14,7 @@ import cl.dcc.Groups_Organizer.data.Group;
 import cl.dcc.Groups_Organizer.data.Person;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +27,9 @@ import java.util.ArrayList;
  */
 @EActivity(R.layout.add_people)
 public class AddPeople extends CustomFragmentActivity {
+
+	@ViewById(R.id.addPeopleEditTextSearch)
+	EditText searchEditText;
 
 	@ViewById(R.id.radioGroupType)
 	RadioGroup radioGroup;
@@ -43,7 +44,8 @@ public class AddPeople extends CustomFragmentActivity {
 
 	ArrayList<Person> peopleList, peopleSelected;
 	ArrayList<Group> groupsList, groupSelected;
-
+    GroupAdapter groupAdapter;
+    PersonAdapter personAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,30 +54,32 @@ public class AddPeople extends CustomFragmentActivity {
 		groupsList = new ArrayList<Group>();
         peopleSelected = new ArrayList<Person>();
         groupSelected = new ArrayList<Group>();
+		groupAdapter = new GroupAdapter(this, groupsList);
+		personAdapter = new PersonAdapter(this, peopleList);
 
 	}
 
 	@AfterViews
 	public void init() {
 		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				showingPeople = radioPeople.isChecked();
-				onDataChanged();
-			}
-		});
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                showingPeople = radioPeople.isChecked();
+                onDataChanged();
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(showingPeople) {
+                if (showingPeople) {
                     Toast.makeText(AddPeople.this, peopleList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
                     peopleSelected.add(peopleList.get(position));
                 } else {
                     Toast.makeText(AddPeople.this, groupsList.get(position).getName(), Toast.LENGTH_SHORT).show();
                     groupSelected.add(groupsList.get(position));
                 }
-                }
+            }
         });
 	}
 
@@ -86,7 +90,8 @@ public class AddPeople extends CustomFragmentActivity {
 
 	}
 
-    public void onClickFinish(){
+
+    void onClickFinish(){
         Intent returnIntent = new Intent();
 
         if(!peopleSelected.isEmpty())
@@ -99,17 +104,25 @@ public class AddPeople extends CustomFragmentActivity {
         finish();
     }
 
-	private void onDataChanged() {
+	@TextChange(R.id.addPeopleEditTextSearch)
+	public void onTextChange(TextView tv, CharSequence text) {
+		groupAdapter.getFilter().filter(text.toString());
+		personAdapter.getFilter().filter(text.toString());
+	}
 
+	private void onDataChanged() {
 		if(showingPeople) {
+			personAdapter = new PersonAdapter(this, new ArrayList<Person>(peopleList));
             /* Cargamos la info */
 			listView.setAdapter(
-					new PersonAdapter(this, peopleList));
+					personAdapter);
 
 		} else {
+			groupAdapter = new GroupAdapter(this, new ArrayList<Group>(groupsList));
 			listView.setAdapter(
-					new GroupAdapter(this, groupsList));
+					groupAdapter);
 		}
+		onTextChange(null, searchEditText.getText().toString());
 	}
 
 	private void refresh() {

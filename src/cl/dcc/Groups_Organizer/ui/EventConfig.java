@@ -105,7 +105,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             guestList.addAll(mEvent.getGuestList());
             mAdapter.notifyDataSetChanged();
             showRegisterWarning(mEvent.getAdmin());
-            showRegisterWarning(mUser.getUsername());
+            showRegisterWarning(mUser.getUsername()+"  e");
             canEditEvent();
         }
     }
