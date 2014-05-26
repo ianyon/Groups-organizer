@@ -65,16 +65,16 @@
         android:layout_gravity="center"
         android:gravity="center_vertical">
 
-        <EditText
+        <org.droidparts.widget.ClearableEditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/addPeopleEditTextSearch"
             android:layout_below="@+id/textView"
             android:layout_alignParentLeft="true"
             android:hint="Claudio Jorquera or futbol team"
-            android:layout_weight="0.2"/>
+            android:layout_weight="0.8"/>
 
-        <ImageButton
+        <!--ImageButton
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="#00000000"
@@ -83,7 +83,7 @@
             android:layout_alignTop="@+id/multiAutoCompleteSearch"
             android:layout_toRightOf="@+id/multiAutoCompleteSearch"
             android:onClick="onSearch"
-            android:layout_weight="0.8"/>
+            android:layout_weight="0.8"/-->
     </LinearLayout>
 
 </RelativeLayout>
