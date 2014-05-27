@@ -12,14 +12,14 @@
         <RelativeLayout
             android:id="@+id/relative1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="57dp"
             android:padding="5dp">
 
             <TextView
                 android:id="@+id/pagerViewTextName"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fernando Paulsen"
+                android:layout_height="match_parent"
+                android:text="AA"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#FFFFFF"
                 android:gravity="center_vertical|left"
@@ -29,21 +29,20 @@
                 android:layout_toLeftOf="@+id/pagerViewButtonCreateEvent"/>
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="57dp"
+                android:layout_height="match_parent"
                 android:id="@+id/pagerViewButtonProfile"
                 android:layout_centerVertical="true"
                 android:onClick="onRegisterClick"
+                android:scaleType="fitCenter"
                 android:src="@android:drawable/ic_menu_manage"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentRight="true"/>
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="57dp"
+                android:layout_height="match_parent"
                 android:id="@+id/pagerViewButtonGroups"
                 android:adjustViewBounds="true"
-                android:maxWidth="57dp"
-                android:maxHeight="57dp"
                 android:onClick="onAddEventClick"
                 android:scaleType="fitCenter"
                 android:src="@drawable/add_event_256"
@@ -51,8 +50,8 @@
                 />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="57dp"
+                android:layout_height="match_parent"
                 android:id="@+id/pagerViewButtonCreateEvent"
                 android:onClick="onAddFriendsClick"
                 android:src="@android:drawable/ic_menu_add"
@@ -76,8 +75,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.8">
+            android:layout_height="match_parent"
+            android:layout_weight="0.8" >
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
