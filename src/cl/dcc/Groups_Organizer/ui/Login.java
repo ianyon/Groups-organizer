@@ -1,24 +1,26 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.parceler.Parcels;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import cl.dcc.Groups_Organizer.R;
+import cl.dcc.Groups_Organizer.connection.LoginConn;
 import cl.dcc.Groups_Organizer.data.Person;
-
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.Validator.ValidationListener;
 import com.mobsandgeeks.saripaar.annotation.Password;
 import com.mobsandgeeks.saripaar.annotation.TextRule;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.parceler.Parcels;
 
 @EActivity(R.layout.main)
 public class Login extends CustomFragmentActivity {
@@ -31,43 +33,59 @@ public class Login extends CustomFragmentActivity {
 	@TextRule(order = 3, minLength = 5, messageResId = R.string.registerPassVerification)
 	@ViewById(R.id.pass)
     TextView tvPassword;
-	
+
+    private LoadingThing myLoadingMsg;
+
 	private Validator validator;
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
 		@Override
 		public void onValidationSucceeded() {
-            doLoginVerified(new Person("rfuentes","Roberto fuentes" ));
-            return;
-//	        LoginConn loginConn = new LoginConn(getHttpClient());
-//	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
-//	        loginConn.go(reqParams, httpHandler);
+            myLoadingMsg.startPopUp();
+            LoginConn loginConn = new LoginConn(getHttpClient());
+	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
+	        loginConn.go(reqParams, httpHandler);
 		}
 	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+        Log.w("hola", "chao");
 		super.onCreate(savedInstanceState);
 		validator = new Validator(this);
 		validator.setValidationListener(validationListener);
-	}
-	
-	@Click(R.id.signup)
+
+        myLoadingMsg = new LoadingThing(Login.this,"","Connecting");
+
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myLoadingMsg.stopPopUp();
+    }
+
+    @Click(R.id.signup)
 	public void onSignupClick(View v){
         startActivity(new Intent(this,Register_.class));
     }
 
 	@Click(R.id.login)
-    public void onLoginClick() {
-        validator.validate();
-    }
+    public void onLoginClick() { validator.validate();  }
 
     private void doLoginVerified(Person user) {
+
         Intent intent = PagerViewHost_.intent(this).get();
         Bundle extras = new Bundle();
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
+
         startActivity(intent);
     }
+
+
 
     // Object for Handling the http response
     private TextHttpResponseHandler httpHandler = new TextHttpResponseHandler() {
@@ -76,6 +94,7 @@ public class Login extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
+            myLoadingMsg.stopPopUp();
             Toast.makeText(Login.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 
@@ -85,7 +104,7 @@ public class Login extends CustomFragmentActivity {
             if (statusCode == 200 && parseResponse(responseBody) && message.equals("OK")) {
                 Toast.makeText(Login.this, getString(R.string.loginSuccessfull), Toast.LENGTH_SHORT).show();
 
-                Person user = new Person(name, "" + tvUser.getText());
+                Person user = new Person("" + tvUser.getText(),name);
 
                 // Clear the textviews
                 tvUser.setText("");
@@ -93,6 +112,7 @@ public class Login extends CustomFragmentActivity {
 
                 doLoginVerified(user);
             }else{
+                myLoadingMsg.stopPopUp();
                 Toast.makeText(Login.this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
             }
         }

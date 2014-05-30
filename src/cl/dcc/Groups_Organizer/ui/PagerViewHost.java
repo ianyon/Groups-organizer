@@ -1,12 +1,7 @@
 package cl.dcc.Groups_Organizer.ui;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.parceler.Parcels;
-
+import cl.dcc.Groups_Organizer.connection.GetGroupListConn;
+import cl.dcc.Groups_Organizer.utilities.LoadingThing;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -21,9 +16,14 @@ import cl.dcc.Groups_Organizer.connection.GetEventListConn;
 import cl.dcc.Groups_Organizer.controller.TabsAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Person;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.parceler.Parcels;
 
 @EActivity(R.layout.pager_view)
 public class PagerViewHost extends CustomFragmentActivity {
@@ -46,11 +46,12 @@ public class PagerViewHost extends CustomFragmentActivity {
     @ViewById(R.id.pagerViewButtonCreateEvent)
     View mCreateEvent;
 
-    Person mUser;
+    static public Person mUser;
 
     TabsAdapter mTabsAdapter;
 
     private AdminPreferences preferences;
+    private LoadingThing mLoadingMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         }else{
             Toast.makeText(this,"Error fatal, no llego un usuario", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -92,6 +94,12 @@ public class PagerViewHost extends CustomFragmentActivity {
         TabHost.TabSpec tabSpec2 = mTabHost.newTabSpec("tab2");
         tabSpec2.setIndicator("My events", null);
         mTabsAdapter.addTab(tabSpec2, MyEvents.class, null);
+
+	    TabHost.TabSpec tabSpec3 = mTabHost.newTabSpec("tab3");
+	    tabSpec3.setIndicator("My groups", null);
+	    mTabsAdapter.addTab(tabSpec3, MyGroups.class, null);
+
+        mLoadingMsg = new LoadingThing(PagerViewHost.this);
     }
 
     public void onRefreshTriggered(View v) {
@@ -100,20 +108,31 @@ public class PagerViewHost extends CustomFragmentActivity {
     }
 
     public void refresh() {
+        mLoadingMsg.startPopUp();
         if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
+            mLoadingMsg.stopPopUp();
             return;
         }
+
 
         // Connection for public event list
         GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
         RequestParams reqParams = eventsConn.generateParams(false);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
+
         // Connection for personal event list
         eventsConn = new GetEventListConn(getHttpClient());
         reqParams = eventsConn.generateParams(true);
         eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
+
+	    // Connection for personal groups list
+	    GetGroupListConn groupsConn = new GetGroupListConn(getHttpClient());
+	    reqParams = groupsConn.generateParams(true);
+	    groupsConn.go(reqParams, new GroupListHttpResponseHandler(AdminPreferences.PRIVATE_GROUPS));
+
+        mLoadingMsg.stopPopUp();
     }
 
     @Override
@@ -130,11 +149,18 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
     }
 
-    public void onRegisterClick(View v){ startActivity(new Intent(this, Register_.class));  }
+    public void onRegisterClick(View v){
+        Intent aIntent = new Intent(this,Register_.class);
+        Bundle extras = new Bundle();
+        extras.putParcelable("User", Parcels.wrap(mUser));
+        aIntent.putExtras(extras);
+        startActivity(aIntent);
+        }
 
     public void onAddFriendsClick(View v) {
-        startActivity(new Intent(this, AddPeople.class));
+        startActivity(new Intent(this, AddPeople_.class));
     }
+
 
     public void onAddEventClick(View v) {
         startActivity(new Intent(this, EventConfig_.class));
@@ -152,6 +178,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
+           // mLoadingMsg.stopPopUp();
             Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
         
@@ -160,8 +187,35 @@ public class PagerViewHost extends CustomFragmentActivity {
         	if(statusCode != 200) {
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
         	}
+            //mLoadingMsg.stopPopUp();
         	preferences.setValores(dataType, response);
         }
     }
+
+	// Object for Handling the http response
+	private class GroupListHttpResponseHandler extends JsonHttpResponseHandler {
+		private String category, data;
+		private String dataType;
+
+		public GroupListHttpResponseHandler(String dataType) {
+			this.dataType = dataType;
+		}
+
+		@Override
+		public void onFailure(int statusCode, Header[] headers, String responseString,
+		                      Throwable throwable) {
+			// mLoadingMsg.stopPopUp();
+			Toast.makeText(PagerViewHost.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+			if(statusCode != 200) {
+				Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
+			}
+			//mLoadingMsg.stopPopUp();
+			preferences.setValores(dataType, response);
+		}
+	}
 
 }

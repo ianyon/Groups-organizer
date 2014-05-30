@@ -1,11 +1,6 @@
 package cl.dcc.Groups_Organizer.ui;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.parceler.Parcels;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +12,10 @@ import cl.dcc.Groups_Organizer.controller.EventAdapter;
 import cl.dcc.Groups_Organizer.data.AdminPreferences;
 import cl.dcc.Groups_Organizer.data.Event;
 import cl.dcc.Groups_Organizer.data.EventListData;
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ian on 13-04-2014.
@@ -61,7 +60,7 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
 
     private void onDataChanged() {
         /* Cargamos la info */
-        EventListData listData = preferences.getValores(AdminPreferences.PRIVATE_EVENTS);
+        EventListData listData = preferences.getEventsSimpleList(AdminPreferences.PRIVATE_EVENTS);
 
         if (listData == null)
             return;

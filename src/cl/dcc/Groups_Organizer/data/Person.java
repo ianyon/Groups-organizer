@@ -4,8 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import android.util.Log;
-
 /**
  * Created by Ian on 21-05-2014.
  */
@@ -15,8 +13,8 @@ public class Person {
     public String name;
     public String gender;
     public String email;
-    private String password;
     public int age;
+    public String id;
 
     public Person(){}
     
@@ -37,25 +35,19 @@ public class Person {
     	this.gender = gender;
         this.age = age;
     }
-    public Person(JSONObject jsonPerson){
-    	username = "";
-        name = "";
-        gender = "";
-        email = "";
-        age = -1;
 
-        try {
-        	username = jsonPerson.getString("user_name"); 
-            name = jsonPerson.getString("name");
-            gender = jsonPerson.getString("gender");
-            email = jsonPerson.getString("email");
-            age = jsonPerson.getInt("age");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("JSON","JSON EXCEPTION: "+e);
-        }
+    public Person(String jsonString) throws JSONException {
+        this(new JSONObject(jsonString));
     }
-    
+
+    public Person(JSONObject jsonPerson) throws JSONException {
+        username = jsonPerson.getString("user_name");
+        name = jsonPerson.optString("name");
+        gender = jsonPerson.optString("gender");
+        email = jsonPerson.optString("email");
+        age = jsonPerson.optInt("age", -1);
+    }
+
     @Override
     public String toString() {
     	JSONObject jsonObject = new JSONObject();
@@ -70,15 +62,6 @@ public class Person {
 			e.printStackTrace();
 		}
     	return "{}";
-    }
-    
-    public Person(String jsonString) throws JSONException {
-        this(new JSONObject(jsonString));
-    }
-
-    public Person(String username, String name, String gender, String email, String pass,int age) {
-        this(username, name,gender,email,age);
-        password = pass;
     }
 
     public JSONObject toJSONObject() throws JSONException {
@@ -112,6 +95,4 @@ public class Person {
     public String getUsername() {
     	return username;
     }
-
-    public String getPassword() { return password; }
 }

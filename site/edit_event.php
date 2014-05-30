@@ -6,11 +6,13 @@ $_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_
 $_POST['description'] = $saved_description;
 
 $validator = new Valitron\Validator($_POST);
-$validator->rule('required',['name', 'description', 'location', 'datetime', 'invited_people']);
+$validator->rule('required',['id', 'name', 'description', 'location', 'datetime', 'invited_people']);
 $validator->rule('lengthMin', array('name', 'location'), 3);
 $validator->rule('lengthMax', 'name', 50);
 $validator->rule('lengthMax', 'location', 100);
 $validator->rule('lengthMax', 'datetime', 20);
+$validator->rule('integer', 'id');
+$validator->rule('min', 'id', 0);
 //$validator->rule('dateFormat', 'datetime', 'Y-m-d H:i');
 
 
@@ -23,26 +25,36 @@ $invited_people = json_decode_log($_POST['invited_people'], basename(__FILE__));
 
 $conn->autocommit(false);
 
-$stmt = $conn->prepare("INSERT INTO event (name, description, creator, location, datetime, datetime_creation) VALUES(?,?,?,?,?, NOW())");
-$stmt->bind_param('sssss', $_POST['name'], $_POST['description'],
-		$_SESSION['logged_username'],$_POST['location'], $_POST['datetime']);
-$stmt->execute();
+$stmt = $conn->prepare("UPDATE event SET name=?, description=?, location=?, datetime=? WHERE id = ?");
+$stmt->bind_param('ssssi', $_POST['name'], $_POST['description'],
+		$_POST['location'], $_POST['datetime'], $_POST['id']);
 
-if($stmt->affected_rows <= 0 or $stmt->errno) {
-	$error_entry = "Event could not be added";
+
+if(!$stmt->execute()) {
+	$error_entry = "Event could not be edited";
 	if($stmt->errno) {
 		$error_entry.= "(error code $stmt->errno): $stmt->error";
 	}
 	$log->general($error_entry);
 	$conn->rollback();
-	die("COULD NOT ADD EVENT");
+	die("COULD NOT EDIT EVENT");
 }
 
-$id = $stmt->insert_id;
+$stmt = $conn->prepare("DELETE FROM event_invited_users WHERE event_id = ?");
+$stmt->bind_param('i', $_POST['id']);
+if(!$stmt->execute()) {
+	$error_entry = "Could not delete guest list";
+	if($stmt->errno) {
+		$error_entry.= "(error code $stmt->errno): $stmt->error";
+	}
+	$log->general($error_entry);
+	$conn->rollback();
+	die("COULD NOT UPDATE GUEST LIST");
+}
 
 $stmt = $conn->prepare("INSERT INTO event_invited_users (event_id, user_id) VALUES(?,?)");
 foreach($invited_people as $user) {
-	$stmt->bind_param('ss', $id, $user);
+	$stmt->bind_param('ss', $_POST['id'], $user);
 	$stmt->execute();
 	if($stmt->errno) {
 		$error_entry = "User could not be added to event";

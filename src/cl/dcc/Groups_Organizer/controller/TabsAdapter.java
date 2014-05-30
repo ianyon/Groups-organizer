@@ -1,7 +1,5 @@
 package cl.dcc.Groups_Organizer.controller;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+
+import java.util.ArrayList;
 
 /**
  * This is a helper class that implements the management of tabs and all
