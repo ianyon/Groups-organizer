@@ -23,3 +23,13 @@ a) Android Annotations es una libreria usada en el proyecto y el tutorial explic
 b) Los archivos generados por las anotaciones quedan en la carpeta target/annotations y el editor muestra que tienen errores, sin embargo se puede ejecutar la aplicación.
 
 c) La configuración de IntelliJ puede ser algo tediosa y "error-prone". A veces puede ser necesario cerrar el editor y abrirlo denuevo o usar el comando Build Project para que se vuelvan a compilar los archivos.
+
+
+###Sitio web:
+
+En la carpeta *site/* se encuentra el sitio web escrito en PHP y testeado con PHP 5.4.12.
+En la carpeta *site/internal/* se encuentra el script de creación de la base de datos *script_creacion.sql*. La base de datos usada en el desarrollo fue MySql.
+
+###Link de aplicación a servidor web:
+
+Para que la aplicación use un servidor web determinado, se debe cambiar el campo URL de la clase *cl.dcc.Groups_Organizer.connection.HttpConnection* a la url base de los scripts php.
