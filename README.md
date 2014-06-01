@@ -25,13 +25,11 @@ Instrucciones de configuración del proyecto
 
 Notas: 
 
-a) Android Annotations es una libreria usada en el proyecto y el tutorial explica como agregarla. La libreria procesa anotaciones echas en el codigo y genera código java en base a ellas.
+a) Android Annotations es una libreria usada en el proyecto. La libreria procesa anotaciones echas en el codigo y genera código java en base a ellas. El procesamiento de anotaciones se hace antes de la compilación por lo que los archivos no existen hasta este momento, lo que produce que aparezcan errores en el código, que han de desaparecer luego de esto.
 
-b) Los archivos generados por las anotaciones quedan en la carpeta target/annotations y el editor muestra que tienen errores, sin embargo se puede ejecutar la aplicación.
+b) Los archivos generados por las anotaciones quedan en la carpeta target y el editor muestra que tienen errores, así como el archivo R.java aparece vacio. En cualquier caso solo hay que ejecutar la aplicación puesto que las referencias no son reconocidas por el IDE pero a la hora de compilar queda todo bien referenciado.
 
-c) Al ejecutar la aplicación se pide elegir un dispositivo, Si hay conectado un celular Android con los drivers instalados, aparecerá allí para seleccionarlo, de lo contrario se puede crear un dispositivo virtual con las herramientas del Android SDK.
-
-d) Si se quiere ejecutar en un celular desde Linux puede que sea necesario:
+c) Al ejecutar la aplicación se pide elegir un dispositivo, Si hay conectado un celular Android con los drivers instalados, aparecerá allí para seleccionarlo, de lo contrario se puede crear un dispositivo virtual con las herramientas del Android SDK. Si se quiere ejecutar en un celular desde Linux puede que sea necesario:
 
 - El punto 3 de "http://developer.android.com/tools/device.html" Señala como configurar el dispositivo.
 - Ejecutar "sudo apt-get install lib32z1 lib32z1-dev lib32stdc++6" en un terminal si aparece el error "ADB not responding, wait more or restart"
