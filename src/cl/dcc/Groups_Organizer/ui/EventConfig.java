@@ -138,12 +138,12 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     }
 
     public void refresh() {
-        mLoadingMsg.startPopUp();
+
         if (mEvent == null) {
-            mLoadingMsg.stopPopUp();
             return;
         }
 
+        mLoadingMsg.startPopUp();
         if (!ConnectionStatus.isOnline(this)) {
             Toast.makeText(this, "No hay una conexión de datos.", Toast.LENGTH_SHORT).show();
             mLoadingMsg.stopPopUp();
@@ -238,12 +238,9 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
                     if(data.getParcelableExtra("People") != null) {
                         List<Person> newOnes = Parcels.unwrap(data.getParcelableExtra("People"));
-                        for(Person aPerson: newOnes){
-                            Toast.makeText(EventConfig.this, aPerson.getName(), Toast.LENGTH_LONG).show();
-                        }
+                        //for(Person aPerson: newOnes){Toast.makeText(EventConfig.this, aPerson.getName(), Toast.LENGTH_LONG).show();}
 	                    guestSet.addAll(newOnes);
 						mAttendees.setAdapter(new PersonAdapter(this, new ArrayList<Person>(newOnes)));
-
                     }
             }
             if (resultCode == RESULT_CANCELED) {
@@ -254,6 +251,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Override
     public void onStart() {
+        //Todo cambiar preference a onResume on Puase.
         super.onStart();
         preferences.getPreferencias(AdminPreferences.PREFERENCIAS_EVENTOS).registerOnSharedPreferenceChangeListener(this);
         onDataChanged();
@@ -263,6 +261,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Override
     public void onStop() {
+        //Todo ver todo onStart
         super.onStop();
         preferences.getPreferencias(AdminPreferences.PREFERENCIAS_EVENTOS).unregisterOnSharedPreferenceChangeListener(this);
     }

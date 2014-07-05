@@ -186,6 +186,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         	if(statusCode != 200) {
         		Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
+                return;
         	}
             //mLoadingMsg.stopPopUp();
         	preferences.setValores(dataType, response);
@@ -212,6 +213,7 @@ public class PagerViewHost extends CustomFragmentActivity {
 		public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
 			if(statusCode != 200) {
 				Toast.makeText(PagerViewHost.this, "Error en la recepción de datos", Toast.LENGTH_SHORT).show();
+                return;
 			}
 			//mLoadingMsg.stopPopUp();
 			preferences.setValores(dataType, response);

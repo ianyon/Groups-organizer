@@ -39,3 +39,4 @@ function json_decode_log($str, $file) {
 	}
 	return $json;
 }
+?>

@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.data.Event;
-
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public class EventAdapter extends ArrayAdapter<Event> {
 
-    Context context;
+    protected Context context;
     int layoutResourceId;
     List<Event> data = null;
 

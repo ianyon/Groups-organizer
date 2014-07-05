@@ -262,6 +262,7 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        //Todo check mGroup is not null
         if (key.equals(mGroup.getName()))
             onDataChanged();
     }

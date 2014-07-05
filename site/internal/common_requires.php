@@ -11,3 +11,4 @@ $log = new Log();
 if(!isset($_POST) or count($_POST) == 0) {
 	$_POST = $_GET;
 }
+?>

@@ -14,7 +14,7 @@ import java.util.List;
 @Parcel
 public class Group {
     public String name, description;
-    public ArrayList<Person> members;
+    public List<Person> members;
 	private int membersCount;
 
 	public Group() {}
