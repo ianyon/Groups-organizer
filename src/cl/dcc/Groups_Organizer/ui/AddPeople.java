@@ -2,6 +2,7 @@ package cl.dcc.Groups_Organizer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
@@ -174,7 +175,7 @@ public class AddPeople extends CustomFragmentActivity {
 				try {
 					peopleList.add(new Person(response.getString(i)));
 				} catch (JSONException e) {
-					e.printStackTrace();
+                    Log.e("JSON", "Error creando persona. No tiene un formato JSON valido");
 					couldParseAll = false;
 				}
 			}
@@ -199,7 +200,7 @@ public class AddPeople extends CustomFragmentActivity {
 				try {
 					groupsList.add(new Group(response.getJSONObject(i)));
 				} catch (JSONException e) {
-					e.printStackTrace();
+                    Log.e("JSON", "Error creando grupo. No tiene un formato JSON valido");
 					couldParseAll = false;
 				}
 			}

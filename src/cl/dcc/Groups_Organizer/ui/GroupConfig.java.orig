@@ -187,8 +187,13 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 			        }
 			        preferences.saveGroup(mGroup);
 		        } catch (JSONException e) {
+<<<<<<< HEAD
                     Log.e("Error CroupConfig","Fail lo load persosn from JSON. "  + e.getMessage());
+			        Toast.makeText(GroupConfig.this, "Error al traer la información del grupo.", Toast.LENGTH_SHORT).show();
+=======
+			        Toast.makeText(GroupConfig.this, "Error al traer la información del grupo", Toast.LENGTH_SHORT).show();
 			        Log.e("JSON", "Error al traer la información del grupo");
+>>>>>>> 443ceea9c2d0ad876124122c042fa8be54b392ff
 			        mLoadingMsg.stopPopUp();
 			        return;
 		        }

@@ -199,6 +199,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
                         preferences.saveEvent(mEvent);
                     } catch (JSONException e) {
                         Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
+                    Log.e("JSON", "Error al traer la información del evento");
                         mLoadingMsg.stopPopUp();
                         return;
                     }

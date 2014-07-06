@@ -104,11 +104,19 @@ if (!defined('PASSWORD_DEFAULT')) {
             }
             if (!$buffer_valid && @is_readable('/dev/urandom')) {
                 $f = fopen('/dev/urandom', 'r');
-                $read = PasswordCompat\binary\_strlen($buffer);
-                while ($read < $raw_salt_len) {
-                    $buffer .= fread($f, $raw_salt_len - $read);
-                    $read = PasswordCompat\binary\_strlen($buffer);
+
+                if (flock($f, LOCK_SH)) {  // adquirir un bloqueo de lectura
+
+                    do{
+                        $buffer .= fread($f, $raw_salt_len - $read);
+                        $read = PasswordCompat\binary\_strlen($buffer);
+                    } while ($read < $raw_salt_len);
+
+                    flock($f, LOCK_UN);    // libera el bloqueo
+                } else {
+                    echo "¡No se pudo obtener el bloqueo!";
                 }
+
                 fclose($f);
                 if ($read >= $raw_salt_len) {
                     $buffer_valid = true;
