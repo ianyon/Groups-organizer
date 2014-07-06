@@ -17,20 +17,22 @@ Class Log {
   */ 
     public function user($msg,$username) 
     {
-	$date = new DateTime();
-	$date->setTimezone($this->timezone);
-    $date = $date->format('d.m.Y H:i:s');
-    error_log("[$date][$username] $msg\n", 3, self::USER_ERROR_DIR); 
+		$msg = filter_var($msg, FILTER_UNSAFE_RAW, array('flags' => FILTER_FLAG_STRIP_LOW));
+		$date = new DateTime();
+		$date->setTimezone($this->timezone);
+		$date = $date->format('d.m.Y H:i:s');
+		error_log("[$date][$username] $msg\n", 3, self::USER_ERROR_DIR); 
     } 
     /* 
    General Errors... 
   */ 
     public function general($msg) 
     {
-    $date = new DateTime();
-	$date->setTimezone($this->timezone);
-    $date = $date->format('d.m.Y H:i:s');
-    error_log("[$date] $msg\n", 3, self::GENERAL_ERROR_DIR); 
-    } 
+		$msg = filter_var($msg, FILTER_UNSAFE_RAW, array('flags' => FILTER_FLAG_STRIP_LOW));
+		$date = new DateTime();
+		$date->setTimezone($this->timezone);
+		$date = $date->format('d.m.Y H:i:s');
+		error_log("[$date] $msg\n", 3, self::GENERAL_ERROR_DIR); 
+    }
 
 }
