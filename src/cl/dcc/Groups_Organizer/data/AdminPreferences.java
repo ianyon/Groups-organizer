@@ -2,6 +2,7 @@ package cl.dcc.Groups_Organizer.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +43,7 @@ public class AdminPreferences {
         try {
             return new EventListData(jsonString);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("JSON","Error recuperando lista de eventos. No tiene un formato JSON valido");
         }
         return null;
     }
@@ -52,7 +53,7 @@ public class AdminPreferences {
 		try {
 			return new GroupListData(jsonString);
 		} catch (JSONException e) {
-			e.printStackTrace();
+            Log.e("JSON","Error recuperando lista de grupos. No tiene un formato JSON valido");
 		}
 		return null;
 	}
@@ -66,7 +67,7 @@ public class AdminPreferences {
     	setValores(USER, user.toString());
     }
 
-	public List<Person> getPersonList() {
+/*	public List<Person> getPersonList() {
 		SharedPreferences preferences = getPreferencias(PREFERENCIAS_USUARIOS);
 		Map<String, ?> map = preferences.getAll();
 		List<Person> list = new ArrayList<Person>();
@@ -81,7 +82,7 @@ public class AdminPreferences {
 			}
 		}
 		return list;
-	}
+	}*/
 
 	public Person getPerson(String username) throws JSONException {
 		return new Person(getPreferencias(PREFERENCIAS_USUARIOS).getString(username, "{}"));
@@ -101,7 +102,7 @@ public class AdminPreferences {
 				Group g = new Group(new JSONObject(value.toString()));
 				list.add(g);
 			} catch (JSONException e) {
-				e.printStackTrace();
+                Log.e("JSON","Error recuperando grupo. No tiene un formato JSON valido");
 				preferences.edit().remove(key);
 			}
 		}
@@ -113,7 +114,7 @@ public class AdminPreferences {
 		try {
 			return new Group(json);
 		} catch(JSONException e) {
-			e.printStackTrace();
+            Log.e("JSON","Error recuperando grupo. No tiene un formato JSON valido");
 		}
 		return null;
 	}
@@ -131,7 +132,7 @@ public class AdminPreferences {
         try {
             return new Event(jsonString);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("JSON","Error recuperando evento. No tiene un formato JSON valido");
         }
         return null;
     }

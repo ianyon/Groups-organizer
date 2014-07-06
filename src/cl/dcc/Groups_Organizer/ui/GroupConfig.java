@@ -172,7 +172,7 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 			        preferences.saveGroup(mGroup);
 		        } catch (JSONException e) {
 			        Toast.makeText(GroupConfig.this, "Error al traer la información del grupo", Toast.LENGTH_SHORT).show();
-			        e.printStackTrace();
+			        Log.e("JSON", "Error al traer la información del grupo");
 			        mLoadingMsg.stopPopUp();
 			        return;
 		        }
