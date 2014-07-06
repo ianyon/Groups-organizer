@@ -58,8 +58,12 @@ public class PagerViewHost extends CustomFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = new AdminPreferences(this);
-
+        try {
+            preferences = new AdminPreferences(this);
+        }
+        catch (Exception e){
+            Log.e("Error PagerViewHost","Fail to create events. " + e.getMessage());
+        }
         Bundle extras = this.getIntent().getExtras();
 
         if(extras != null && extras.containsKey("User")){
@@ -100,7 +104,12 @@ public class PagerViewHost extends CustomFragmentActivity {
 	    tabSpec3.setIndicator("My groups", null);
 	    mTabsAdapter.addTab(tabSpec3, MyGroups.class, null);
 
-        mLoadingMsg = new LoadingThing(PagerViewHost.this);
+        try {
+            mLoadingMsg = new LoadingThing(PagerViewHost.this);
+        }
+        catch(Exception e){
+            Log.e("Error PagerViewHost","Error al crear el togle de carga del servidor. " + e.getMessage());
+        }
     }
 
     public void onRefreshTriggered(View v) {
@@ -118,20 +127,24 @@ public class PagerViewHost extends CustomFragmentActivity {
 
 
         // Connection for public event list
-        GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
-        RequestParams reqParams = eventsConn.generateParams(false);
-        eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
+        try {
+            GetEventListConn eventsConn = new GetEventListConn(getHttpClient());
+            RequestParams reqParams = eventsConn.generateParams(false);
+            eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PUBLIC_EVENTS));
 
+            // Connection for personal event list
+            eventsConn = new GetEventListConn(getHttpClient());
+            reqParams = eventsConn.generateParams(true);
+            eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
 
-        // Connection for personal event list
-        eventsConn = new GetEventListConn(getHttpClient());
-        reqParams = eventsConn.generateParams(true);
-        eventsConn.go(reqParams, new EventListHttpResponseHandler(AdminPreferences.PRIVATE_EVENTS));
-
-	    // Connection for personal groups list
-	    GetGroupListConn groupsConn = new GetGroupListConn(getHttpClient());
-	    reqParams = groupsConn.generateParams(true);
-	    groupsConn.go(reqParams, new GroupListHttpResponseHandler(AdminPreferences.PRIVATE_GROUPS));
+            // Connection for personal groups list
+            GetGroupListConn groupsConn = new GetGroupListConn(getHttpClient());
+            reqParams = groupsConn.generateParams(true);
+            groupsConn.go(reqParams, new GroupListHttpResponseHandler(AdminPreferences.PRIVATE_GROUPS));
+        }
+        catch(Exception e){
+            Log.e("Error PagerViewHost","Error el crear la conexion y/o conecectarse al servidor. " + e.getMessage());
+        }
 
         mLoadingMsg.stopPopUp();
     }
@@ -160,7 +173,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
         catch(Exception e){
             Toast.makeText(PagerViewHost.this, "Error", Toast.LENGTH_SHORT).show();
-            Log.e("Error PagerViewHost", "Error en iniciar el registro como configuracion. Usurario: " + mUser.getUsername());
+            Log.e("Error PagerViewHost", "Error en iniciar el registro como configuracion. Usurario: " + mUser.getUsername() + ". " + e.getMessage());
         }
     }
 
@@ -170,7 +183,7 @@ public class PagerViewHost extends CustomFragmentActivity {
         }
         catch (Exception e){
             Toast.makeText(PagerViewHost.this, "Error", Toast.LENGTH_SHORT).show();
-            Log.e("Error PagerViewHost","Error en lanzar el agregado de personas");
+            Log.e("Error PagerViewHost","Error en lanzar el agregado de personas. " + e.getMessage());
         }
     }
 

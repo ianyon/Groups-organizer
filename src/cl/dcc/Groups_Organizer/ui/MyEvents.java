@@ -30,12 +30,22 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        preferences = new AdminPreferences(getActivity());
+        try {
+            preferences = new AdminPreferences(getActivity());
+        }
+        catch (Exception e){
+            Log.e("Error MyEvent","Error to create the admin preference. " + e.getMessage());
+        }
 
         List<Event> data = new ArrayList<Event>();
 
-        mAdapter = new EventAdapter(getActivity(), R.layout.event_row, data);
-        setListAdapter(mAdapter);
+        try {
+            mAdapter = new EventAdapter(getActivity(), R.layout.event_row, data);
+            setListAdapter(mAdapter);
+        }
+        catch(Exception e){
+            Log.e("Error MyEvents","Error to create event adapter. " + e.getMessage());
+        }
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -47,7 +57,7 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
             startActivity(i);
         }
         catch (Exception e){
-            Log.e("Error MyEvents","Fallo el inicio de Configuracion de evento");
+            Log.e("Error MyEvents","Fallo el inicio de Configuracion de evento." + e.getMessage());
         }
     }
 
@@ -65,7 +75,7 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
     }
 
     private void onDataChanged() {
-        /* Cargamos la info */
+
         EventListData listData = preferences.getEventsSimpleList(AdminPreferences.PRIVATE_EVENTS);
 
         if (listData == null)

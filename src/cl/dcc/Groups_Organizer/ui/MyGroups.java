@@ -29,12 +29,21 @@ public class MyGroups extends ListFragment implements SharedPreferences.OnShared
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        preferences = new AdminPreferences(getActivity());
-
+        try {
+            preferences = new AdminPreferences(getActivity());
+        }
+        catch (Exception e){
+            Log.e("Error MyGroups","Fail to create admin preference. " + e.getMessage());
+        }
         List<Group> data = new ArrayList<Group>();
 
-        mAdapter = new GroupAdapter(getActivity(), data);
-        setListAdapter(mAdapter);
+        try {
+            mAdapter = new GroupAdapter(getActivity(), data);
+            setListAdapter(mAdapter);
+        }
+        catch(Exception e){
+            Log.e("Error MyGroup","Fail to create admin preference. " + e.getMessage());
+        }
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -46,7 +55,7 @@ public class MyGroups extends ListFragment implements SharedPreferences.OnShared
             startActivity(i);
         }
         catch(Exception e){
-            Log.e("Error MyGroups","Falla al momento de iniciar la cofiguracion del grupo");
+            Log.e("Error MyGroups","Falla al momento de iniciar la cofiguracion del grupo. " + e.getMessage());
         }
     }
 

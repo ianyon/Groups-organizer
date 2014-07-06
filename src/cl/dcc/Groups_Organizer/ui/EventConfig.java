@@ -71,7 +71,13 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = new AdminPreferences(this);
+        try{
+            preferences = new AdminPreferences(this);
+        }
+        catch(Exception e){
+            Log.e("Error EventConfig","Fail to create AdminPreferences. "  + e.getMessage());
+        }
+
 	    guestSet = new HashSet<Person>();
 
         Bundle extras = this.getIntent().getExtras();
@@ -88,8 +94,19 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
         }
 
-        mLoadingMsg = new LoadingThing(EventConfig.this);
-        mAdapter = new PersonAdapter(this, new ArrayList<Person>());
+        try {
+            mLoadingMsg = new LoadingThing(EventConfig.this);
+        }
+        catch (Exception e)
+        {
+            Log.e("Error EventConfig","Fail to load to LoadingThing. "  + e.getMessage());
+        }
+        try {
+            mAdapter = new PersonAdapter(this, new ArrayList<Person>());
+        }
+        catch (Exception e){
+            Log.e("Error EventConfig","Fail to load to PersonAdapter. "  + e.getMessage());
+        }
     }
 
     @AfterViews
@@ -129,7 +146,6 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         }
     }
     private void showRegisterWarning(CharSequence text){
-
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
 
@@ -152,45 +168,50 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
         }
 
         // Connection for public event list
-        GetEventInfoConn eventsConn = new GetEventInfoConn(getHttpClient());
-        RequestParams params = eventsConn.generateParams(mEvent.getId());
-        eventsConn.go(params, new JsonHttpResponseHandler() {
-        	
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            	String message = "Error when connecting to the server";
-            	if("EVENT NOT FOUND".equals(responseString)) {
-            		message = "Event not found";
-            	} else if("ERROR".equals(responseString)) {
-            		message = "Error in server";
-            	}
+        try {
+            GetEventInfoConn eventsConn = new GetEventInfoConn(getHttpClient());
+            RequestParams params = eventsConn.generateParams(mEvent.getId());
+            eventsConn.go(params, new JsonHttpResponseHandler() {
 
-                Toast.makeText(EventConfig.this, message, Toast.LENGTH_LONG).show();
-                mLoadingMsg.stopPopUp();
-            }
-            
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            	if (statusCode != 200 ) {
-            		Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
-                    mLoadingMsg.stopPopUp();
-            		return;
-            	}
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    String message = "Error when connecting to the server";
+                    if("EVENT NOT FOUND".equals(responseString)) {
+                        message = "Event not found";
+                    } else if("ERROR".equals(responseString)) {
+                        message = "Error in server";
+                    }
 
-            	try {
-                    mEvent = new Event(response);
-					preferences.saveEvent(mEvent);
-				} catch (JSONException e) {
-					Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
-					e.printStackTrace();
+                    Toast.makeText(EventConfig.this, message, Toast.LENGTH_LONG).show();
                     mLoadingMsg.stopPopUp();
-					return;
-				}
-                mLoadingMsg.stopPopUp();
-            	loadEventInfo();
-            	super.onSuccess(statusCode, headers, response);
-            }
-        });
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    if (statusCode != 200 ) {
+                        Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
+                        mLoadingMsg.stopPopUp();
+                        return;
+                    }
+
+                    try {
+                        mEvent = new Event(response);
+                        preferences.saveEvent(mEvent);
+                    } catch (JSONException e) {
+                        Toast.makeText(EventConfig.this, "Error al traer la información del evento", Toast.LENGTH_SHORT).show();
+                        mLoadingMsg.stopPopUp();
+                        return;
+                    }
+                    mLoadingMsg.stopPopUp();
+                    loadEventInfo();
+                    super.onSuccess(statusCode, headers, response);
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("Error EventConfig","Fail to create the conections configurations. "  + e.getMessage());
+        }
+
 
     }
 
@@ -230,7 +251,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             startActivityForResult(new Intent(this, AddPeople_.class), 42);
         }
         catch(Exception e){
-            Log.e("Event config", "fail to load/start add people");
+            Log.e("Event config", "fail to load/start add people. "  + e.getMessage());
         }
     }
 
@@ -257,7 +278,7 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Override
     public void onStart() {
-        //Todo cambiar preference a onResume on Puase.
+        //Todo cambiar preference a onResume on Pause.
         super.onStart();
         preferences.getPreferencias(AdminPreferences.PREFERENCIAS_EVENTOS).registerOnSharedPreferenceChangeListener(this);
         onDataChanged();

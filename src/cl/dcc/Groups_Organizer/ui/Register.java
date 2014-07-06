@@ -1,6 +1,7 @@
 package cl.dcc.Groups_Organizer.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -76,6 +77,7 @@ public class Register extends CustomFragmentActivity {
 
             loadingMsg.startPopUp();
 
+            try{
             RegisterConn registerConn = new RegisterConn(getHttpClient());
             RequestParams requestParams = registerConn.generateParams(mUserName.getText(), mUserAge.getText(), pos
                     , mUserUsername.getText(),
@@ -100,7 +102,10 @@ public class Register extends CustomFragmentActivity {
                         Toast.makeText(Register.this, "Error when connecting to the server", Toast.LENGTH_SHORT).show();
                     }
                 }
-            });
+            });}
+            catch (Exception e){
+                Log.e("Error Register","Error al crear las conexiones al servidor. " + e.getMessage());
+            }
     	}
     };
 
