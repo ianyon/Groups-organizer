@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import cl.dcc.Groups_Organizer.controller.GroupAdapter;
@@ -41,7 +42,12 @@ public class MyGroups extends ListFragment implements SharedPreferences.OnShared
         Bundle extras = new Bundle();
         extras.putParcelable("Group", Parcels.wrap((Group) l.getItemAtPosition(position)));
         i.putExtras(extras);
-        startActivity(i);
+        try {
+            startActivity(i);
+        }
+        catch(Exception e){
+            Log.e("Error MyGroups","Falla al momento de iniciar la cofiguracion del grupo");
+        }
     }
 
     @Override

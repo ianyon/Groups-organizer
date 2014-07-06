@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import cl.dcc.Groups_Organizer.R;
@@ -41,7 +42,13 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
         Bundle extras = new Bundle();
         extras.putParcelable("Event", Parcels.wrap((Event) l.getItemAtPosition(position)));
         i.putExtras(extras);
-        startActivity(i);
+        try {
+            startActivity(i);
+        }
+        catch(Exception e){
+            Log.e("Error PublicEvents","Error al iniciar la configuracion de eventos.");
+        }
+
     }
 
     @Override

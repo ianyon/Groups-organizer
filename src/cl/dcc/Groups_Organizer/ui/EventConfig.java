@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -225,7 +226,12 @@ public class EventConfig extends CustomFragmentActivity implements SharedPrefere
             mLoadingMsg.stopPopUp();
             return;
         }
-        startActivityForResult(new Intent(this, AddPeople_.class), 42);
+        try {
+            startActivityForResult(new Intent(this, AddPeople_.class), 42);
+        }
+        catch(Exception e){
+            Log.e("Event config", "fail to load/start add people");
+        }
     }
 
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import cl.dcc.Groups_Organizer.R;
@@ -42,7 +43,12 @@ public class MyEvents extends ListFragment implements SharedPreferences.OnShared
         Bundle extras = new Bundle();
         extras.putParcelable("Event", Parcels.wrap((Event) l.getItemAtPosition(position)));
         i.putExtras(extras);
-        startActivity(i);
+        try {
+            startActivity(i);
+        }
+        catch (Exception e){
+            Log.e("Error MyEvents","Fallo el inicio de Configuracion de evento");
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package cl.dcc.Groups_Organizer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,7 +81,13 @@ public class Login extends CustomFragmentActivity {
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
 
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        }
+        catch(Exception e) {
+            Log.e("Error en Login", "Activity fail to start. User name: " + user.getUsername());
+            Toast.makeText(Login.this, "Please try again, if this error continues please contact the development team.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

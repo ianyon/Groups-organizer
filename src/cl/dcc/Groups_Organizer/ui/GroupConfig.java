@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -223,7 +224,12 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 
     @Click
     void buttonAddPeople() {
-        startActivity(new Intent(this, AddPeople_.class));
+        try {
+            startActivity(new Intent(this, AddPeople_.class));
+        }
+        catch (Exception e){
+            Log.e("Error Configuracion de Grupo"," Add people fail to start");
+        }
     }
 
 	@AfterViews
