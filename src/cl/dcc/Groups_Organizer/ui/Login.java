@@ -129,7 +129,7 @@ public class Login extends CustomFragmentActivity {
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
             myLoadingMsg.stopPopUp();
-            Log.e("Error Login","Error al conectar al servidor. ");
+            Log.e("Error Login","Error al conectar al servidor. " + throwable.getMessage());
             Toast.makeText(Login.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
 
         }
