@@ -14,13 +14,15 @@ if(isset($_POST['only_member_of']) && $_POST['only_member_of'] == 1) {
 		RIGHT JOIN user_in_group ON user_in_group.group_id = UIG.group_id
 		WHERE user_in_group.user_id=?");
 	$stmt->bind_param('s', $_SESSION['logged_username']);
-	if($stmt->execute()) {
+	if($stmt->execute() and $stmt->errno === 0) {
 		$result = $stmt->get_result();
+		$rows = array();
 		while($row = $result->fetch_assoc()) {
 			$rows[] = $row;
 		}
 		echo json_encode($rows);
 	} else {
+		$log->general("Could not get list of groups the user is member of from the database.");
 		die("ERROR");
 	}
 } else {
@@ -34,6 +36,7 @@ if(isset($_POST['only_member_of']) && $_POST['only_member_of'] == 1) {
 		}
 		echo json_encode($rows);
 	} else {
+		$log->general("Could not get list of groups from the database.");
 		die("ERROR");
 	}
 }

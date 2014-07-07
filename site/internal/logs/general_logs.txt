@@ -7,3 +7,23 @@
 [23.05.2014 19:36:30] User could not be added to group(error code 1452): Cannot add or update a child row: a foreign key constraint fails (`groups_organizer`.`user_in_group`, CONSTRAINT `user_in_group_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_name`))
 [24.05.2014 01:19:14] Invalid input in file login.php
 [24.05.2014 01:20:53] Invalid input in file login.php
+[24.05.2014 19:17:58] Invalid input in file event_info.php
+[25.05.2014 01:26:02] Invalid input in file login.php
+[25.05.2014 02:05:39] Invalid input in file event_info.php
+[25.05.2014 02:05:48] Invalid input in file event_info.php
+[25.05.2014 19:19:05] Invalid input in file add_event.php
+[25.05.2014 19:34:20] Invalid input in file edit_event.php
+[25.05.2014 19:35:05] Error parsing json in edit_event.php
+[25.05.2014 19:35:31] Error parsing json in edit_event.php
+[25.05.2014 19:35:41] Error parsing json in edit_event.php
+[25.05.2014 19:36:19] Error parsing json in edit_event.php
+[25.05.2014 22:22:30] Invalid input in file group_info.php
+[25.05.2014 22:25:13] Invalid input in file group_info.php
+[25.05.2014 22:25:39] Invalid input in file group_info.php
+[25.05.2014 22:31:02] Invalid input in file group_info.php
+[25.05.2014 23:38:21] Invalid input in file add_event.php
+[06.07.2014 17:15:15] holachao
+[06.07.2014 17:15:15] Invalid input in file login.php
+[06.07.2014 17:15:49] hola
+chao
+[06.07.2014 17:15:49] Invalid input in file login.php

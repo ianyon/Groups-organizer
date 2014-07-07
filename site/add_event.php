@@ -26,9 +26,36 @@ $conn->autocommit(false);
 $stmt = $conn->prepare("INSERT INTO event (name, description, creator, location, datetime, datetime_creation) VALUES(?,?,?,?,?, NOW())");
 $stmt->bind_param('sssss', $_POST['name'], $_POST['description'],
 		$_SESSION['logged_username'],$_POST['location'], $_POST['datetime']);
-$stmt->execute();
 
-if($stmt->affected_rows <= 0 or $stmt->errno) {
+
+if($stmt->execute() and $stmt->errno === 0 and $stmt->affected_rows === 1) {
+	$id = $stmt->insert_id;
+	$stmt = $conn->prepare("INSERT INTO event_invited_users (event_id, user_id) VALUES(?,?)");
+	$i=0;
+	foreach($invited_people as $user) {
+		$stmt->bind_param('ss', $id, $user);
+		$stmt->execute();
+		if($stmt->errno === 0) {
+			$i++;
+		} else {
+			$error_msg = "User could not be added to event";
+			if($stmt->errno) {
+				$error_msg.= "(error code $stmt->errno): $stmt->error";
+			}
+			$log->general($error_msg);
+			$conn->rollback();
+			die("USER NOT ADDED\n$user");
+		}
+	}
+	if($i === count($invited_people)) {
+		$conn->commit();
+		echo "OK";
+	} else {
+		$log->general("Not all users could be invited to event. Unknown error. Tried to add users:".json_encode($invited_people)." to event $id");
+		$conn->rollback();
+		echo "Not all users could be invited to event. Unknown error.";
+	}
+} else {
 	$error_entry = "Event could not be added";
 	if($stmt->errno) {
 		$error_entry.= "(error code $stmt->errno): $stmt->error";
@@ -37,22 +64,3 @@ if($stmt->affected_rows <= 0 or $stmt->errno) {
 	$conn->rollback();
 	die("COULD NOT ADD EVENT");
 }
-
-$id = $stmt->insert_id;
-
-$stmt = $conn->prepare("INSERT INTO event_invited_users (event_id, user_id) VALUES(?,?)");
-foreach($invited_people as $user) {
-	$stmt->bind_param('ss', $id, $user);
-	$stmt->execute();
-	if($stmt->errno) {
-		$error_entry = "User could not be added to event";
-		if($stmt->errno) {
-			$error_entry.= "(error code $stmt->errno): $stmt->error";
-		}
-		$log->general($error_entry);
-		$conn->rollback();
-		die("USER NOT ADDED\n$user");
-	}
-}
-$conn->commit();
-echo "OK";

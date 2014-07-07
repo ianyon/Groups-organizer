@@ -13,9 +13,10 @@ $_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_
 $stmt = $conn->prepare(
 	"SELECT id, name, creator, location, description, datetime FROM event WHERE id=?");
 $stmt->bind_param('i', $_POST['event_id']);
-if($stmt->execute()) {
+if($stmt->execute() and $stmt->errno === 0) {
 	$result = $stmt->get_result();
 	if($result->num_rows === 0) {
+		$log->general("Info for event $_POST[event_id] not found.");
 		die("EVENT NOT FOUND");
 	}
 	$event = $result->fetch_assoc();
@@ -23,7 +24,7 @@ if($stmt->execute()) {
 							FROM event_invited_users join user on user_id = user_name  
 							WHERE event_id = ?");
 	$stmt->bind_param('s', $_POST['event_id']);
-	if($stmt->execute()) {
+	if($stmt->execute() and $stmt->errno === 0) {
 		$result = $stmt->get_result();
 		$guests = array();
 		while($guest = $result->fetch_assoc()) {
@@ -31,8 +32,12 @@ if($stmt->execute()) {
 			$guests[] = $guest;
 		}
 		$event['guests'] = $guests;
+	} else {
+		$log->general("Could not get list of users in event $_POST[event_id] from database.");
+		die("ERROR");
 	}
 	echo json_encode($event);
 } else {
+	$log->general("Error occurred while trying to fetch info from event $_POST[event_id]");
 	die("ERROR");
 }

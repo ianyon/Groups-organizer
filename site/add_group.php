@@ -17,9 +17,34 @@ $users = json_decode_log($_POST['users'], basename(__FILE__));
 $conn->autocommit(false);
 $stmt = $conn->prepare("INSERT INTO `group` (name, description) VALUES(?,?)");
 $stmt->bind_param('ss', $_POST['name'], $_POST['description']);
-$stmt->execute();
 
-if($stmt->affected_rows <= 0 or $stmt->errno) {
+if($stmt->execute() and $stmt->affected_rows === 1 and $stmt->errno === 0) {
+	$stmt = $conn->prepare("INSERT INTO user_in_group (user_id, group_id) VALUES(?,?)");
+	$i = 0;
+	foreach($users as $user) {
+		$stmt->bind_param('ss', $user, $_POST['name']);
+		$stmt->execute();
+		if($stmt->errno === 0) {
+			$i++;
+		} else {
+			$error_entry = "User could not be added to group";
+			if($stmt->errno) {
+				$error_entry.= "(error code $stmt->errno): $stmt->error";
+			}
+			$log->general($error_entry);
+			$conn->rollback();
+			die("USER NOT ADDED\n$user");
+		}
+	}
+	if($i === count($invited_people)) {
+		$conn->commit();
+		echo "OK";
+	} else {
+		$log->general("Not all users could be added to group. Unknown error. Tried to add users:".json_encode($users)." to event $name");
+		$conn->rollback();
+		echo "Not all users could be added to group. Unknown error.";
+	}
+} else {
 	$error_entry = "Group could not be added";
 	if($stmt->errno) {
 		$error_entry.= "(error code $stmt->errno): $stmt->error";
@@ -28,20 +53,3 @@ if($stmt->affected_rows <= 0 or $stmt->errno) {
 	$conn->rollback();
 	die("COULD NOT ADD GROUP");
 }
-
-$stmt = $conn->prepare("INSERT INTO user_in_group (user_id, group_id) VALUES(?,?)");
-foreach($users as $user) {
-	$stmt->bind_param('ss', $user, $_POST['name']);
-	$stmt->execute();
-	if($stmt->errno) {
-		$error_entry = "User could not be added to group";
-		if($stmt->errno) {
-			$error_entry.= "(error code $stmt->errno): $stmt->error";
-		}
-		$log->general($error_entry);
-		$conn->rollback();
-		die("USER NOT ADDED\n$user");
-	}
-}
-$conn->commit();
-echo "OK";

@@ -10,7 +10,7 @@ if(isset($_POST['group_name'])) {
 			JOIN user_in_group ON user_in_group.user_id = user.user_name
 		WHERE user_in_group.group_id = ?");
 	$stmt->bind_param('s', $_POST['group_name']);
-	if($stmt->execute()) {
+	if($stmt->execute() and $stmt->errno === 0) {
 		$result = $stmt->get_result();
 		$rows = array();
 		while($row = $result->fetch_assoc()) {
@@ -18,6 +18,7 @@ if(isset($_POST['group_name'])) {
 		}
 		echo json_encode($rows);
 	} else {
+		$log->general("Could not get list of users from group $_POST[group_name]");
 		die("ERROR");
 	}
 
@@ -30,6 +31,7 @@ if(isset($_POST['group_name'])) {
 		}
 		echo json_encode($rows);
 	} else {
+		$log->general("Could not list users from the database.");
 		die("ERROR");
 	}
 }

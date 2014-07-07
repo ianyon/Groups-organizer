@@ -30,7 +30,45 @@ $stmt->bind_param('ssssi', $_POST['name'], $_POST['description'],
 		$_POST['location'], $_POST['datetime'], $_POST['id']);
 
 
-if(!$stmt->execute()) {
+if($stmt->execute() and $stmt->errno === 0) {
+	$stmt = $conn->prepare("DELETE FROM event_invited_users WHERE event_id = ?");
+	$stmt->bind_param('i', $_POST['id']);
+	if($stmt->execute() and $stmt->errno === 0) {
+		$i = 0;
+		$stmt = $conn->prepare("INSERT INTO event_invited_users (event_id, user_id) VALUES(?,?)");
+		foreach($invited_people as $user) {
+			$stmt->bind_param('ss', $_POST['id'], $user);
+			if($stmt->execute() and $stmt->errno === 0) {
+				$i++;
+			} else {
+				$error_entry = "User could not be added to event";
+				if($stmt->errno) {
+					$error_entry.= "(error code $stmt->errno): $stmt->error";
+				}
+				$log->general($error_entry);
+				$conn->rollback();
+				die("USER NOT ADDED\n$user");
+			}
+		}
+		if($i === count($invited_people)) {
+			$conn->commit();
+			echo "OK";
+		} else {
+			$log->general("Not all users could be invited to event. Unknown error. Tried to add users:".json_encode($invited_people)." to event $_POST[id]");
+			$conn->rollback();
+			echo "Not all users could be invited to event. Unknown error.";
+		}
+	} else {
+		$error_entry = "Could not delete guest list";
+		if($stmt->errno) {
+			$error_entry.= "(error code $stmt->errno): $stmt->error";
+		}
+		$log->general($error_entry);
+		$conn->rollback();
+		die("COULD NOT UPDATE GUEST LIST");	
+	}
+
+} else {
 	$error_entry = "Event could not be edited";
 	if($stmt->errno) {
 		$error_entry.= "(error code $stmt->errno): $stmt->error";
@@ -39,32 +77,3 @@ if(!$stmt->execute()) {
 	$conn->rollback();
 	die("COULD NOT EDIT EVENT");
 }
-
-$stmt = $conn->prepare("DELETE FROM event_invited_users WHERE event_id = ?");
-$stmt->bind_param('i', $_POST['id']);
-if(!$stmt->execute()) {
-	$error_entry = "Could not delete guest list";
-	if($stmt->errno) {
-		$error_entry.= "(error code $stmt->errno): $stmt->error";
-	}
-	$log->general($error_entry);
-	$conn->rollback();
-	die("COULD NOT UPDATE GUEST LIST");
-}
-
-$stmt = $conn->prepare("INSERT INTO event_invited_users (event_id, user_id) VALUES(?,?)");
-foreach($invited_people as $user) {
-	$stmt->bind_param('ss', $_POST['id'], $user);
-	$stmt->execute();
-	if($stmt->errno) {
-		$error_entry = "User could not be added to event";
-		if($stmt->errno) {
-			$error_entry.= "(error code $stmt->errno): $stmt->error";
-		}
-		$log->general($error_entry);
-		$conn->rollback();
-		die("USER NOT ADDED\n$user");
-	}
-}
-$conn->commit();
-echo "OK";

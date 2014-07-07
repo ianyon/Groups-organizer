@@ -14,7 +14,7 @@ if(isset($_POST['only_invited_to']) && $_POST['only_invited_to'] == 1) {
 		RIGHT JOIN event_invited_users ON event_invited_users.event_id = EIU.event_id
 		WHERE event_invited_users.user_id = ?");
 	$stmt->bind_param('s', $_SESSION['logged_username']);
-	if($stmt->execute()) {
+	if($stmt->execute() and $stmt->errno === 0) {
 		$result = $stmt->get_result();
 		$rows = array();
 		while($row = $result->fetch_assoc()) {
@@ -22,6 +22,7 @@ if(isset($_POST['only_invited_to']) && $_POST['only_invited_to'] == 1) {
 		}
 		echo json_encode($rows);
 	} else {
+		$log->general("Could not get list of events the user was invited to from the database.");
 		die("ERROR");
 	}
 } else {
@@ -39,6 +40,7 @@ if(isset($_POST['only_invited_to']) && $_POST['only_invited_to'] == 1) {
 		}
 		echo json_encode($rows);
 	} else {
+		$log->general("Could not get list of events from database.");
 		die("ERROR");
 	}
 }

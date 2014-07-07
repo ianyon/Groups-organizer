@@ -15,16 +15,21 @@ $_POST = filter_array_with_default_flags($_POST, FILTER_UNSAFE_RAW, FILTER_FLAG_
 
 $stmt = $conn->prepare("SELECT * FROM user WHERE user_name = ?");
 $stmt->bind_param('s', $_POST['user']);
-$stmt->execute();
-$row = $stmt->get_result()->fetch_assoc();
-$hashedPass = $row['pass'];
-if(password_verify($_POST['pass'],$hashedPass)){
-	echo "OK\n$row[name]";
+if($stmt->execute() and $stmt->errno === 0) {
+	$row = $stmt->get_result()->fetch_assoc();
+	$hashedPass = $row['pass'];
+	if(password_verify($_POST['pass'],$hashedPass)){
+		echo "OK\n$row[name]";
+	} else {
+		$log->general("Failed to login user $_POST[user]");
+		die("LOGIN_FAILED");
+	}
+	session_start();
+	$_SESSION['logged_username'] = $_POST['user'];
 } else {
-	die("LOGIN_FAILED");
+	$log->general("Could not log user $_POST[user].");
+	echo "ERROR";
 }
-session_start();
-$_SESSION['logged_username'] = $_POST['user'];
 //$now = new DateTime();
 //echo "time since last login ".($now->getTimestamp()-$_SESSION['logged_time'])."s";
 //$_SESSION['logged_time'] = $now->getTimestamp();
