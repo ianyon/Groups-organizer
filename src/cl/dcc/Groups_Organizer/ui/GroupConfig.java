@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +72,12 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = new AdminPreferences(this);
+        try {
+            preferences = new AdminPreferences(this);
+        }
+        catch(Exception e){
+            Log.e("Error GroupConfig","Fail t create admin preferecnes. "  + e.getMessage());
+        }
 
         Bundle extras = this.getIntent().getExtras();
 
@@ -86,8 +92,18 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 
         }
 
-        mLoadingMsg = new LoadingThing(GroupConfig.this);
-        mAdapter = new PersonAdapter(this, new ArrayList<Person>());
+        try{
+            mLoadingMsg = new LoadingThing(GroupConfig.this);
+        }
+        catch(Exception e){
+            Log.e("Error GroupConfig","Error loadingThing. " + e.getMessage());
+        }
+        try {
+            mAdapter = new PersonAdapter(this, new ArrayList<Person>());
+        }
+        catch (Exception e){
+            Log.e("Error GroupConfig","Error al crear PersonAdapter. "  + e.getMessage());
+        }
     }
 
     @AfterViews
@@ -136,6 +152,7 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
         }
 
         // Connection for groups retrieval
+        try{
         GetGroupInfoConn groupConn = new GetGroupInfoConn(getHttpClient());
         RequestParams params = groupConn.generateParams(mGroup.getName());
         groupConn.go(params, new JsonHttpResponseHandler() {
@@ -170,8 +187,8 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 			        }
 			        preferences.saveGroup(mGroup);
 		        } catch (JSONException e) {
-			        Toast.makeText(GroupConfig.this, "Error al traer la información del grupo", Toast.LENGTH_SHORT).show();
-			        e.printStackTrace();
+                    Log.e("Error CroupConfig","Fail lo load persosn from JSON. "  + e.getMessage());
+			        Log.e("JSON", "Error al traer la información del grupo");
 			        mLoadingMsg.stopPopUp();
 			        return;
 		        }
@@ -179,7 +196,10 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 		        loadGroupInfo();
 		        super.onSuccess(statusCode, headers, response);
 	        }
-        });
+        });}
+        catch (Exception e){
+            Log.e("Error GroupConfig","Error al crear la conexion. " + e.getMessage());
+        }
 
     }
 
@@ -213,17 +233,26 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
 	        });
 	        return;
         }
-        CreateGroupConn createGroupConn = new CreateGroupConn(getHttpClient());
-        RequestParams params = createGroupConn.generateParams(mEventName.getText(), mEventDescription.getText(), mAdapter.getList());
+        try {
+            CreateGroupConn createGroupConn = new CreateGroupConn(getHttpClient());
+            RequestParams params = createGroupConn.generateParams(mEventName.getText(), mEventDescription.getText(), mAdapter.getList());
 
-        createGroupConn.go(params, new MyHttpResponseHandler("Event Created",true));
-
+            createGroupConn.go(params, new MyHttpResponseHandler("Event Created", true));
+        }
+        catch (Exception e){
+            Log.e("Error GroupCOnfig","Error al conectarse al servidor con la conecion de grupo. "+ e.getMessage());
+        }
         mLoadingMsg.stopPopUp();
     }
 
     @Click
     void buttonAddPeople() {
-        startActivity(new Intent(this, AddPeople_.class));
+        try {
+            startActivity(new Intent(this, AddPeople_.class));
+        }
+        catch (Exception e){
+            Log.e("Error Configuracion de Grupo"," Add people fail to start. " + e.getMessage());
+        }
     }
 
 	@AfterViews
@@ -255,13 +284,11 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
             return;
         mGroup = group;
         loadGroupInfo();
-//        mAdapter.getList().clear();
-//        mAdapter.getList().addAll(event.getGuestList());
-//        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        //Todo check mGroup is not null
         if (key.equals(mGroup.getName()))
             onDataChanged();
     }
@@ -280,6 +307,7 @@ public class GroupConfig extends CustomFragmentActivity implements SharedPrefere
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
+            Log.e("Error GroupConfig","Error en la conexion al servidor.");
             Toast.makeText(GroupConfig.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import cl.dcc.Groups_Organizer.controller.GroupAdapter;
@@ -28,12 +29,21 @@ public class MyGroups extends ListFragment implements SharedPreferences.OnShared
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        preferences = new AdminPreferences(getActivity());
-
+        try {
+            preferences = new AdminPreferences(getActivity());
+        }
+        catch (Exception e){
+            Log.e("Error MyGroups","Fail to create admin preference. " + e.getMessage());
+        }
         List<Group> data = new ArrayList<Group>();
 
-        mAdapter = new GroupAdapter(getActivity(), data);
-        setListAdapter(mAdapter);
+        try {
+            mAdapter = new GroupAdapter(getActivity(), data);
+            setListAdapter(mAdapter);
+        }
+        catch(Exception e){
+            Log.e("Error MyGroup","Fail to create admin preference. " + e.getMessage());
+        }
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -41,7 +51,12 @@ public class MyGroups extends ListFragment implements SharedPreferences.OnShared
         Bundle extras = new Bundle();
         extras.putParcelable("Group", Parcels.wrap((Group) l.getItemAtPosition(position)));
         i.putExtras(extras);
-        startActivity(i);
+        try {
+            startActivity(i);
+        }
+        catch(Exception e){
+            Log.e("Error MyGroups","Falla al momento de iniciar la cofiguracion del grupo. " + e.getMessage());
+        }
     }
 
     @Override

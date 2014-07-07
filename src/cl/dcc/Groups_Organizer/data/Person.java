@@ -1,5 +1,6 @@
 package cl.dcc.Groups_Organizer.data;
 
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -59,7 +60,7 @@ public class Person {
 			jsonObject.put("age", age);
 			return jsonObject.toString();
 		} catch (JSONException e) {
-			e.printStackTrace();
+            Log.e("JSON", "Error imprimiendo persona");
 		}
     	return "{}";
     }

@@ -25,9 +25,7 @@ public class DefaultValidationListener implements ValidationListener {
 	}
 
 	@Override
-	public void onValidationSucceeded() {
-
-	}
+	public void onValidationSucceeded() {}
 	
 	private void showRegisterWarning(CharSequence text) {
         int duration = Toast.LENGTH_SHORT;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import cl.dcc.Groups_Organizer.R;
@@ -28,12 +29,21 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        preferences = new AdminPreferences(getActivity());
-
+        try {
+            preferences = new AdminPreferences(getActivity());
+        }
+        catch(Exception e){
+            Log.e("Error PublicEvents","Error al crear las prefercincias de administracion. " + e.getMessage());
+        }
         List<Event> data = new ArrayList<Event>();
 
-        mAdapter = new EventAdapter(getActivity(), R.layout.event_row, data);
-        setListAdapter(mAdapter);
+        try {
+            mAdapter = new EventAdapter(getActivity(), R.layout.event_row, data);
+            setListAdapter(mAdapter);
+        }
+        catch (Exception e){
+            Log.e("Error PublicEvents","Error al crear los adaptadores para eventos. " + e.getMessage());
+        }
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -41,7 +51,13 @@ public class PublicEvents extends ListFragment implements SharedPreferences.OnSh
         Bundle extras = new Bundle();
         extras.putParcelable("Event", Parcels.wrap((Event) l.getItemAtPosition(position)));
         i.putExtras(extras);
-        startActivity(i);
+        try {
+            startActivity(i);
+        }
+        catch(Exception e){
+            Log.e("Error PublicEvents","Error al iniciar la configuracion de eventos. " + e.getMessage());
+        }
+
     }
 
     @Override

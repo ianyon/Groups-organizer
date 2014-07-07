@@ -110,7 +110,7 @@ public class Event{
     		}
     		jsonObject.put("guests", guests);
     	} catch(JSONException e) {
-    		
+
     	}
     	return jsonObject.toString();
     }

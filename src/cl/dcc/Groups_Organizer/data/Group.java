@@ -1,5 +1,6 @@
 package cl.dcc.Groups_Organizer.data;
 
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,7 @@ import java.util.List;
 @Parcel
 public class Group {
     public String name, description;
-    public ArrayList<Person> members;
+    public List<Person> members;
 	private int membersCount;
 
 	public Group() {}
@@ -65,7 +66,7 @@ public class Group {
 			jsonObject.put("members", membersJson);
 			jsonObject.put("membersCount", membersCount);
 		} catch (JSONException e) {
-			e.printStackTrace();
+            Log.e("JSON", "Error imprimiendo grupo");
 		}
 		return jsonObject.toString();
 	}

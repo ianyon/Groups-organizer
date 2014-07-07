@@ -41,22 +41,35 @@ public class Login extends CustomFragmentActivity {
 		@Override
 		public void onValidationSucceeded() {
             myLoadingMsg.startPopUp();
-            LoginConn loginConn = new LoginConn(getHttpClient());
-	        RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
-	        loginConn.go(reqParams, httpHandler);
+            try {
+                LoginConn loginConn = new LoginConn(getHttpClient());
+                RequestParams reqParams = loginConn.generateParams(tvUser.getText(), tvPassword.getText());
+                loginConn.go(reqParams, httpHandler);
+            }
+            catch (Exception e){
+                Log.e("Error Login","Error al conectarse con el servidor. " + e.getMessage());
+            }
 		}
 	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-        Log.w("hola", "chao");
+        //Log.w("hola", "chao");
 		super.onCreate(savedInstanceState);
-		validator = new Validator(this);
-		validator.setValidationListener(validationListener);
-
-        myLoadingMsg = new LoadingThing(Login.this,"","Connecting");
-
+        try {
+            validator = new Validator(this);
+            validator.setValidationListener(validationListener);
+        }
+        catch (Exception e){
+            Log.e("Error Login","Error al crear el validor. " + e.getMessage());
+        }
+        try {
+            myLoadingMsg = new LoadingThing(Login.this, "", "Connecting");
+        }
+        catch (Exception e){
+            Log.e("Error Login","Erroe al crear LoadingThing");
+        }
 
     }
 
@@ -69,7 +82,13 @@ public class Login extends CustomFragmentActivity {
 
     @Click(R.id.signup)
 	public void onSignupClick(View v){
-        startActivity(new Intent(this,Register_.class));
+        try {
+            startActivity(new Intent(this, Register_.class));
+        }
+        catch (Exception e)
+        {
+            Log.e("Error Login","Error al lanzar el registro. " + e.getMessage());
+        }
     }
 
 	@Click(R.id.login)
@@ -82,7 +101,13 @@ public class Login extends CustomFragmentActivity {
         extras.putParcelable("User", Parcels.wrap(user));
         intent.putExtras(extras);
 
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        }
+        catch(Exception e) {
+            Log.e("Error en Login", "Activity fail to start. User name: " + user.getUsername() + " ." + e.getMessage());
+            Toast.makeText(Login.this, "Please try again, if this error continues please contact the development team.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -95,6 +120,7 @@ public class Login extends CustomFragmentActivity {
         public void onFailure(int statusCode, Header[] headers, String responseString,
                               Throwable throwable) {
             myLoadingMsg.stopPopUp();
+            Log.e("Error Login","Error al conectar al servidor. ");
             Toast.makeText(Login.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
         }
 

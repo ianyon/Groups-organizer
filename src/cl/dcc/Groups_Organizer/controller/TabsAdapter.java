@@ -12,6 +12,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a helper class that implements the management of tabs and all
@@ -29,7 +30,7 @@ public class TabsAdapter extends FragmentPagerAdapter implements
     private final Context mContext;
     private final TabHost mTabHost;
     private final ViewPager mViewPager;
-    private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
+    private final List<TabInfo> mTabs = new ArrayList<TabInfo>();
 
     public TabsAdapter(FragmentActivity activity, TabHost tabHost, ViewPager pager) {
         super(activity.getSupportFragmentManager());

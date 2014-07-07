@@ -2,6 +2,7 @@ package cl.dcc.Groups_Organizer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import cl.dcc.Groups_Organizer.R;
@@ -35,12 +36,12 @@ public class AddPeople extends CustomFragmentActivity {
 	RadioGroup radioGroup;
 
 	@ViewById(R.id.radioPeople)
-	RadioButton radioPeople;
+    RadioButton radioPeople;
 
 	@ViewById(R.id.listView)
 	ListView listView;
 
-	boolean showingPeople = true;
+	private boolean showingPeople = true;
 
 	ArrayList<Person> peopleList, peopleSelected;
 	ArrayList<Group> groupsList, groupSelected;
@@ -73,10 +74,10 @@ public class AddPeople extends CustomFragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (showingPeople) {
-                    Toast.makeText(AddPeople.this, peopleList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(AddPeople.this, peopleList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
                     peopleSelected.add(peopleList.get(position));
                 } else {
-                    Toast.makeText(AddPeople.this, groupsList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(AddPeople.this, groupsList.get(position).getName(), Toast.LENGTH_SHORT).show();
                     groupSelected.add(groupsList.get(position));
                 }
             }
@@ -84,7 +85,7 @@ public class AddPeople extends CustomFragmentActivity {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStart() {//Todo refresh en on resume
 		super.onStart();
 		refresh();
 
@@ -174,7 +175,7 @@ public class AddPeople extends CustomFragmentActivity {
 				try {
 					peopleList.add(new Person(response.getString(i)));
 				} catch (JSONException e) {
-					e.printStackTrace();
+                    Log.e("JSON", "Error creando persona. No tiene un formato JSON valido");
 					couldParseAll = false;
 				}
 			}
@@ -199,7 +200,7 @@ public class AddPeople extends CustomFragmentActivity {
 				try {
 					groupsList.add(new Group(response.getJSONObject(i)));
 				} catch (JSONException e) {
-					e.printStackTrace();
+                    Log.e("JSON", "Error creando grupo. No tiene un formato JSON valido");
 					couldParseAll = false;
 				}
 			}

@@ -44,7 +44,7 @@ public class EventListData {
 
     }
 
-    public EventListData(JSONObject json) {
+/*    public EventListData(JSONObject json) {
         setCodEstado(json.optInt(CODIGO_ESTADO, -1000));
         setDescEstado(json.optString(DESCRIPCION_ESTADO, "Esperando respuesta"));
         JSONObject jsonDatos = json.optJSONObject(DATOS);
@@ -97,7 +97,7 @@ public class EventListData {
         }
         setDatos(map);
 
-    }
+    }*/
 
     public void setDescEstado(String descEstado) {
         this.mDescEstado = descEstado;

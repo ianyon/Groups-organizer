@@ -21,7 +21,7 @@ Class Log {
 		$date = new DateTime();
 		$date->setTimezone($this->timezone);
 		$date = $date->format('d.m.Y H:i:s');
-		error_log("[$date][$username] $msg\n", 3, self::USER_ERROR_DIR); 
+      logSynchronized("[$date][$username] $msg\n", self::USER_ERROR_DIR);
     } 
     /* 
    General Errors... 
@@ -32,7 +32,23 @@ Class Log {
 		$date = new DateTime();
 		$date->setTimezone($this->timezone);
 		$date = $date->format('d.m.Y H:i:s');
-		error_log("[$date] $msg\n", 3, self::GENERAL_ERROR_DIR); 
+
+    logSynchronized("[$date] $msg\n", self::GENERAL_ERROR_DIR);
+    }
+
+    function logSynchronized($msg, $file){
+      $f = fopen($file);
+
+      if (flock($f, LOCK_EX)) {  // adquirir un bloqueo de lectura
+
+        error_log($msg, 3, $file); 
+
+        flock($f, LOCK_UN);    // libera el bloqueo
+      } else {
+          echo "¡No se pudo obtener el bloqueo!";
+      }
+
+      fclose($f);
     }
 
 }

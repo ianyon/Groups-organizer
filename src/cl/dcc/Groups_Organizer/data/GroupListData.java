@@ -44,7 +44,7 @@ public class GroupListData {
 
     }
 
-    public GroupListData(JSONObject json) {
+    /*public GroupListData(JSONObject json) {
         setCodEstado(json.optInt(CODIGO_ESTADO, -1000));
         setDescEstado(json.optString(DESCRIPCION_ESTADO, "Esperando respuesta"));
         JSONObject jsonDatos = json.optJSONObject(DATOS);
@@ -97,7 +97,7 @@ public class GroupListData {
         }
         setDatos(map);
 
-    }
+    }*/
 
     public void setDescEstado(String descEstado) {
         this.mDescEstado = descEstado;
