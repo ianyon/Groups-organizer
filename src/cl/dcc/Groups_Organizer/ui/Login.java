@@ -10,6 +10,7 @@ import cl.dcc.Groups_Organizer.R;
 import cl.dcc.Groups_Organizer.connection.LoginConn;
 import cl.dcc.Groups_Organizer.data.Person;
 import cl.dcc.Groups_Organizer.utilities.LoadingThing;
+import cl.dcc.Groups_Organizer.utilities.LoginBackOff;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.mobsandgeeks.saripaar.Validator;
@@ -35,6 +36,7 @@ public class Login extends CustomFragmentActivity {
     TextView tvPassword;
 
     private LoadingThing myLoadingMsg;
+    private LoginBackOff backOff;
 
 	private Validator validator;
 	private ValidationListener validationListener = new DefaultValidationListener(this) {
@@ -55,7 +57,6 @@ public class Login extends CustomFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-        //Log.w("hola", "chao");
 		super.onCreate(savedInstanceState);
         try {
             validator = new Validator(this);
@@ -70,6 +71,8 @@ public class Login extends CustomFragmentActivity {
         catch (Exception e){
             Log.e("Error Login","Erroe al crear LoadingThing");
         }
+
+        backOff = new LoginBackOff();
 
     }
 
@@ -92,7 +95,13 @@ public class Login extends CustomFragmentActivity {
     }
 
 	@Click(R.id.login)
-    public void onLoginClick() { validator.validate();  }
+    public void onLoginClick() {
+        if(backOff.canLogAgain())
+            validator.validate();
+        else
+            Toast.makeText(Login.this, "Please try again in a few seconds.", Toast.LENGTH_SHORT).show();
+
+    }
 
     private void doLoginVerified(Person user) {
 
@@ -122,12 +131,15 @@ public class Login extends CustomFragmentActivity {
             myLoadingMsg.stopPopUp();
             Log.e("Error Login","Error al conectar al servidor. ");
             Toast.makeText(Login.this, "Error when connecting to the server", Toast.LENGTH_LONG).show();
+
         }
 
         @Override
         public void onSuccess(int statusCode, Header[] headers, String responseBody) {
             // TODO: hacer mas verboso el control de errores
+
             if (statusCode == 200 && parseResponse(responseBody) && message.equals("OK")) {
+                backOff.success();
                 Toast.makeText(Login.this, getString(R.string.loginSuccessfull), Toast.LENGTH_SHORT).show();
 
                 Person user = new Person("" + tvUser.getText(),name);
@@ -140,6 +152,7 @@ public class Login extends CustomFragmentActivity {
             }else{
                 myLoadingMsg.stopPopUp();
                 Toast.makeText(Login.this, getString(R.string.loginFailed), Toast.LENGTH_SHORT).show();
+                backOff.oneTry();
             }
         }
 
